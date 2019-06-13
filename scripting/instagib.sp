@@ -17,10 +17,6 @@
 #include <steamtools>
 
 // -------------------------------------------------------------------
-#if defined PROFILER
-#include <profiler>
-#endif
-
 #pragma dynamic 1048576 // For OnLevelInit :)
 #pragma semicolon 1
 #pragma newdecls required
