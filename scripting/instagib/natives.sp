@@ -19,7 +19,7 @@ void Natives_Init()
 	
 	CreateNative("IG_IsFFA", Native_IsFFA);
 	
-	FwRailjump = CreateGlobalForward("OnClientRailjump", ET_Ignore, Param_Cell, Param_Array);
+	FwRailjump = CreateGlobalForward("IG_OnRailjump", ET_Ignore, Param_Cell, Param_Array);
 }
 
 // -------------------------------------------------------------------
