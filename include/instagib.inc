@@ -44,7 +44,7 @@ enum struct InstagibRound
  * @param client		Client index.
  * @param velocity		Client's velocity.
  */
-forward void IG_OnClientRailjump(int client, float velocity[3]);
+forward void IG_OnRailjump(int client, float velocity[3]);
 
 // -------------------------------------------------------------------
 /**
