@@ -52,7 +52,7 @@ forward void IG_OnClientRailjump(int client, float velocity[3]);
  *
  * @param name			Round's name.
  * @param notify		Whether all players should get a chat notification.
- * @param client		If defined, will show this client has forced the round.
+ * @param client		If defined, will show that this client has forced the round.
  */
 native void IG_ForceSpecialRound(char[] name, bool notify = false, int client = 0);
 
