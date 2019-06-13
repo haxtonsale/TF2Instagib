@@ -187,7 +187,7 @@ public Plugin myinfo =
 {
 	name = "TF2Instagib",
 	author = "Haxton Sale#3690",
-	description = "le instagib for team fortress 2",
+	description = "Best action packed gamemode ever",
 	version = INSTAGIB_VERSION,
 	url = " "
 };
