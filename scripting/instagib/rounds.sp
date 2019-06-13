@@ -100,9 +100,9 @@ static bool CheckInstagibRoundForErrors(InstagibRound round, char error[256])
 	if (StrEqual(round.name, "")) {
 		error = "Round.name must not be null.";
 	} else if (round.main_weapon == null) {
-		error = "Round.main_weapon should not be null.";
+		error = "Round.main_weapon must not be null.";
 	} else if (!round.roundtype_flags) {
-		error = "Round.roundtype_flags should not be 0.";
+		error = "Round.roundtype_flags must not be 0.";
 	} else {
 		return false;
 	}

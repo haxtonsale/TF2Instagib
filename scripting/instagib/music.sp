@@ -48,6 +48,8 @@ void PrecacheMusic()
 			
 			PrecacheSound(data.path);
 		}
+	} else {
+		g_MusicEnabled = false;
 	}
 }
 

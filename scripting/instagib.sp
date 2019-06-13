@@ -610,10 +610,9 @@ public void OnClientPutInServer(int client)
 public void TF2_OnWaitingForPlayersStart()
 {
 	g_IsWaitingForPlayers = true;
+	g_RoundTimeLeft = 0;
 	
 	delete g_RoundTimer;
-	
-	g_RoundTimeLeft = 0;
 }
 
 public void TF2_OnWaitingForPlayersEnd()

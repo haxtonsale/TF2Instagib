@@ -6,10 +6,12 @@ void Menu_Settings(int client)
 		
 		menu.SetTitle("TF2Instagib %s", INSTAGIB_VERSION);
 		
-		if (g_ClientPrefs[client].MusicEnabled) {
-			menu.AddItem("music:0", "Music: On");
-		} else {
-			menu.AddItem("music:1", "Music: Off");
+		if (g_IsMusicEnabled) {
+			if (g_ClientPrefs[client].MusicEnabled) {
+				menu.AddItem("music:0", "Music: On");
+			} else {
+				menu.AddItem("music:1", "Music: Off");
+			}
 		}
 		
 		int trans = g_ClientPrefs[client].ViewmodelAlpha;
