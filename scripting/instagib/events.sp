@@ -82,11 +82,9 @@ public void Event_OnRoundStart(Event event, const char[] name, bool dont_broadca
 		for (int i = 0; i <= 1; i++) {
 			int ent = FindEntityByClassname(prev_ent + 1, "trigger_capture_area");
 			if (IsValidEntity(ent)) {
-				PrintToServer("deleted entity %i", ent);
 				RemoveEntity(ent);
 				prev_ent = ent;
 			}
-			
 		}
 	}
 	
