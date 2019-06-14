@@ -36,10 +36,10 @@ public void Event_OnRoundStart(Event event, const char[] name, bool dont_broadca
 	}
 	
 	if (g_CurrentRound.is_special) {
-		CPrintToChatAll("%s Special Round: %s%s%s!", g_InstagibTag, g_Config.ChatColor_Highlight, g_CurrentRound.name, g_Config.ChatColor);
+		InstagibPrintToChatAll(true, "Special Round: {%s}!", g_CurrentRound.name);
 		
 		if (!StrEqual(g_CurrentRound.desc, "")) {
-			CPrintToChatAll("%s%s", g_Config.ChatColor, g_CurrentRound.desc);
+			InstagibPrintToChatAll(false, g_CurrentRound.desc);
 		} else if (g_CurrentRound.on_desc != INVALID_FUNCTION) {
 			// Custom description callback (if text needs to be formatted)
 			char desc[128];
@@ -49,7 +49,7 @@ public void Event_OnRoundStart(Event event, const char[] name, bool dont_broadca
 			Call_PushCell(sizeof(desc));
 			Call_Finish();
 			
-			CPrintToChatAll(desc);
+			InstagibPrintToChatAll(false, desc);
 		}
 	}
 	

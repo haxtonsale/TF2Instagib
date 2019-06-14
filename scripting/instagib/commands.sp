@@ -29,14 +29,14 @@ public Action Command_Settings(int client, int args)
 			int value = StringToInt(arg2);
 			
 			if (value < 0 || value > 255 || args < 2) {
-				CPrintToChat(client, "%s Usage: %s/instagib viewmodel (0-255)", g_InstagibTag, g_Config.ChatColor_Highlight);
+				InstagibPrintToChat(true, client, "Usage: {/instagib viewmodel (0-255)}.");
 			} else {
 				SetClientCookie(client, g_PrefViewmodel, arg2);
 				g_ClientPrefs[client].ViewmodelAlpha = value;
 				
 				SetEntityRenderColor(g_MainWeaponEnt[client], .a = value);
 				
-				CPrintToChat(client, "%s Weapon's alpha was set to %i.", g_InstagibTag, value);
+				InstagibPrintToChat(true, client, "Usage: Weapon's alpha was set to %i.");
 			}
 			
 			return Plugin_Handled;
@@ -60,7 +60,7 @@ public Action Command_ForceRound(int client, int args)
 		bool result = InstagibForceRound(argstr, true, client);
 		
 		if (!result) {
-			CPrintToChat(client, "%s Round \"%s\" was not found!", g_InstagibTag, argstr);
+			InstagibPrintToChat(true, client, "Usage: Round {%s} was not found!", argstr);
 		}
 	}
 	

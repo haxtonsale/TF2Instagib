@@ -42,15 +42,15 @@ public int Settings_Handler(Menu menu, MenuAction action, int param1, int param2
 			g_ClientPrefs[param1].MusicEnabled = result;
 			
 			if (result) {
-				CPrintToChat(param1, "%s You have enabled round music.", g_InstagibTag);
+				InstagibPrintToChat(true, param1, "You have enabled round music.");
 				g_ClientPrefs[param1].MusicEnabled = true;
 			} else {
-				CPrintToChat(param1, "%s You have disabled round music.", g_InstagibTag);
+				InstagibPrintToChat(true, param1, "You have disabled round music.");
 				g_ClientPrefs[param1].MusicEnabled = false;
 				StopMusic(param1);
 			}
 		} else if (StrEqual(info, "viewmodel")) {
-			CPrintToChat(param1, "%s Type %s/instagib viewmodel (0-255)%s to change weapon's transparency.", g_InstagibTag, g_Config.ChatColor_Highlight, g_Config.ChatColor);
+			InstagibPrintToChat(true, param1,  "Type {/instagib viewmodel (0-255)} to change weapon's transparency.");
 		}
 		
 		Menu_Settings(param1);

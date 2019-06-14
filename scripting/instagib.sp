@@ -256,31 +256,27 @@ void AnnounceWin(TFTeam team = TFTeam_Unassigned, char[] point = "kills", int cl
 		FormatEx(clientstr, sizeof(clientstr), "%s %s%N%s", g_InstagibTag, ColorStr(CGetTeamColor(client)), client, g_Config.ChatColor);
 		
 		if (!StrEqual(point, "")) {
-			CPrintToChatAll("%s has won the round with %s%i%s %s!", clientstr, g_Config.ChatColor_Highlight, kills, g_Config.ChatColor, point);
+			InstagibPrintToChatAll(true, "%s has won the round with {%i} %s!", clientstr, kills, point);
 		} else {
-			CPrintToChatAll("%s %s has won the round!", g_InstagibTag, clientstr);
+			InstagibPrintToChatAll(true, "%s has won the round!", clientstr);
 		}
 		
 		return;
 	} else if (team >= TFTeam_Red) {
 		char teamstr[128];
 		
-		if (team == TFTeam_Red) {
-			FormatEx(teamstr, sizeof(teamstr), "%s \x07FF4040RED Team\x01", g_InstagibTag);
-		} else {
-			FormatEx(teamstr, sizeof(teamstr), "%s \x0799CCFFBLU Team\x01", g_InstagibTag);
-		}
+		teamstr = (team == TFTeam_Red) ? "\x07FF4040RED Team\x01" : "\x0799CCFFBLU Team\x01";
 		
 		if (!StrEqual(point, "") && kills > 0) {
-			CPrintToChatAll("%s has won the round with %s%i%s %s!", teamstr, g_Config.ChatColor_Highlight, kills, g_Config.ChatColor, point);
+			InstagibPrintToChatAll(true, "%s has won the round with {%i} %s!", teamstr, kills, point);
 		} else {
-			CPrintToChatAll("%s has won the round!", teamstr);
+			InstagibPrintToChatAll(true, "%s has won the round with {%i} %s!", teamstr, kills, point);
 		}
 		
 		return;
 	}
 	
-	CPrintToChatAll("%s Stalemate!", g_InstagibTag);
+	InstagibPrintToChatAll(true, "Stalemate!");
 }
 
 void InstagibForceRoundEnd()
@@ -399,6 +395,44 @@ int GetActivePlayerCount()
 	}
 	
 	return count;
+}
+
+void InstagibPrintToChat(bool tag, int client, const char[] format, any ...)
+{
+	char buffer1[512];
+	char buffer2[256];
+	
+	if (tag) {
+		FormatEx(buffer1, sizeof(buffer1), "%s %s", g_InstagibTag, format);
+	} else {
+		FormatEx(buffer1, sizeof(buffer1), "%s%s", g_Config.ChatColor, format);
+	}
+	
+	ReplaceString(buffer1, sizeof(buffer1), "{", g_Config.ChatColor_Highlight);
+	ReplaceString(buffer1, sizeof(buffer1), "}", g_Config.ChatColor);
+	
+	VFormat(buffer2, sizeof(buffer2), buffer1, 4);
+	
+	CPrintToChat(client, buffer1);
+}
+
+void InstagibPrintToChatAll(bool tag, const char[] format, any ...)
+{
+	char buffer1[512];
+	char buffer2[256];
+	
+	if (tag) {
+		FormatEx(buffer1, sizeof(buffer1), "%s %s", g_InstagibTag, format);
+	} else {
+		FormatEx(buffer1, sizeof(buffer1), "%s%s", g_Config.ChatColor, format);
+	}
+	
+	ReplaceString(buffer1, sizeof(buffer1), "{", g_Config.ChatColor_Highlight);
+	ReplaceString(buffer1, sizeof(buffer1), "}", g_Config.ChatColor);
+	
+	VFormat(buffer2, sizeof(buffer2), buffer1, 3);
+	
+	CPrintToChatAll(buffer2);
 }
 
 public void Frame_InstagibForceRoundEnd(any data)
@@ -537,7 +571,7 @@ public void OnPluginStart()
 			g_SteamTools = true;
 		}
 		
-		CPrintToChatAll("%s Late Load! Restarting the round...", g_InstagibTag);
+		InstagibPrintToChatAll("Late Load! Restarting the round...");
 		Stalemate();
 	}
 	

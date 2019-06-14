@@ -190,9 +190,9 @@ bool InstagibForceRound(char[] name, bool notify = false, int client = 0)
 	
 	if (notify && round.is_special) {
 		if (!client) {
-			CPrintToChatAll("%s Special Round \"%s\" was forced!", g_InstagibTag, name);
+			InstagibPrintToChatAll(true, "Special Round {%s} was forced!", name);
 		} else {
-			CPrintToChatAll("%s %N has forced the \"%s\" Special Round!", g_InstagibTag, client, name);
+			InstagibPrintToChatAll(true, "%N has forced the {%s} Special Round!", client, name);
 		}
 	}
 	
