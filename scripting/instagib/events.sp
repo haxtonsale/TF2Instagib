@@ -76,6 +76,15 @@ public void Event_OnRoundStart(Event event, const char[] name, bool dont_broadca
 		Steam_SetGameDescription("Instagib");
 	}
 	
+	// Prevent capping on KOTH
+	if (g_MapIsKOTH) {
+		int ent = FindEntityByClassname(-1, "trigger_capture_area");
+		
+		if (IsValidEntity(ent)) {
+			RemoveEntity(ent);
+		}
+	}
+	
 	g_CanRailjump = false;
 }
 

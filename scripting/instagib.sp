@@ -130,6 +130,8 @@ static ArrayList CachedSounds;
 bool g_IsWaitingForPlayers;
 bool g_IsRoundActive;
 bool g_CanRailjump;
+bool g_MapHasRoundSetup;
+bool g_MapIsKOTH;
 
 int g_RoundType = ROUNDTYPE_TDM;
 
@@ -152,7 +154,6 @@ Handle g_RoundTimer;
 Config g_Config;
 bool g_MusicEnabled = true;
 bool g_FFAAllowed;
-bool g_MapHasRoundSetup;
 
 char g_InstagibTag[64];
 ConVar g_cvar_FF;
@@ -555,9 +556,6 @@ public void OnPluginStart()
 	AddCommandListener(ForceWinListener, "mp_forcewin");
 	
 	if (IsLateLoad) {
-		RoundLogic_Init();
-		InstagibPrecache();
-		
 		for (int i = 1; i <= MaxClients; i++) {
 			if (IsClientConnected(i)) {
 				GetClientCookies(i);
@@ -598,6 +596,13 @@ public void OnMapStart()
 	
 	if (g_SteamTools) {
 		Steam_SetGameDescription("Instagib");
+	}
+	
+	char map[256];
+	GetCurrentMap(map, sizeof(map));
+	
+	if (!strncmp(map, "koth_", 5)) {
+		g_MapIsKOTH = true;
 	}
 }
 
