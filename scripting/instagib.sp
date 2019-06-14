@@ -17,7 +17,6 @@
 #include <steamtools>
 
 // -------------------------------------------------------------------
-#pragma dynamic 1048576 // For OnLevelInit :)
 #pragma semicolon 1
 #pragma newdecls required
 
@@ -162,7 +161,6 @@ bool g_SteamTools;
 #include "instagib/config.sp"
 #include "instagib/cookies.sp"
 #include "instagib/music.sp"
-#include "instagib/onlevelinit.sp"
 #include "instagib/particles.sp"
 #include "instagib/roundlogic.sp"
 #include "instagib/events.sp"

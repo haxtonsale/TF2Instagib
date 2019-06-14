@@ -4,7 +4,7 @@ void Events_Init()
 	HookEvent("player_death", Event_OnDeath);
 	HookEvent("player_spawn", Event_OnSpawn);
 	HookEvent("post_inventory_application", Event_Inventory);
-	HookEvent("teamplay_round_start", Event_OnRoundStart);
+	HookEvent("teamplay_round_start", Event_OnRoundStart, EventHookMode_Pre);
 	HookEvent("teamplay_round_active", Event_OnRoundActive);
 	HookEvent("teamplay_round_win", Event_OnRoundEnd);
 	HookEvent("teamplay_setup_finished", Event_SetupFinish);

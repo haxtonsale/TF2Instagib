@@ -23,13 +23,19 @@ void RefreshRequiredEnts()
 	g_GamerulesEnt = FindEntityByClassname(-1, "tf_gamerules");
 	
 	if (g_PDLogicEnt == -1) {
-		ThrowError("Couldn't find tf_logic_player_destruction");
-	} else if (g_GamerulesEnt == -1) {
+		g_PDLogicEnt = CreateEntityByName("tf_logic_player_destruction");
+		SetEntProp(g_PDLogicEnt, Prop_Data, "m_nMinPoints", 10);
+		SetEntPropFloat(g_PDLogicEnt, Prop_Data, "m_flFinaleLength", 0.0); // No dumb PD round finale timer
+		DispatchSpawn(g_PDLogicEnt);
+	}
+	
+	if (g_GamerulesEnt == -1) {
 		g_GamerulesEnt = CreateEntityByName("tf_gamerules");
 		DispatchSpawn(g_GamerulesEnt);
 	}
 	
-	SetEntPropFloat(g_PDLogicEnt, Prop_Data, "m_flFinaleLength", 0.0); // No dumb PD round finale timer
+	GameRules_SetProp("m_nHudType", 2);
+	GameRules_SetProp("m_bPlayingRobotDestructionMode", true);
 }
 
 int MapRoundSetupTime()
