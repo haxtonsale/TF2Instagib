@@ -131,7 +131,6 @@ bool g_IsWaitingForPlayers;
 bool g_IsRoundActive;
 bool g_CanRailjump;
 bool g_MapHasRoundSetup;
-bool g_MapIsKOTHorPLR;
 
 int g_RoundType = ROUNDTYPE_TDM;
 
@@ -596,13 +595,6 @@ public void OnMapStart()
 	
 	if (g_SteamTools) {
 		Steam_SetGameDescription("Instagib");
-	}
-	
-	char map[256];
-	GetCurrentMap(map, sizeof(map));
-	
-	if (!strncmp(map, "koth_", 5) || !strncmp(map, "plr_", 4)) {
-		g_MapIsKOTHorPLR = true;
 	}
 }
 
