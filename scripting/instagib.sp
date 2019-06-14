@@ -581,6 +581,8 @@ public void OnPluginStart()
 	Rounds_Init();
 	Hud_Init();
 	Commands_Init();
+	
+	CreateConVar("instagib_version", INSTAGIB_VERSION, "Instagib version.");
 }
 
 public void OnMapStart()
