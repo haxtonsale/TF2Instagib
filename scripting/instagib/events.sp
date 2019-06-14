@@ -76,12 +76,17 @@ public void Event_OnRoundStart(Event event, const char[] name, bool dont_broadca
 		Steam_SetGameDescription("Instagib");
 	}
 	
-	// Prevent capping on KOTH
-	if (g_MapIsKOTH) {
-		int ent = FindEntityByClassname(-1, "trigger_capture_area");
-		
-		if (IsValidEntity(ent)) {
-			RemoveEntity(ent);
+	// Prevent capping on KOTH and PLR (i hate this)
+	if (g_MapIsKOTHorPLR) {
+		static int prev_ent = -2;
+		for (int i = 0; i <= 1; i++) {
+			int ent = FindEntityByClassname(prev_ent + 1, "trigger_capture_area");
+			if (IsValidEntity(ent)) {
+				PrintToServer("deleted entity %i", ent);
+				RemoveEntity(ent);
+				prev_ent = ent;
+			}
+			
 		}
 	}
 	
