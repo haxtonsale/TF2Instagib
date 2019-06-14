@@ -413,7 +413,7 @@ void InstagibPrintToChat(bool tag, int client, const char[] format, any ...)
 	
 	VFormat(buffer2, sizeof(buffer2), buffer1, 4);
 	
-	CPrintToChat(client, buffer1);
+	CPrintToChat(client, buffer2);
 }
 
 void InstagibPrintToChatAll(bool tag, const char[] format, any ...)
