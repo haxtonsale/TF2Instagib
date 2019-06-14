@@ -38,7 +38,7 @@ public Action Command_Settings(int client, int args)
 					SetEntityRenderColor(g_MainWeaponEnt[client], .a = value);
 				}
 				
-				InstagibPrintToChat(true, client, "Usage: Weapon's alpha was set to %i.");
+				InstagibPrintToChat(true, client, "Weapon's alpha was set to %i.", value);
 			}
 			
 			return Plugin_Handled;
