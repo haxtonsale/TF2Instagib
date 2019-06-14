@@ -571,7 +571,7 @@ public void OnPluginStart()
 			g_SteamTools = true;
 		}
 		
-		InstagibPrintToChatAll("Late Load! Restarting the round...");
+		InstagibPrintToChatAll(true, "Late Load! Restarting the round...");
 		Stalemate();
 	}
 	
