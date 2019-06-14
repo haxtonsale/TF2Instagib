@@ -34,7 +34,9 @@ public Action Command_Settings(int client, int args)
 				SetClientCookie(client, g_PrefViewmodel, arg2);
 				g_ClientPrefs[client].ViewmodelAlpha = value;
 				
-				SetEntityRenderColor(g_MainWeaponEnt[client], .a = value);
+				if (IsValidEntity(g_MainWeaponEnt[client])) {
+					SetEntityRenderColor(g_MainWeaponEnt[client], .a = value);
+				}
 				
 				InstagibPrintToChat(true, client, "Usage: Weapon's alpha was set to %i.");
 			}

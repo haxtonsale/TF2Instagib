@@ -36,14 +36,14 @@ void GetClientCookies(int client)
 		SetClientCookie(client, g_PrefViewmodel, "255");
 		g_ClientPrefs[client].ViewmodelAlpha = 255;
 		
-		if (g_MainWeaponEnt[client] && IsValidEntity(g_MainWeaponEnt[client])) {
+		if (IsValidEntity(g_MainWeaponEnt[client])) {
 			SetEntityRenderColor(g_MainWeaponEnt[client], .a = 255);
 		}
 	} else {
 		int alpha = StringToInt(viewmodel);
 		g_ClientPrefs[client].ViewmodelAlpha = alpha;
 		
-		if (g_MainWeaponEnt[client]) {
+		if (IsValidEntity(g_MainWeaponEnt[client])) {
 			SetEntityRenderColor(g_MainWeaponEnt[client], .a = alpha);
 		}
 	}

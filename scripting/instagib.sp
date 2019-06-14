@@ -140,7 +140,7 @@ char g_RoundTimeLeftFormatted[16];
 char g_RoundHudTextFormatted[128];
 
 int g_Killcount[MAXPLAYERS+1];
-int g_MainWeaponEnt[MAXPLAYERS+1];
+int g_MainWeaponEnt[MAXPLAYERS+1] = {-1, ...};
 bool g_ClientSuicided[MAXPLAYERS+1];
 
 int g_PDLogicEnt;
@@ -719,7 +719,7 @@ public void OnClientDisconnect(int client)
 	
 	g_Killcount[client] = 0;
 	g_ClientSuicided[client] = false;
-	g_MainWeaponEnt[client] = 0;
+	g_MainWeaponEnt[client] = -1;
 	
 	if (IsFFA()) {
 		FFA_UpdateLeaderboards();

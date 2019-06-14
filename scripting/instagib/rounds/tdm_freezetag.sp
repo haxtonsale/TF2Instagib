@@ -121,7 +121,9 @@ void SR_FreezeTag_Freeze(int client, bool teleport)
 			TeleportEntity(client, ClientVecOnDeath[client][0], ClientVecOnDeath[client][1], NULL_VECTOR);
 		}
 		
-		SetEntProp(g_MainWeaponEnt[client], Prop_Data, "m_iClip1", 0);
+		if (IsValidEntity(g_MainWeaponEnt[client])) {
+			SetEntProp(g_MainWeaponEnt[client], Prop_Data, "m_iClip1", 0);
+		}
 		
 		SetEntityMoveType(client, MOVETYPE_NONE);
 		SetEntityRenderColor(client, 80, 80, 255, 125);
@@ -146,7 +148,11 @@ void SR_FreezeTag_Unfreeze(int client)
 	if (IsClientFrozen[client]) {
 		if (IsClientInGame(client) && IsClientPlaying(client) && IsPlayerAlive(client)) {
 			SetEntityMoveType(client, MOVETYPE_WALK);
-			SetEntProp(g_MainWeaponEnt[client], Prop_Data, "m_iClip1", g_CurrentRound.main_wep_clip);
+			
+			if (IsValidEntity(g_MainWeaponEnt[client])) {
+				SetEntProp(g_MainWeaponEnt[client], Prop_Data, "m_iClip1", g_CurrentRound.main_wep_clip);
+			}
+			
 			SetEntityRenderColor(client, 255, 255, 255, 255);
 			
 			SR_FreezeTag_Effect(client);

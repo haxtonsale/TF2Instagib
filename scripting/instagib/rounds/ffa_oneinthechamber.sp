@@ -67,7 +67,9 @@ void SR_OITC_OnDeath(Round_OnDeath_Data data)
 
 static void SR_OITC_AddAmmo(int client, int amount)
 {
-	int ammo = GetEntProp(g_MainWeaponEnt[client], Prop_Data, "m_iClip1");
-	
-	SetEntProp(g_MainWeaponEnt[client], Prop_Data, "m_iClip1", ammo+amount);
+	if (IsValidEntity(g_MainWeaponEnt[client])) {
+		int ammo = GetEntProp(g_MainWeaponEnt[client], Prop_Data, "m_iClip1");
+		
+		SetEntProp(g_MainWeaponEnt[client], Prop_Data, "m_iClip1", ammo+amount);
+	}
 }
