@@ -6,7 +6,7 @@ void Menu_Settings(int client)
 		
 		menu.SetTitle("TF2Instagib %s", INSTAGIB_VERSION);
 		
-		if (g_IsMusicEnabled) {
+		if (g_MusicEnabled) {
 			if (g_ClientPrefs[client].MusicEnabled) {
 				menu.AddItem("music:0", "Music: On");
 			} else {
