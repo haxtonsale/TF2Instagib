@@ -487,7 +487,9 @@ public Action Timer_Respawn(Handle timer, int client)
 
 public Action Timer_WelcomeMessage(Handle timer, int client)
 {
-	InstagibPrintToChat(true, client, "Welcome to Instagib %s! \nType {/instagib} to open the settings.", INSTAGIB_VERSION);
+	if (IsClientInGame(client)) {
+		InstagibPrintToChat(true, client, "Welcome to Instagib %s! \nType {/instagib} to open the settings.", INSTAGIB_VERSION);
+	}
 }
 
 public Action Hook_TraceAttack(int victim, int &attacker, int &inflictor, float& damage, int& damagetype, int& ammotype, int hitbox, int hitgroup)

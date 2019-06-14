@@ -231,8 +231,10 @@ void SR_FreezeTag_OnEntCreated(int ent, const char[] classname)
 
 public Action SR_FreezeTag_AutoUnfreeze(Handle timer, int client)
 {
-	UnfreezeTimer[client] = null;
-	RequestFrame(SR_FreezeTag_Frame_Unfreeze, client);
+	if (IsClientInGame(client)) {
+		UnfreezeTimer[client] = null;
+		RequestFrame(SR_FreezeTag_Frame_Unfreeze, client);
+	}
 }
 
 void SR_FreezeTag_OnDisconnect(int client)

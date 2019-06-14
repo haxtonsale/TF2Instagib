@@ -224,9 +224,8 @@ void SR_Lives_Description(char[] desc, int maxlength)
 public Action SR_Lives_DisplayHudText(Handle timer)
 {
 	if (g_IsRoundActive) {
-		int color[3];
-		
 		for (int i = 1; i <= MaxClients; i++) {
+			int color[3];
 			if (IsClientInGame(i)) {
 				SR_Lives_GetLivesColor(PlayerLives[i], color[0], color[1], color[2]);
 				
