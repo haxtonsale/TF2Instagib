@@ -103,9 +103,13 @@ void ForceWin(TFTeam team)
 	AcceptEntityInput(ent, "RoundWin");
 	*/
 	
-	int flags = GetCommandFlags("mp_forcewin");
-	SetCommandFlags("mp_forcewin", flags & ~FCVAR_CHEAT ); 
-	ServerCommand("mp_forcewin %i", team);
+	int count = GetActivePlayerCount();
+	
+	if (count) {
+		int flags = GetCommandFlags("mp_forcewin");
+		SetCommandFlags("mp_forcewin", flags & ~FCVAR_CHEAT ); 
+		ServerCommand("mp_forcewin %i", team);
+	}
 }
 
 public Action ForceWinListener(int client, const char[] command, int argc)
