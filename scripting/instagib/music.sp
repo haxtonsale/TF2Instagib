@@ -66,6 +66,8 @@ void AnnounceMusic(int client, char[] name)
 void PlayRandomMusic()
 {
 	if (InstagibMusic != null && g_MusicEnabled) {
+		static int CurrentMusicIndex = -1;
+
 		if (IsMusicPlaying) {
 			StopMusic();
 		}
@@ -73,7 +75,26 @@ void PlayRandomMusic()
 		int len = InstagibMusic.Length;
 		
 		MusicData data;
-		InstagibMusic.GetArray(GetRandomInt(0, len-1), data);
+		
+		// Don't repeat songs :)
+		int count;
+		int[] suitable_music = new int[len];
+		for (int i = 0; i < len; i++) {
+			PrintToChatAll("i is %i", i);
+			PrintToChatAll("CurrentMusicIndex is %i", CurrentMusicIndex);
+			
+			if (i != CurrentMusicIndex || len == 1) {
+				PrintToChatAll("%i != %i", i, CurrentMusicIndex);
+				
+				suitable_music[count] = i;
+				++count;
+			}
+		}
+		
+		int roll = GetRandomInt(0, count-1);
+		InstagibMusic.GetArray(suitable_music[roll], data);
+		
+		CurrentMusicIndex = suitable_music[roll];
 		
 		for (int i = 1; i <= MaxClients; i++) {
 			if (IsClientInGame(i) && g_ClientPrefs[i].MusicEnabled) {
