@@ -725,6 +725,9 @@ public void OnPluginEnd()
 {
 	Steam_SetGameDescription("Team Fortress");
 	g_cvar_FF.RestoreDefault();
+	
+	GameRules_SetProp("m_nHudType", 0);
+	GameRules_SetProp("m_bPlayingRobotDestructionMode", false);
 }
 
 public void OnLibraryAdded(const char[] name)
