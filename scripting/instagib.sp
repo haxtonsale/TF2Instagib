@@ -268,7 +268,7 @@ void AnnounceWin(TFTeam team = TFTeam_Unassigned, char[] point = "kills", int cl
 		if (!StrEqual(point, "") && kills > 0) {
 			InstagibPrintToChatAll(true, "%s has won the round with {%i} %s!", teamstr, kills, point);
 		} else {
-			InstagibPrintToChatAll(true, "%s has won the round with {%i} %s!", teamstr, kills, point);
+			InstagibPrintToChatAll(true, "%s has won the round!", teamstr);
 		}
 		
 		return;
