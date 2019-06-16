@@ -43,6 +43,7 @@ enum struct InstagibRound
 	bool end_at_time_end;
 	int min_players_tdm;
 	int min_players_ffa;
+	bool ig_map_only;
 	
 	float railjump_velXY_multi;
 	float railjump_velZ_multi;
