@@ -72,6 +72,7 @@ void NewInstagibRound(InstagibRound buffer, char[] name, char[] desc = "")
 	round.on_disconnect = INVALID_FUNCTION;
 	round.on_team = INVALID_FUNCTION;
 	round.on_class = INVALID_FUNCTION;
+	round.on_damage = INVALID_FUNCTION;
 	
 	strcopy(round.name, sizeof(round.name), name);
 	strcopy(round.desc, sizeof(round.desc), desc);

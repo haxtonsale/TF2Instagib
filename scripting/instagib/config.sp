@@ -124,6 +124,7 @@ stock void SpecialRoundConfig_String(const char[] round, const char[] key, char[
 		
 		if (result) {
 			kv.GetString(key, buffer, maxlength, defvalue);
+			return;
 		}
 	}
 	

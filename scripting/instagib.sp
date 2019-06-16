@@ -66,6 +66,7 @@ enum struct InstagibRound
 	Round_CustomDescription on_desc;
 	Round_OnTeamChange on_team;
 	Round_OnClassChange on_class;
+	Round_OnTakeDamage on_damage;
 }
 
 enum struct Round_OnDeath_Data
@@ -118,6 +119,7 @@ typedef Round_OnRoundTimeEnd = function void ();
 typedef Round_OnDeath = function void (Round_OnDeath_Data data);
 typedef Round_OnTeamChange = function void (int client, TFTeam team);
 typedef Round_OnClassChange = function void (int client, int class);
+typedef Round_OnTakeDamage = function Action (int victim, int& attacker, int& inflictor, float& damage, int& damagetype);
 
 static bool IsLateLoad;
 static ArrayList CachedSounds;
@@ -516,14 +518,26 @@ public Action Hook_TraceAttack(int victim, int &attacker, int &inflictor, float&
 
 public Action Hook_TakeDamage(int victim, int& attacker, int& inflictor, float& damage, int& damagetype)
 {
+	Action action;
+	
+	if (g_IsRoundActive && g_CurrentRound.on_damage != INVALID_FUNCTION) {
+		Call_StartFunction(null, g_CurrentRound.on_damage);
+		Call_PushCell(victim);
+		Call_PushCellRef(attacker);
+		Call_PushCellRef(inflictor);
+		Call_PushFloatRef(damage);
+		Call_PushCellRef(damagetype);
+		Call_Finish(action);
+	}
+	
 	// No fall damage
 	if (damagetype & DMG_FALL && damage < 100.0) {
 		damage = 0.0;
 		
-		return Plugin_Changed;
+		action = Plugin_Changed;
 	}
 	
-	return Plugin_Continue;
+	return action;
 }
 
 public bool Trace_Railjump(int entity, int contentsMask, any client)

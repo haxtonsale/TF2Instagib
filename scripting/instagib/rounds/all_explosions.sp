@@ -16,8 +16,9 @@ void SR_Explosions_Init()
 	sr.min_players_tdm = 8;
 	sr.min_players_ffa = 4;
 	sr.on_death = SR_Explosions_OnDeath;
+	sr.on_damage = SR_Explosions_OnTakeDamage;
 	
-	SpecialRoundConfig_String(sr.name, "ExplosionSoundHeadshot", DefParticle, sizeof(DefParticle), "ExplosionCore_MidAir");
+	SpecialRoundConfig_String(sr.name, "ExplosionParticle", DefParticle, sizeof(DefParticle), "ExplosionCore_MidAir");
 	SpecialRoundConfig_String(sr.name, "ExplosionParticleHeadshot", HeadshotParticle, sizeof(HeadshotParticle), "ExplosionCore_MidAir");
 	SpecialRoundConfig_String(sr.name, "ExplosionSound", DefSound, sizeof(DefSound), "items/pumpkin_explode1.wav");
 	SpecialRoundConfig_String(sr.name, "ExplosionSoundHeadshot", HeadshotSound, sizeof(HeadshotSound), "items/pumpkin_explode1.wav");
@@ -40,60 +41,39 @@ static void SR_Explosions_Explosion(int client, int victim, bool is_headshot = f
 	
 	vecOrigin[2] += 50.0;
 	
-	TE_SpawnParticle(DefParticle, vecOrigin);
-	
 	if (is_headshot) {
 		range = HeadshotExplRadius;
 		
-		TE_SpawnParticle(HeadshotParticle, vecOrigin);
-		EmitSoundToAll(HeadshotSound, client);
-		
-		SR_Explosions_KillAllInRange(client, vecOrigin, range);
+		Explosion(client, 5000.0, range, HeadshotParticle, HeadshotSound, vecOrigin);
 	} else {
-		EmitSoundToAll(DefSound, client);
+		Explosion(client, 1000.0, range, DefParticle, DefSound, vecOrigin);
+	} 
+}
+
+void Explosion(int activator, float damage, float radius, char[] particle, char[] sound, float origin[3])
+{
+	int ent = CreateEntityByName("tf_generic_bomb");
+	
+	if (IsValidEntity(ent))
+	{
+		SetEntPropFloat(ent, Prop_Data, "m_flDamage", damage);
+		SetEntPropFloat(ent, Prop_Data, "m_flRadius", radius);
+		SetEntPropString(ent, Prop_Data, "m_strExplodeParticleName", particle);
+		SetEntPropString(ent, Prop_Data, "m_strExplodeSoundName", sound);
+		SetEntProp(ent, Prop_Data, "m_nHealth", activator);
+		DispatchSpawn(ent);
+		TeleportEntity(ent, origin, NULL_VECTOR, NULL_VECTOR);
 		
-		SR_Explosions_KillAllInRange(client, vecOrigin, range);
+		RequestFrame(Frame_Explosion, ent);
 	}
 }
 
-static void SR_Explosions_KillAllInRange(int client, float origin[3], float maxlen)
+public void Frame_Explosion(int ent)
 {
-	TFTeam team = TF2_GetClientTeam(client);
-	
-	for (int i = 1; i <= MaxClients; i++) {
-		if (i != client && IsClientInGame(i) && IsPlayerAlive(i)) {
-			
-			if (!IsFFA && team == TF2_GetClientTeam(i)) {
-				continue;
-			} else {
-				float pos[3];
-				GetClientAbsOrigin(i, pos);
-				
-				float dist = GetVectorDistance(origin, pos);
-				
-				if (dist <= maxlen) {
-					ArrayStack data = new ArrayStack();
-					data.Push(i);
-					data.Push(client);
-					
-					RequestFrame(SR_Explosions_KillAllInRange_Frame, data);
-				}
-			}
-		}
+	if (IsValidEntity(ent)) {
+		AcceptEntityInput(ent, "Detonate");
 	}
 }
-
-public void SR_Explosions_KillAllInRange_Frame(ArrayStack data)
-{
-	int client = data.Pop();
-	int i = data.Pop();
-	
-	delete data;
-	
-	SDKHooks_TakeDamage(i, client, client, 3000.0, DMG_BLAST);
-}
-
-
 
 // -------------------------------------------------------------------
 void SR_Explosions_OnDeath(Round_OnDeath_Data data)
@@ -101,5 +81,27 @@ void SR_Explosions_OnDeath(Round_OnDeath_Data data)
 	if (data.attacker > 0 && data.attacker <= MaxClients && data.victim != data.attacker) {
 		SR_Explosions_Explosion(data.attacker, data.victim, data.customkill == TF_CUSTOM_HEADSHOT);
 	}
+}
+
+Action SR_Explosions_OnTakeDamage(int victim, int& attacker, int& inflictor, float& damage, int& damagetype)
+{
+	char classname[128];
+	GetEntityClassname(inflictor, classname, sizeof(classname));
+	
+	if (StrEqual(classname, "tf_generic_bomb")) {
+		int owner = GetEntProp(inflictor, Prop_Data, "m_nHealth");
+		
+		if (owner > 0 && owner <= MaxClients && IsClientInGame(owner)) {
+			attacker = owner;
+			
+			if (victim == owner) {
+				damage = 0.0;
+			}
+			
+			return Plugin_Changed;
+		}
+	}
+	
+	return Plugin_Continue;
 }
 
