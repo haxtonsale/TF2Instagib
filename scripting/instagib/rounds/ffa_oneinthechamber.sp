@@ -39,7 +39,7 @@ static Handle SR_OITC_CreateGauntlet()
 	return hndl;
 }
 
-void SR_OITC_OnStart(int maxscore)
+void SR_OITC_OnStart()
 {
 	for (int i = 1; i <= MaxClients; i++) {
 		if (IsClientInGame(i) && IsClientPlaying(i) && IsPlayerAlive(i)) {

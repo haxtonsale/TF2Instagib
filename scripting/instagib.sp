@@ -99,19 +99,14 @@ enum struct Config
 	float SpecialRound_Chance;
 }
 
-typeset Round_OnStart 
-{
-	function void (int maxscore);
-	function void ();
-}
-
-typeset Round_OnEnd 
+typeset Round_OnEnd
 {
 	function void (TFTeam winner_team, int score, int time_left);
 	function void (TFTeam winner_team, int score);
 	function void (TFTeam winner_team);
 }
 
+typedef Round_OnStart = function void ();
 typedef Round_OnSpawn = function void (int client, TFTeam team);
 typedef Round_OnPostInvApp = function void (int client);
 typedef Round_OnTraceAttack = function void (int victim, int &attacker, int &inflictor, float& damage, int& damagetype, int& ammotype, int hitbox, int hitgroup);
