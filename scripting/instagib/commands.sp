@@ -4,8 +4,11 @@ void Commands_Init()
 	RegConsoleCmd("kill", Command_BlockSuicide);
 	RegConsoleCmd("explode", Command_BlockSuicide);
 	RegConsoleCmd("instagib", Command_Settings);
-	
 	RegAdminCmd("forceround", Command_ForceRound, ADMFLAG_CHEATS);
+	
+	CreateConVar("instagib_version", INSTAGIB_VERSION, "Instagib version.", FCVAR_SPONLY|FCVAR_REPLICATED|FCVAR_NOTIFY|FCVAR_DONTRECORD);
+	
+	AddCommandListener(ForceWinListener, "mp_forcewin");
 }
 
 // -------------------------------------------------------------------
@@ -67,4 +70,12 @@ public Action Command_ForceRound(int client, int args)
 	}
 	
 	return Plugin_Handled;
+}
+
+public Action ForceWinListener(int client, const char[] command, int argc)
+{
+	if (!client) {
+		int flags = GetCommandFlags("mp_forcewin");
+		SetCommandFlags("mp_forcewin", flags | FCVAR_CHEAT );
+	}
 }

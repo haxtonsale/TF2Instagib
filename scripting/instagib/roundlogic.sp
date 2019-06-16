@@ -96,33 +96,12 @@ void SetScore(TFTeam team, int points)
 
 void ForceWin(TFTeam team)
 {
-	/* This kills the server on koth maps
-	int ent = FindEntityByClassname(-1, "game_round_win");
-	
-	if (ent == -1) {
-		ent = CreateEntityByName("game_round_win");
-		DispatchSpawn(ent);
-	}
-	
-	SetVariantInt(view_as<int>(team));
-	AcceptEntityInput(ent, "SetTeam");
-	AcceptEntityInput(ent, "RoundWin");
-	*/
-	
 	int count = GetActivePlayerCount();
 	
 	if (count) {
 		int flags = GetCommandFlags("mp_forcewin");
 		SetCommandFlags("mp_forcewin", flags & ~FCVAR_CHEAT ); 
 		ServerCommand("mp_forcewin %i", team);
-	}
-}
-
-public Action ForceWinListener(int client, const char[] command, int argc)
-{
-	if (!client) {
-		int flags = GetCommandFlags("mp_forcewin");
-		SetCommandFlags("mp_forcewin", flags | FCVAR_CHEAT );
 	}
 }
 

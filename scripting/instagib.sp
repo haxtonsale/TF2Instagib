@@ -550,7 +550,7 @@ public void OnPluginStart()
 {
 	LoadConfig();
 	Cookies_Init();
-	AddCommandListener(ForceWinListener, "mp_forcewin");
+	Commands_Init();
 	
 	if (IsLateLoad) {
 		for (int i = 1; i <= MaxClients; i++) {
@@ -577,9 +577,6 @@ public void OnPluginStart()
 	FFA_Init();
 	Rounds_Init();
 	Hud_Init();
-	Commands_Init();
-	
-	CreateConVar("instagib_version", INSTAGIB_VERSION, "Instagib version.");
 }
 
 public void OnMapStart()
