@@ -374,10 +374,13 @@ void InstagibStart()
 			Call_PushCell(score);
 			Call_Finish();
 		}
+		
+		PlayRandomMusic();
+		
+		InstagibPrintToChatAll(true, "The round has started!");
 	}
 	
 	g_IsRoundActive = true;
-	PlayRandomMusic();
 }
 
 int GetActivePlayerCount()

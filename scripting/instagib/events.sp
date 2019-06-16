@@ -123,7 +123,7 @@ public void Event_OnSpawn(Event event, const char[] name, bool dont_broadcast)
 		Call_Finish();
 	}
 	
-	// LOL!!!!!!!!!!!!!!!!!!!!!
+	// LOL!!!!!!!!!!!!!!!!!!!!! (Poor man's arena mode for specials like Freeze Tag and Limited Lives)
 	ChangeRespawnTime(TFTeam_Red, 6000);
 	ChangeRespawnTime(TFTeam_Blue, 6000);
 }
