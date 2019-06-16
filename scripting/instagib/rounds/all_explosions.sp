@@ -44,9 +44,9 @@ static void SR_Explosions_Explosion(int client, int victim, bool is_headshot = f
 	if (is_headshot) {
 		range = HeadshotExplRadius;
 		
-		Explosion(client, 5000.0, range, HeadshotParticle, HeadshotSound, vecOrigin);
+		Explosion(client, 1000.0, range, HeadshotParticle, HeadshotSound, vecOrigin);
 	} else {
-		Explosion(client, 1000.0, range, DefParticle, DefSound, vecOrigin);
+		Explosion(client, 800.0, range, DefParticle, DefSound, vecOrigin);
 	} 
 }
 
