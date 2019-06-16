@@ -20,6 +20,7 @@ void SR_Lives_Init()
 	sr.announce_win = false;
 	sr.min_players_tdm = 2;
 	sr.min_players_ffa = 2;
+	sr.ig_map_only = true;
 	
 	sr.on_start = SR_Lives_OnStart;
 	sr.on_end = SR_Lives_OnEnd;

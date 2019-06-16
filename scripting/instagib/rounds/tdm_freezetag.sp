@@ -21,6 +21,8 @@ void SR_FreezeTag_Init()
 	sr.allow_killbind = false;
 	sr.announce_win = false;
 	sr.min_players_tdm = 6;
+	sr.ig_map_only = true;
+	
 	sr.on_start = SR_FreezeTag_OnStart;
 	sr.on_attack = SR_FreezeTag_OnAttack;
 	sr.on_spawn = SR_FreezeTag_OnSpawn;

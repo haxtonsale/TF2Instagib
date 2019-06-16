@@ -2,7 +2,7 @@
 KeyValues GetConfig()
 {
 	char path[PLATFORM_MAX_PATH];
-	BuildPath(Path_SM, path, sizeof(path), "/configs/instagib.txt");
+	BuildPath(Path_SM, path, sizeof(path), "/configs/instagib.cfg");
 	
 	KeyValues kv = new KeyValues("Instagib");
 	bool success = kv.ImportFromFile(path);
@@ -142,6 +142,7 @@ void SpecialRoundConfig_GetOverwrites(InstagibRound ig_round)
 		if (result) {
 			ig_round.is_special = view_as<bool>(kv.GetNum("IsSpecialRound", ig_round.is_special));
 			ig_round.disable_achievements = view_as<bool>(kv.GetNum("DisableAchievements", ig_round.disable_achievements));
+			ig_round.ig_map_only = view_as<bool>(kv.GetNum("InstagibMapOnly", ig_round.ig_map_only));
 			
 			ig_round.roundtype_flags = kv.GetNum("RoundTypeFlags", ig_round.roundtype_flags);
 			ig_round.round_time = kv.GetNum("RoundLength", ig_round.round_time);

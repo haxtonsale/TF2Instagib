@@ -83,7 +83,7 @@ void SubmitInstagibRound(InstagibRound round)
 {
 	SpecialRoundConfig_GetOverwrites(round);
 	
-	if (SpecialRoundConfig_Num(round.name, "Disabled", 0)) {
+	if (round.is_special && SpecialRoundConfig_Num(round.name, "Disabled", 0)) {
 		return;
 	}
 	
@@ -144,7 +144,10 @@ void GetRandomSpecialRound(InstagibRound buffer, int roundtype_flags)
 			InstagibRound round;
 			InstagibRounds.GetArray(i, round);
 			
-			if (round.is_special && ((!IsFFA() && playercount >= round.min_players_tdm) || (IsFFA() && playercount >= round.min_players_ffa))) {
+			bool enough_players = (!IsFFA() && playercount >= round.min_players_tdm) || (IsFFA() && playercount >= round.min_players_ffa);
+			bool suitable_map = !round.ig_map_only || (round.ig_map_only && g_IsMapIG);
+			
+			if (round.is_special && suitable_map && enough_players) {
 				if (roundtype_flags & round.roundtype_flags) {
 					suitable_rounds[count] = i;
 					++count;
@@ -154,10 +157,10 @@ void GetRandomSpecialRound(InstagibRound buffer, int roundtype_flags)
 		
 		if (!count) {
 			GetDefaultRound(buffer, roundtype_flags);
+		} else {
+			int roll = GetRandomInt(0, count-1);
+			InstagibRounds.GetArray(suitable_rounds[roll], buffer);
 		}
-		
-		int roll = GetRandomInt(0, count-1);
-		InstagibRounds.GetArray(suitable_rounds[roll], buffer);
 	} else {
 		buffer = NextRound;
 		ForcedNextRound = false;
