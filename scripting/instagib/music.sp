@@ -80,12 +80,7 @@ void PlayRandomMusic()
 		int count;
 		int[] suitable_music = new int[len];
 		for (int i = 0; i < len; i++) {
-			PrintToChatAll("i is %i", i);
-			PrintToChatAll("CurrentMusicIndex is %i", CurrentMusicIndex);
-			
 			if (i != CurrentMusicIndex || len == 1) {
-				PrintToChatAll("%i != %i", i, CurrentMusicIndex);
-				
 				suitable_music[count] = i;
 				++count;
 			}
