@@ -26,7 +26,7 @@ static Handle SR_OPRailguns_CreateOPRailgun()
 	TF2Items_SetAttribute(hndl, 0, 397, 1.0);	// Bullets penetrate +1 enemies
 	TF2Items_SetAttribute(hndl, 1, 303, -1.0);	// no reloads
 	TF2Items_SetAttribute(hndl, 2, 2, 10.0);	// +900% damage bonus
-	TF2Items_SetAttribute(hndl, 3, 6, 0.6);		// Faster firing speed
+	TF2Items_SetAttribute(hndl, 3, 6, 0.9);		// Faster firing speed
 	TF2Items_SetAttribute(hndl, 4, 106, 0.0);	// +100% more accurate
 	TF2Items_SetAttribute(hndl, 5, 51, 1.0);	// Crits on headshot
 	TF2Items_SetAttribute(hndl, 6, 305, -1.0);	// Fires tracer rounds
