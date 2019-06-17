@@ -8,12 +8,16 @@ KeyValues GetConfig()
 	bool success = kv.ImportFromFile(path);
 	
 	if (!success) {
-		LogError("Couldn't find %s!", path);
-		delete kv;
-		return null;
-	} else {
-		return kv;
+		BuildPath(Path_SM, path, sizeof(path), "/configs/instagib.txt");
+		success = kv.ImportFromFile(path);
+		
+		if (!success) {
+			LogError("Couldn't find %s!", path);
+			delete kv;
+		}
 	}
+	
+	return kv;
 }
 
 void LoadConfig()
