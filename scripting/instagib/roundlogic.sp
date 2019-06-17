@@ -84,6 +84,25 @@ void AddScore(TFTeam team, int points)
 	}
 }
 
+void AddScore_NextFrame(TFTeam team, int points)
+{
+	ArrayStack data = new ArrayStack();
+	data.Push(points);
+	data.Push(team);
+	
+	RequestFrame(Frame_AddScore, data);
+}
+
+public void Frame_AddScore(ArrayStack data)
+{
+	TFTeam team = data.Pop();
+	int points = data.Pop();
+	
+	delete data;
+	
+	AddScore(team, points);
+}
+
 void SetScore(TFTeam team, int points)
 {
 	char input[32];

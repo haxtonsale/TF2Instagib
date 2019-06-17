@@ -185,7 +185,9 @@ public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 					FFA_UpdateLeaderboards();
 				} else {
 					TFTeam team = TF2_GetClientTeam(attacker);
-					AddScore(team, g_CurrentRound.points_per_kill);
+					if (g_CurrentRound.points_per_kill) {
+						AddScore_NextFrame(team, g_CurrentRound.points_per_kill);
+					}
 				}
 			}
 		}
