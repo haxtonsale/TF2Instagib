@@ -48,7 +48,7 @@ void NewInstagibRound(InstagibRound buffer, char[] name, char[] desc = "")
 	round.railjump_velXY_multi = 2.9;
 	round.railjump_velZ_multi = 3.2;
 	round.minscore = g_Config.MinScore;
-	round.maxscore_multi = 3.0;
+	round.maxscore_multi = 2.3;
 	round.main_weapon = g_Weapon_Railgun;
 	round.roundtype_flags = ROUNDTYPE_TDM | ROUNDTYPE_FFA;
 	round.main_wep_clip = 32;
@@ -136,6 +136,8 @@ void GetDefaultRound(InstagibRound buffer, int roundtype_flags)
 void GetRandomSpecialRound(InstagibRound buffer, int roundtype_flags)
 {
 	if (!ForcedNextRound) {
+		static int last_round;
+		
 		int len = InstagibRounds.Length;
 		int playercount = GetActivePlayerCount();
 		int count;
@@ -148,7 +150,7 @@ void GetRandomSpecialRound(InstagibRound buffer, int roundtype_flags)
 			bool enough_players = (!IsFFA() && playercount >= round.min_players_tdm) || (IsFFA() && playercount >= round.min_players_ffa);
 			bool suitable_map = !round.ig_map_only || (round.ig_map_only && g_IsMapIG);
 			
-			if (round.is_special && suitable_map && enough_players) {
+			if (last_round != i && round.is_special && suitable_map && enough_players) {
 				if (roundtype_flags & round.roundtype_flags) {
 					suitable_rounds[count] = i;
 					++count;
@@ -161,6 +163,7 @@ void GetRandomSpecialRound(InstagibRound buffer, int roundtype_flags)
 		} else {
 			int roll = GetRandomInt(0, count-1);
 			InstagibRounds.GetArray(suitable_rounds[roll], buffer);
+			last_round = suitable_rounds[roll];
 		}
 	} else {
 		buffer = NextRound;
