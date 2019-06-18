@@ -111,7 +111,7 @@ typeset Round_OnEnd
 typedef Round_OnStart = function void ();
 typedef Round_OnSpawn = function void (int client, TFTeam team);
 typedef Round_OnPostInvApp = function void (int client);
-typedef Round_OnTraceAttack = function void (int victim, int &attacker, int &inflictor, float& damage, int& damagetype, int& ammotype, int hitbox, int hitgroup);
+typedef Round_OnTraceAttack = function void (int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &ammotype, int hitbox, int hitgroup);
 typedef Round_CustomDescription = function void (char[] description,  int maxlength);
 typedef Round_OnEntityCreated = function void (int ent, const char[] classname);
 typedef Round_OnDisconnect = function void (int client);
@@ -119,7 +119,7 @@ typedef Round_OnRoundTimeEnd = function void ();
 typedef Round_OnDeath = function void (Round_OnDeath_Data data);
 typedef Round_OnTeamChange = function void (int client, TFTeam team);
 typedef Round_OnClassChange = function void (int client, int class);
-typedef Round_OnTakeDamage = function Action (int victim, int& attacker, int& inflictor, float& damage, int& damagetype);
+typedef Round_OnTakeDamage = function Action (int victim, int &attacker, int &inflictor, float &damage, int &damagetype);
 
 static bool IsLateLoad;
 static ArrayList CachedSounds;
