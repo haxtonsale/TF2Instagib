@@ -254,7 +254,7 @@ void AnnounceWin(TFTeam team = TFTeam_Unassigned, char[] point = "kills", int cl
 	char str[128];
 	
 	if (client) {
-		FormatEx(str, sizeof(str), "%s %s%N%s", g_InstagibTag, ColorStr(CGetTeamColor(client)), client, g_Config.ChatColor);
+		FormatEx(str, sizeof(str), "%s%N%s", ColorStr(CGetTeamColor(client)), client, g_Config.ChatColor);
 	} else if (team >= TFTeam_Red) {
 		str = (team == TFTeam_Red) ? "\x07FF4040RED Team\x01" : "\x0799CCFFBLU Team\x01";
 	} else {
