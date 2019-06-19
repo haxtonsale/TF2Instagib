@@ -390,19 +390,24 @@ int GetActivePlayerCount()
 	return count;
 }
 
+void InstagibProcessString(bool tag, const char[] format, char[] buffer, int maxlen)
+{
+	if (tag) {
+		FormatEx(buffer, maxlen, "%s %s", g_InstagibTag, format);
+	} else {
+		FormatEx(buffer, maxlen, "%s%s", g_Config.ChatColor, format);
+	}
+	
+	ReplaceString(buffer, maxlen, "{", g_Config.ChatColor_Highlight);
+	ReplaceString(buffer, maxlen, "}", g_Config.ChatColor);
+}
+
 void InstagibPrintToChat(bool tag, int client, const char[] format, any ...)
 {
 	char buffer1[512];
 	char buffer2[256];
 	
-	if (tag) {
-		FormatEx(buffer1, sizeof(buffer1), "%s %s", g_InstagibTag, format);
-	} else {
-		FormatEx(buffer1, sizeof(buffer1), "%s%s", g_Config.ChatColor, format);
-	}
-	
-	ReplaceString(buffer1, sizeof(buffer1), "{", g_Config.ChatColor_Highlight);
-	ReplaceString(buffer1, sizeof(buffer1), "}", g_Config.ChatColor);
+	InstagibProcessString(tag, format, buffer1, sizeof(buffer1));
 	
 	VFormat(buffer2, sizeof(buffer2), buffer1, 4);
 	
@@ -414,14 +419,7 @@ void InstagibPrintToChatAll(bool tag, const char[] format, any ...)
 	char buffer1[512];
 	char buffer2[256];
 	
-	if (tag) {
-		FormatEx(buffer1, sizeof(buffer1), "%s %s", g_InstagibTag, format);
-	} else {
-		FormatEx(buffer1, sizeof(buffer1), "%s%s", g_Config.ChatColor, format);
-	}
-	
-	ReplaceString(buffer1, sizeof(buffer1), "{", g_Config.ChatColor_Highlight);
-	ReplaceString(buffer1, sizeof(buffer1), "}", g_Config.ChatColor);
+	InstagibProcessString(tag, format, buffer1, sizeof(buffer1));
 	
 	VFormat(buffer2, sizeof(buffer2), buffer1, 3);
 	
@@ -718,7 +716,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] weaponname
 public void OnClientDisconnect(int client)
 {
 	if (g_IsRoundActive && g_CurrentRound.on_disconnect != INVALID_FUNCTION) {
-		Call_StartFunction(null, g_CurrentRound.on_disconnect );
+		Call_StartFunction(null, g_CurrentRound.on_disconnect);
 		Call_PushCell(client);
 		Call_Finish();
 	}
