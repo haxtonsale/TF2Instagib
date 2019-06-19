@@ -219,7 +219,7 @@ void SR_Lives_OnTeamChange(int client, TFTeam team)
 
 void SR_Lives_Description(char[] desc, int maxlength)
 {
-	FormatEx(desc, maxlength, "%sYou only have %s%i%s lives! Make them count!", g_Config.ChatColor, g_Config.ChatColor_Highlight, MaxLives, g_Config.ChatColor);
+	FormatEx(desc, maxlength, "You only have {%i} lives! Make them count!", MaxLives);
 }
 
 public Action SR_Lives_DisplayHudText(Handle timer)

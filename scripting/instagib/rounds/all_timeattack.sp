@@ -13,5 +13,5 @@ void SR_TimeAttack_Init()
 // -------------------------------------------------------------------
 void SR_TimeAttack_Description(char[] desc, int maxlength)
 {
-	FormatEx(desc, maxlength, "Get as much kills as you can in %s%i%s minutes!", g_Config.ChatColor_Highlight, g_CurrentRound.round_time/60, g_Config.ChatColor);
+	FormatEx(desc, maxlength, "Get as much kills as you can in {%i} minutes!", g_CurrentRound.round_time/60);
 }
