@@ -251,32 +251,22 @@ bool IsClientPlaying(int client)
 
 void AnnounceWin(TFTeam team = TFTeam_Unassigned, char[] point = "kills", int client = 0, int kills = 0) 
 {
+	char str[128];
+	
 	if (client) {
-		char clientstr[128];
-		FormatEx(clientstr, sizeof(clientstr), "%s %s%N%s", g_InstagibTag, ColorStr(CGetTeamColor(client)), client, g_Config.ChatColor);
-		
-		if (!StrEqual(point, "")) {
-			InstagibPrintToChatAll(true, "%s has won the round with {%i} %s!", clientstr, kills, point);
-		} else {
-			InstagibPrintToChatAll(true, "%s has won the round!", clientstr);
-		}
-		
-		return;
+		FormatEx(str, sizeof(str), "%s %s%N%s", g_InstagibTag, ColorStr(CGetTeamColor(client)), client, g_Config.ChatColor);
 	} else if (team >= TFTeam_Red) {
-		char teamstr[128];
-		
-		teamstr = (team == TFTeam_Red) ? "\x07FF4040RED Team\x01" : "\x0799CCFFBLU Team\x01";
-		
-		if (!StrEqual(point, "") && kills > 0) {
-			InstagibPrintToChatAll(true, "%s has won the round with {%i} %s!", teamstr, kills, point);
-		} else {
-			InstagibPrintToChatAll(true, "%s has won the round!", teamstr);
-		}
-		
+		str = (team == TFTeam_Red) ? "\x07FF4040RED Team\x01" : "\x0799CCFFBLU Team\x01";
+	} else {
+		InstagibPrintToChatAll(true, "Stalemate!");
 		return;
 	}
 	
-	InstagibPrintToChatAll(true, "Stalemate!");
+	if (!StrEqual(point, "") && kills > 0) {
+		InstagibPrintToChatAll(true, "%s has won the round with {%i} %s!", str, kills, point);
+	} else {
+		InstagibPrintToChatAll(true, "%s has won the round!", str);
+	}
 }
 
 void InstagibForceRoundEnd()
