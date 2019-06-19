@@ -1,0 +1,26 @@
+language: c
+
+sudo: false
+
+addons:
+    apt_packages:
+      - lib32stdc++6
+
+env:
+  - SMVERSION=1.10
+
+install:
+  - wget --input-file=http://sourcemod.net/smdrop/$SMVERSION/sourcemod-latest-linux
+  - tar -xzf $(cat sourcemod-latest-linux)
+
+before_script:
+  - cp -R configs/ scripting/ addons/sourcemod/
+  - cd addons/sourcemod/scripting
+
+  - chmod +x spcomp
+  - chmod +x compile.sh
+
+  - mkdir compiled
+
+script: 
+  - ./compile.sh instagib.sp
