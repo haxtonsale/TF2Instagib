@@ -45,10 +45,10 @@ void NewInstagibRound(InstagibRound buffer, char[] name, char[] desc = "")
 	InstagibRound round;
 	
 	round.spawnuber_duration = g_Config.UberDuration;
-	round.railjump_velXY_multi = 2.9;
-	round.railjump_velZ_multi = 3.2;
+	round.railjump_velXY_multi = g_Config.RailjumpVelXY;
+	round.railjump_velZ_multi = g_Config.RailjumpVelZ;
 	round.minscore = g_Config.MinScore;
-	round.maxscore_multi = 2.75;
+	round.maxscore_multi = g_Config.MaxScoreMulti;
 	round.main_weapon = g_Weapon_Railgun;
 	round.roundtype_flags = ROUNDTYPE_TDM | ROUNDTYPE_FFA;
 	round.main_wep_clip = 32;

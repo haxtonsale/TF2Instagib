@@ -99,6 +99,9 @@ enum struct Config
 	float RespawnTime;
 	float UberDuration;
 	float SpecialRound_Chance;
+	float MaxScoreMulti;
+	float RailjumpVelXY;
+	float RailjumpVelZ;
 }
 
 typeset Round_OnEnd

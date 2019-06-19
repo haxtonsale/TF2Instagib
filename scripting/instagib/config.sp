@@ -60,6 +60,9 @@ void LoadConfig()
 		g_Config.RespawnTime = IGConfig.GetFloat("RespawnTime", 2.0);
 		g_Config.UberDuration = IGConfig.GetFloat("UberDuration", 0.3);
 		g_Config.SpecialRound_Chance = IGConfig.GetFloat("SpecialRound_Chance", 0.35);
+		g_Config.MaxScoreMulti = IGConfig.GetFloat("MaxScorePlayerMultiplier", 2.75);
+		g_Config.RailjumpVelXY = IGConfig.GetFloat("Railjump_VelocityMultiplier_XY", 2.9);
+		g_Config.RailjumpVelZ = IGConfig.GetFloat("Railjump_VelocityMultiplier_Z", 3.2);
 		
 		IGConfig.Rewind();
 		IGConfig.JumpToKey("Music");
