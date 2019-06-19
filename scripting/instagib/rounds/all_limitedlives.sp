@@ -40,10 +40,15 @@ void SR_Lives_Init()
 static void SR_Lives_CheckWinConditions()
 {
 	if (IsFFA()) {
+		int players_left;
 		int top_player[2];
 		
 		for (int i = 1; i <= MaxClients; i++) {
 			if (IsClientInGame(i)) {
+				if (PlayerLives[i]) {
+					++players_left;
+				}
+				
 				if (PlayerLives[i] > top_player[1]) {
 					top_player[0] = i;
 					top_player[1] = PlayerLives[i];
@@ -51,9 +56,10 @@ static void SR_Lives_CheckWinConditions()
 			}
 		}
 		
-		FFA_Win(top_player[0]);
-		AnnounceWin(_, "lives remaining", top_player[0], top_player[1]);
-		
+		if (players_left == 1) {
+			FFA_Win(top_player[0]);
+			AnnounceWin(_, "lives remaining", top_player[0], top_player[1]);
+		}
 	} else {
 		int red_lives;
 		int blue_lives;
@@ -179,30 +185,50 @@ void SR_Lives_OnDisconnect(int client)
 void SR_Lives_OnEnd(TFTeam winner_team, int score)
 {
 	if (score == -1) { // score = -1 if the round time had ran out and end_at_time_end == false
-		int red_lives;
-		int blue_lives;
-		
-		for (int i = 1; i <= MaxClients; i++) {
-			if (IsClientInGame(i)) {
-				TFTeam team = TF2_GetClientTeam(i);
-				
-				if (team == TFTeam_Red) {
-					red_lives += PlayerLives[i];
-				} else {
-					blue_lives += PlayerLives[i];
+		if (IsFFA()) {
+			int top_player[2];
+			
+			for (int i = 1; i <= MaxClients; i++) {
+				if (IsClientInGame(i)) {
+					if (PlayerLives[i] > top_player[1]) {
+						top_player[0] = i;
+						top_player[1] = PlayerLives[i];
+					}
 				}
 			}
-		}
-		
-		if (blue_lives > red_lives) {
-			ForceWin(TFTeam_Blue);
-			AnnounceWin(TFTeam_Blue, "lives remaining", _, blue_lives);
-		} else if (red_lives > blue_lives) {
-			ForceWin(TFTeam_Red);
-			AnnounceWin(TFTeam_Red, "lives remaining", _, red_lives);
+			
+			FFA_Win(top_player[0]);
+			AnnounceWin(_, "lives remaining", top_player[0], top_player[1]);
 		} else {
-			Stalemate();
-			AnnounceWin();
+			int red_lives;
+			int blue_lives;
+			
+			for (int i = 1; i <= MaxClients; i++) {
+				if (IsClientInGame(i)) {
+					TFTeam team = TF2_GetClientTeam(i);
+					
+					if (team == TFTeam_Red && PlayerLives[i] >= 0) {
+						red_lives += PlayerLives[i];
+					} else if (team == TFTeam_Blue && PlayerLives[i] >= 0) {
+						blue_lives += PlayerLives[i];
+					}
+				}
+			}
+			
+			if (blue_lives > red_lives) {
+				ForceWin(TFTeam_Blue);
+				AnnounceWin(TFTeam_Blue, "lives remaining", _, blue_lives);
+				
+				AnnouncedWin = true;
+			} else if (red_lives > blue_lives) {
+				ForceWin(TFTeam_Red);
+				AnnounceWin(TFTeam_Red, "lives remaining", _, red_lives);
+				
+				AnnouncedWin = true;
+			} else {
+				Stalemate();
+				AnnounceWin();
+			}
 		}
 	}
 	
