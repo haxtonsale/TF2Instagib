@@ -76,9 +76,9 @@ void AddScore(TFTeam team, int points)
 		
 		SetScore(team, score+points);
 	} else {
+		SetVariantInt(1);
 		while (points) {
 			--points;
-			SetVariantInt(1);
 			AcceptEntityInput(g_PDLogicEnt, input);
 		}
 	}

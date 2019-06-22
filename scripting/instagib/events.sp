@@ -124,7 +124,7 @@ public void Event_OnSpawn(Event event, const char[] name, bool dont_broadcast)
 	}
 	
 	// Poor man's arena mode for specials like Freeze Tag and Limited Lives
-	if (g_isMapIG) {
+	if (g_IsMapIG) {
 		ChangeRespawnTime(TFTeam_Red, 6000);
 		ChangeRespawnTime(TFTeam_Blue, 6000);
 	}
@@ -144,6 +144,7 @@ public void Event_Inventory(Event event, const char[] name, bool dont_broadcast)
 	}
 }
 
+// Dying/Taking damage on a full server causes lag?
 public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 {
 	if (!g_IsWaitingForPlayers) {
