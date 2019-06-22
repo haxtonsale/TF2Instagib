@@ -1,7 +1,7 @@
 // -------------------------------------------------------------------
 #define INSTAGIB_VERSION "1.0.1"
 
-#define DEBUG
+//#define DEBUG
 
 // -------------------------------------------------------------------
 #include <sourcemod>
@@ -430,6 +430,25 @@ void InstagibPrintToChatAll(bool tag, const char[] format, any ...)
 	CPrintToChatAll(buffer2);
 }
 
+void CheckForInstagibEnts()
+{
+	int ent = FindEntityByClassname(-1, "info_target");
+	
+	while (ent != -1) {
+		char name[128];
+		
+		GetEntPropString(ent, Prop_Data, "m_iName", name, sizeof(name));
+		
+		if (StrEqual(name, "instagib_nomusic")) {
+			g_MusicEnabled = false;
+		} else if (StrEqual(name, "instagib_ffa")) {
+			g_FFAAllowed = true;
+		}
+		
+		ent = FindEntityByClassname(ent+1, "info_target");
+	}
+}
+
 public void Frame_InstagibForceRoundEnd(any data)
 {
 	InstagibForceRoundEnd();
@@ -607,21 +626,13 @@ public void OnMapStart()
 	if (strncmp(mapname, "ig_", 3) == 0) {
 		g_IsMapIG = true;
 	}
+	
+	CheckForInstagibEnts();
 }
 
 public void OnEntityCreated(int ent, const char[] classname)
 {
-	if (StrEqual(classname, "info_target")) {
-		char name[128];
-		
-		GetEntPropString(ent, Prop_Data, "m_iName", name, sizeof(name));
-		
-		if (StrEqual(name, "instagib_nomusic")) {
-			g_MusicEnabled = false;
-		} else if (StrEqual(name, "instagib_ffa")) {
-			g_FFAAllowed = true;
-		}
-	} else if (StrEqual(classname, "item_teamflag") || StrEqual(classname, "tf_ammo_pack")) {
+	if (StrEqual(classname, "item_teamflag")) {
 		AcceptEntityInput(ent, "Kill");
 	}
 	
@@ -630,7 +641,7 @@ public void OnEntityCreated(int ent, const char[] classname)
 		SDKHook(ent, SDKHook_TraceAttack, Hook_TraceAttack);
 	}
 	
-	if (g_IsRoundActive && g_CurrentRound.on_ent_created && g_CurrentRound.on_ent_created != INVALID_FUNCTION) {
+	if (g_IsRoundActive && g_CurrentRound.on_ent_created != INVALID_FUNCTION) {
 		Call_StartFunction(null, g_CurrentRound.on_ent_created);
 		Call_PushCell(ent);
 		Call_PushString(classname);

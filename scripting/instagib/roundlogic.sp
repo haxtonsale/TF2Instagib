@@ -67,11 +67,6 @@ void SetMaxScore(int score)
 
 void AddScore(TFTeam team, int points)
 {
-	#if defined DEBUG
-	Profiler prof = new Profiler();
-	prof.Start();
-	#endif
-	
 	char input[32];
 	
 	input = (team == TFTeam_Red) ? "ScoreRedPoints" : "ScoreBluePoints";
@@ -87,12 +82,6 @@ void AddScore(TFTeam team, int points)
 			AcceptEntityInput(g_PDLogicEnt, input);
 		}
 	}
-	
-	#if defined DEBUG
-	prof.Stop();
-	PrintToChatAll("AddScore took %f ms", prof.Time*1000.0);
-	delete prof;
-	#endif
 }
 
 void SetScore(TFTeam team, int points)
