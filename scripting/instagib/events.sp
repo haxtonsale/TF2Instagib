@@ -148,6 +148,11 @@ public void Event_Inventory(Event event, const char[] name, bool dont_broadcast)
 public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 {
 	if (!g_IsWaitingForPlayers) {
+		#if defined DEBUG
+		Profiler prof = new Profiler();
+		prof.Start();
+		#endif
+		
 		int client = GetClientOfUserId(event.GetInt("userid"));
 		int attacker = GetClientOfUserId(event.GetInt("attacker"));
 		
@@ -185,7 +190,7 @@ public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 						FFA_UpdateLeaderboards();
 					} else {
 						TFTeam team = TF2_GetClientTeam(attacker);
-						AddScore_NextFrame(team, g_CurrentRound.points_per_kill);
+						AddScore(team, g_CurrentRound.points_per_kill);
 					}
 				}
 			}
@@ -194,6 +199,12 @@ public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 		if (g_CurrentRound.respawn_time >= 0.0) {
 			InstagibRespawn(client, g_CurrentRound.respawn_time);
 		}
+	
+		#if defined DEBUG
+		prof.Stop();
+		PrintToChatAll("%N's death event took %f ms", client, prof.Time*1000.0);
+		delete prof;
+		#endif
 	}
 }
 

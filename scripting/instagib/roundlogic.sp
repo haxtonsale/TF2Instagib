@@ -67,6 +67,11 @@ void SetMaxScore(int score)
 
 void AddScore(TFTeam team, int points)
 {
+	#if defined DEBUG
+	Profiler prof = new Profiler();
+	prof.Start();
+	#endif
+	
 	char input[32];
 	
 	input = (team == TFTeam_Red) ? "ScoreRedPoints" : "ScoreBluePoints";
@@ -82,25 +87,12 @@ void AddScore(TFTeam team, int points)
 			AcceptEntityInput(g_PDLogicEnt, input);
 		}
 	}
-}
-
-void AddScore_NextFrame(TFTeam team, int points)
-{
-	ArrayStack data = new ArrayStack();
-	data.Push(points);
-	data.Push(team);
 	
-	RequestFrame(Frame_AddScore, data);
-}
-
-public void Frame_AddScore(ArrayStack data)
-{
-	TFTeam team = data.Pop();
-	int points = data.Pop();
-	
-	delete data;
-	
-	AddScore(team, points);
+	#if defined DEBUG
+	prof.Stop();
+	PrintToChatAll("AddScore took %f ms", prof.Time*1000.0);
+	delete prof;
+	#endif
 }
 
 void SetScore(TFTeam team, int points)
