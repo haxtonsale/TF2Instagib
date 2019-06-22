@@ -155,41 +155,43 @@ public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 			g_ClientSuicided[client] = true;
 		}
 		
-		if (g_IsRoundActive && g_CurrentRound.on_death != INVALID_FUNCTION) {
-			Round_OnDeath_Data data;
+		if (g_IsRoundActive) {
+			if (g_CurrentRound.on_death != INVALID_FUNCTION) {
+				Round_OnDeath_Data data;
+				
+				data.victim = client;
+				data.attacker = attacker;
+				data.customkill = event.GetInt("customkill");
+				data.damagetype = event.GetInt("damagebits");
+				data.assister = GetClientOfUserId(event.GetInt("assister"));
+				data.penetrate_count = event.GetInt("playerpenetratecount");
+				data.weaponid = event.GetInt("weaponid");
+				data.stun_flags = event.GetInt("stun_flags");
+				data.killstreak= event.GetInt("kill_streak_total");
+				data.killstreak_victim = event.GetInt("kill_streak_victim");
+				data.inflictor_entity = event.GetInt("inflictor_entindex");
+				
+				Call_StartFunction(null, g_CurrentRound.on_death);
+				Call_PushArray(data, sizeof(Round_OnDeath_Data));
+				Call_Finish();
+			}
 			
-			data.victim = client;
-			data.attacker = attacker;
-			data.customkill = event.GetInt("customkill");
-			data.damagetype = event.GetInt("damagebits");
-			data.assister = GetClientOfUserId(event.GetInt("assister"));
-			data.penetrate_count = event.GetInt("playerpenetratecount");
-			data.weaponid = event.GetInt("weaponid");
-			data.stun_flags = event.GetInt("stun_flags");
-			data.killstreak= event.GetInt("kill_streak_total");
-			data.killstreak_victim = event.GetInt("kill_streak_victim");
-			data.inflictor_entity = event.GetInt("inflictor_entindex");
-			
-			Call_StartFunction(null, g_CurrentRound.on_death);
-			Call_PushArray(data, sizeof(Round_OnDeath_Data));
-			Call_Finish();
+			if (g_CurrentRound.points_per_kill) {
+				if (attacker > 0 && attacker <= MaxClients && client != attacker) {
+					g_Killcount[attacker]++;
+					
+					if (IsFFA()) {
+						FFA_UpdateLeaderboards();
+					} else {
+						TFTeam team = TF2_GetClientTeam(attacker);
+						AddScore_NextFrame(team, g_CurrentRound.points_per_kill);
+					}
+				}
+			}
 		}
 		
 		if (g_CurrentRound.respawn_time >= 0.0) {
 			InstagibRespawn(client, g_CurrentRound.respawn_time);
-		}
-		
-		if (g_CurrentRound.points_per_kill && g_IsRoundActive) {
-			if (attacker > 0 && attacker <= MaxClients && client != attacker) {
-				g_Killcount[attacker]++;
-				
-				if (IsFFA()) {
-					FFA_UpdateLeaderboards();
-				} else {
-					TFTeam team = TF2_GetClientTeam(attacker);
-					AddScore_NextFrame(team, g_CurrentRound.points_per_kill);
-				}
-			}
 		}
 	}
 }
