@@ -88,13 +88,13 @@ Action SR_Explosions_OnTakeDamage(int victim, int& attacker, int& inflictor, flo
 	char classname[128];
 	GetEntityClassname(inflictor, classname, sizeof(classname));
 	
-	if (StrEqual(classname, "tf_generic_bomb")) {
+	if (StrEqual(classname, "tf_generic_bomb") && victim > 0 && victim <= MaxClients) {
 		int owner = GetEntProp(inflictor, Prop_Data, "m_nHealth");
 		
 		if (owner > 0 && owner <= MaxClients && IsClientInGame(owner)) {
 			attacker = owner;
 			
-			if (victim == owner) {
+			if ((victim == owner) || (TF2_GetClientTeam(victim) == TF2_GetClientTeam(owner))) {
 				damage = 0.0;
 			}
 			

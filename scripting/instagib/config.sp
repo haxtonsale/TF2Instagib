@@ -146,7 +146,6 @@ void SpecialRoundConfig_GetOverwrites(InstagibRound ig_round)
 		
 		if (result) {
 			ig_round.is_special = view_as<bool>(IGConfig.GetNum("IsSpecialRound", ig_round.is_special));
-			ig_round.disable_achievements = view_as<bool>(IGConfig.GetNum("DisableAchievements", ig_round.disable_achievements));
 			ig_round.ig_map_only = view_as<bool>(IGConfig.GetNum("InstagibMapOnly", ig_round.ig_map_only));
 			
 			ig_round.roundtype_flags = IGConfig.GetNum("RoundTypeFlags", ig_round.roundtype_flags);

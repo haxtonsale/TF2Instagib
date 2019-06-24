@@ -13,8 +13,6 @@ static bool IsMusicPlaying;
 static MusicData CurrentMusic;
 static Handle MusicTimer;
 
-#define MUSIC_ANNOUNCEMENT "♫ Now Playing ♫\n%s"
-
 // -------------------------------------------------------------------
 void AddMusic(char[] path, char[] name, int length, bool add_to_downloads, bool announce, float volume = 1.0)
 {
@@ -55,12 +53,12 @@ void PrecacheMusic()
 
 void AnnounceMusicAll(char[] name)
 {
-	InstagibPrintToChatAll(true, MUSIC_ANNOUNCEMENT, name);
+	InstagibPrintToChatAll(true, "♫ Now Playing ♫\n%s", name);
 }
 
 void AnnounceMusic(int client, char[] name)
 {
-	InstagibPrintToChat(true, client, MUSIC_ANNOUNCEMENT, name);
+	InstagibPrintToChat(true, client, "♫ Now Playing ♫\n%s", name);
 }
 
 void PlayRandomMusic()

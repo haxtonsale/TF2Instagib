@@ -41,7 +41,7 @@ public Action Command_Settings(int client, int args)
 					SetEntityRenderColor(g_MainWeaponEnt[client], .a = value);
 				}
 				
-				InstagibPrintToChat(true, client, "Weapon's alpha was set to %i.", value);
+				InstagibPrintToChat(true, client, "Weapon's transparency was set to %i.", value);
 			}
 			
 			return Plugin_Handled;
@@ -72,6 +72,7 @@ public Action Command_ForceRound(int client, int args)
 	return Plugin_Handled;
 }
 
+// Return the cheat flag to the mp_forcewin command after it's been called by the server :)
 public Action ForceWinListener(int client, const char[] command, int argc)
 {
 	if (!client) {

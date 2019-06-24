@@ -144,15 +144,9 @@ public void Event_Inventory(Event event, const char[] name, bool dont_broadcast)
 	}
 }
 
-// Dying/Taking damage on a full server causes lag?
 public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 {
 	if (!g_IsWaitingForPlayers) {
-		#if defined DEBUG
-		Profiler prof = new Profiler();
-		prof.Start();
-		#endif
-		
 		int client = GetClientOfUserId(event.GetInt("userid"));
 		int attacker = GetClientOfUserId(event.GetInt("attacker"));
 		
@@ -199,12 +193,6 @@ public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 		if (g_CurrentRound.respawn_time >= 0.0) {
 			InstagibRespawn(client, g_CurrentRound.respawn_time);
 		}
-	
-		#if defined DEBUG
-		prof.Stop();
-		PrintToChatAll("%N's death event took %f ms", client, prof.Time*1000.0);
-		delete prof;
-		#endif
 	}
 }
 

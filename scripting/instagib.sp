@@ -1,5 +1,5 @@
 // -------------------------------------------------------------------
-#define INSTAGIB_VERSION "1.0.1"
+#define INSTAGIB_VERSION "1.0.2"
 
 //#define DEBUG
 
@@ -34,7 +34,6 @@ enum struct InstagibRound
 	char desc[128];
 	
 	bool is_special;
-	bool disable_achievements;
 	
 	int roundtype_flags;
 	int round_time;
@@ -44,10 +43,10 @@ enum struct InstagibRound
 	bool announce_win;
 	bool allow_latespawn;
 	bool allow_killbind;
-	bool end_at_time_end;
+	bool end_at_time_end;		// Whether the round will be forcefully ended when the round time is over
 	int min_players_tdm;
 	int min_players_ffa;
-	bool ig_map_only;
+	bool ig_map_only;			// Whether the round is meant to be played only on instagib maps
 	
 	float railjump_velXY_multi;
 	float railjump_velZ_multi;
@@ -322,6 +321,9 @@ void InstagibRespawn(int client, float time)
 	}
 }
 
+// Precaches a sound and adds it to the CachedSounds array
+// All sounds in the CachedSounds array will be precached on every map start
+// (useful if instagib is played for more than one map)
 void InstagibPrecacheSound(char[] sound)
 {
 	if (CachedSounds == null) {
@@ -394,6 +396,8 @@ int GetActivePlayerCount()
 	return count;
 }
 
+// Applies default color to text, Highlights text surrounded by brackets, 
+// adds an [Instagib] tag before the message if the tag param is true.
 void InstagibProcessString(bool tag, const char[] format, char[] buffer, int maxlen)
 {
 	if (tag) {
@@ -544,7 +548,6 @@ public Action Hook_TakeDamage(int victim, int& attacker, int& inflictor, float& 
 		Call_Finish(action);
 	}
 	
-	// No fall damage
 	if (damagetype & DMG_FALL && damage < 100.0) {
 		damage = 0.0;
 		

@@ -143,15 +143,12 @@ char GetPlaceStr(int place)
 		FormatEx(placestr, sizeof(placestr), "%ith", place);
 	} else {
 		switch placemod do {
-			case 1: {
+			case 1:
 				FormatEx(placestr, sizeof(placestr), "%ist", place);
-			}
-			case 2: {
+			case 2:
 				FormatEx(placestr, sizeof(placestr), "%ind", place);
-			}
-			case 3: {
+			case 3:
 				FormatEx(placestr, sizeof(placestr), "%ird", place);
-			}
 			default:
 				FormatEx(placestr, sizeof(placestr), "%ith", place);
 		}

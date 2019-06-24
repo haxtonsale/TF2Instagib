@@ -91,7 +91,7 @@ void SetScore(TFTeam team, int points)
 	input = (team == TFTeam_Red) ? "m_nRedTargetPoints" : "m_nBlueTargetPoints";
 	
 	SetEntProp(g_PDLogicEnt, Prop_Send, input, points-1);
-	AddScore(team, 1); // Add 1 point for the neat sound effect
+	AddScore(team, 1); // Add 1 point for the neat effect
 }
 
 void ForceWin(TFTeam team)

@@ -22,10 +22,10 @@ enum struct InstagibRound
 	bool announce_win;
 	bool allow_latespawn;
 	bool allow_killbind;
-	bool end_at_time_end;
+	bool end_at_time_end;			// Whether the round will be forcefully ended when the round time is over
 	int min_players_tdm;
 	int min_players_ffa;
-	bool ig_map_only;
+	bool ig_map_only;				// Whether the round is meant to be played only on instagib maps
 	
 	float railjump_velXY_multi;
 	float railjump_velZ_multi;
@@ -33,7 +33,7 @@ enum struct InstagibRound
 	float respawn_time;
 	float spawnuber_duration;
 	
-	Handle main_weapon; // TF2Items weapon handle
+	Handle main_weapon; 			// TF2Items weapon handle
 	int main_wep_clip;
 	bool infinite_ammo;
 }
