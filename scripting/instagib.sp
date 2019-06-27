@@ -559,11 +559,7 @@ public Action Hook_TakeDamage(int victim, int& attacker, int& inflictor, float& 
 
 public bool Trace_Railjump(int entity, int contentsMask, any client)
 {
-	if (entity == client) {
-		return false;
-	} else {
-		return true;
-	}
+	return entity != client;
 }
 
 // -------------------------------------------------------------------
