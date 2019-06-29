@@ -146,6 +146,10 @@ public void Event_Inventory(Event event, const char[] name, bool dont_broadcast)
 
 public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 {
+	if (g_CurrentRound.allow_latespawn) {
+		InstagibRespawn(client, g_CurrentRound.respawn_time);
+	}
+	
 	if (g_IsWaitingForPlayers) {
 		return;
 	}
@@ -191,10 +195,6 @@ public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 				}
 			}
 		}
-	}
-	
-	if (g_CurrentRound.allow_latespawn) {
-		InstagibRespawn(client, g_CurrentRound.respawn_time);
 	}
 }
 
