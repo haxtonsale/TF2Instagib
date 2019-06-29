@@ -112,8 +112,6 @@ public void Event_OnSpawn(Event event, const char[] name, bool dont_broadcast)
 	
 	InvulnClient(client, g_CurrentRound.spawnuber_duration);
 	
-	g_ClientSuicided[client] = false;
-	
 	if (g_IsRoundActive && g_CurrentRound.on_spawn != INVALID_FUNCTION) {
 		TFTeam team = view_as<TFTeam>(event.GetInt("team"));
 		
@@ -128,6 +126,8 @@ public void Event_OnSpawn(Event event, const char[] name, bool dont_broadcast)
 		ChangeRespawnTime(TFTeam_Red, 6000);
 		ChangeRespawnTime(TFTeam_Blue, 6000);
 	}
+	
+	g_ClientSuicided[client] = false;
 }
 
 public void Event_Inventory(Event event, const char[] name, bool dont_broadcast)
@@ -147,52 +147,54 @@ public void Event_Inventory(Event event, const char[] name, bool dont_broadcast)
 public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 {
 	if (!g_IsWaitingForPlayers) {
-		int client = GetClientOfUserId(event.GetInt("userid"));
-		int attacker = GetClientOfUserId(event.GetInt("attacker"));
-		
-		// Mark client as suicided even if death was from environment
-		if (client == attacker || !attacker) {
-			g_ClientSuicided[client] = true;
+		return;
+	}
+	
+	int client = GetClientOfUserId(event.GetInt("userid"));
+	int attacker = GetClientOfUserId(event.GetInt("attacker"));
+	
+	// Mark client as suicided even if death was from environment
+	if (client == attacker || !attacker) {
+		g_ClientSuicided[client] = true;
+	}
+	
+	if (g_IsRoundActive) {
+		if (g_CurrentRound.on_death != INVALID_FUNCTION) {
+			Round_OnDeath_Data data;
+			
+			data.victim = client;
+			data.attacker = attacker;
+			data.customkill = event.GetInt("customkill");
+			data.damagetype = event.GetInt("damagebits");
+			data.assister = GetClientOfUserId(event.GetInt("assister"));
+			data.penetrate_count = event.GetInt("playerpenetratecount");
+			data.weaponid = event.GetInt("weaponid");
+			data.stun_flags = event.GetInt("stun_flags");
+			data.killstreak= event.GetInt("kill_streak_total");
+			data.killstreak_victim = event.GetInt("kill_streak_victim");
+			data.inflictor_entity = event.GetInt("inflictor_entindex");
+			
+			Call_StartFunction(null, g_CurrentRound.on_death);
+			Call_PushArray(data, sizeof(Round_OnDeath_Data));
+			Call_Finish();
 		}
 		
-		if (g_IsRoundActive) {
-			if (g_CurrentRound.on_death != INVALID_FUNCTION) {
-				Round_OnDeath_Data data;
+		if (g_CurrentRound.points_per_kill) {
+			if (attacker > 0 && attacker <= MaxClients && client != attacker) {
+				g_Killcount[attacker]++;
 				
-				data.victim = client;
-				data.attacker = attacker;
-				data.customkill = event.GetInt("customkill");
-				data.damagetype = event.GetInt("damagebits");
-				data.assister = GetClientOfUserId(event.GetInt("assister"));
-				data.penetrate_count = event.GetInt("playerpenetratecount");
-				data.weaponid = event.GetInt("weaponid");
-				data.stun_flags = event.GetInt("stun_flags");
-				data.killstreak= event.GetInt("kill_streak_total");
-				data.killstreak_victim = event.GetInt("kill_streak_victim");
-				data.inflictor_entity = event.GetInt("inflictor_entindex");
-				
-				Call_StartFunction(null, g_CurrentRound.on_death);
-				Call_PushArray(data, sizeof(Round_OnDeath_Data));
-				Call_Finish();
-			}
-			
-			if (g_CurrentRound.points_per_kill) {
-				if (attacker > 0 && attacker <= MaxClients && client != attacker) {
-					g_Killcount[attacker]++;
-					
-					if (IsFFA()) {
-						FFA_UpdateLeaderboards();
-					} else {
-						TFTeam team = TF2_GetClientTeam(attacker);
-						AddScore(team, g_CurrentRound.points_per_kill);
-					}
+				if (IsFFA()) {
+					FFA_UpdateLeaderboards();
+				} else {
+					TFTeam team = TF2_GetClientTeam(attacker);
+					AddScore(team, g_CurrentRound.points_per_kill);
 				}
 			}
 		}
-		
-		if (g_CurrentRound.respawn_time >= 0.0) {
-			InstagibRespawn(client, g_CurrentRound.respawn_time);
-		}
+	}
+	
+	if (g_CurrentRound.allow_latespawn) {
+		InstagibRespawn(client, g_CurrentRound.respawn_time);
 	}
 }
 

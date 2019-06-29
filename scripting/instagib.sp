@@ -1,5 +1,5 @@
 // -------------------------------------------------------------------
-#define INSTAGIB_VERSION "1.0.2"
+#define INSTAGIB_VERSION "1.0.3"
 
 //#define DEBUG
 
@@ -223,19 +223,22 @@ void CreateDefaultRailgun()
 
 int GiveWeapon(int client, Handle Weapon, bool is_railgun = true)
 {
-	int ent;
-	ent = TF2Items_GiveNamedItem(client, Weapon);
+	int ent = TF2Items_GiveNamedItem(client, Weapon);
 	
-	if (is_railgun) {
-		SetEntProp(ent, Prop_Data, "m_iClip1", g_CurrentRound.main_wep_clip);
-		SetEntityRenderMode(ent, RENDER_TRANSCOLOR);
+	if (IsValidEntity(ent)) {
+		if (is_railgun) {
+			SetEntProp(ent, Prop_Data, "m_iClip1", g_CurrentRound.main_wep_clip);
+			SetEntityRenderMode(ent, RENDER_TRANSCOLOR);
+			
+			if (AreClientCookiesCached(client)) {
+				SetEntityRenderColor(ent, .a = g_ClientPrefs[client].ViewmodelAlpha);
+			}
+		}
 		
-		if (AreClientCookiesCached(client)) {
-			SetEntityRenderColor(ent, .a = g_ClientPrefs[client].ViewmodelAlpha);
+		if (IsClientInGame(client) && IsClientPlaying(client) && IsPlayerAlive(client)) {
+			EquipPlayerWeapon(client, ent);
 		}
 	}
-	
-	EquipPlayerWeapon(client, ent);
 	
 	return ent;
 }
@@ -252,7 +255,7 @@ bool IsClientPlaying(int client)
 	return (TF2_GetClientTeam(client) >= TFTeam_Red);
 }
 
-void AnnounceWin(TFTeam team = TFTeam_Unassigned, char[] point = "kills", int client = 0, int kills = 0) 
+void AnnounceWin(TFTeam team = TFTeam_Unassigned, char[] point = "kills", int client = 0, int points = 0) 
 {
 	char str[128];
 	
@@ -265,8 +268,8 @@ void AnnounceWin(TFTeam team = TFTeam_Unassigned, char[] point = "kills", int cl
 		return;
 	}
 	
-	if (!StrEqual(point, "") && kills > 0) {
-		InstagibPrintToChatAll(true, "%s has won the round with {%i} %s!", str, kills, point);
+	if (!StrEqual(point, "") && points > 0) {
+		InstagibPrintToChatAll(true, "%s has won the round with {%i} %s!", str, points, point);
 	} else {
 		InstagibPrintToChatAll(true, "%s has won the round!", str);
 	}
@@ -316,14 +319,16 @@ char InstagibHudPlayerInfo(int client)
 
 void InstagibRespawn(int client, float time)
 {
-	if ((g_MapHasRoundSetup || g_IsRoundActive) && g_CurrentRound.allow_latespawn) {
+	if (g_MapHasRoundSetup || g_IsRoundActive) {
 		CreateTimer(time, Timer_Respawn, client);
 	}
 }
 
-// Precaches a sound and adds it to the CachedSounds array
-// All sounds in the CachedSounds array will be precached on every map start
-// (useful if instagib is played for more than one map)
+/*
+ * Precaches a sound and adds it to the CachedSounds array
+ * All sounds in the CachedSounds array will be precached on every map start
+ * (useful if instagib is played for more than one map)
+ */
 void InstagibPrecacheSound(char[] sound)
 {
 	if (CachedSounds == null) {
@@ -396,8 +401,10 @@ int GetActivePlayerCount()
 	return count;
 }
 
-// Applies default color to text, Highlights text surrounded by brackets, 
-// adds an [Instagib] tag before the message if the tag param is true.
+/*
+ * Applies default color to text, Highlights text surrounded by brackets, 
+ * adds an [Instagib] tag before the message if the tag param is true.
+ */
 void InstagibProcessString(bool tag, const char[] format, char[] buffer, int maxlen)
 {
 	if (tag) {
@@ -453,11 +460,6 @@ void CheckForInstagibEnts()
 	}
 }
 
-public void Frame_InstagibForceRoundEnd(any data)
-{
-	InstagibForceRoundEnd();
-}
-
 public void Frame_RailjumpParticles(ArrayStack data)
 {
 	float vecEnd[3];
@@ -466,8 +468,8 @@ public void Frame_RailjumpParticles(ArrayStack data)
 	delete data;
 	
 	TE_SpawnParticle("Explosion_ShockWave_01", vecEnd);
-	TE_AttachParticle(client, "rocketjump_smoke", PATTACH_POINT_FOLLOW, 5, _, TE_ToAllButOne, client);
-	TE_AttachParticle(client, "rocketjump_smoke", PATTACH_POINT_FOLLOW, 6, _, TE_ToAllButOne, client);
+	TE_AttachParticle(client, "rocketjump_smoke", PATTACH_POINT_FOLLOW, 5, _, TE_ToAllButOne, client); // Left leg smoke
+	TE_AttachParticle(client, "rocketjump_smoke", PATTACH_POINT_FOLLOW, 6, _, TE_ToAllButOne, client); // Right leg smoke
 }
 
 // -------------------------------------------------------------------
@@ -479,7 +481,7 @@ public Action Timer_SecondTick(Handle timer)
 	
 	if (g_RoundTimeLeft <= 0) {
 		if (g_CurrentRound.end_at_time_end) {
-			RequestFrame(Frame_InstagibForceRoundEnd);
+			InstagibForceRoundEnd();
 		} else if (g_CurrentRound.on_end != INVALID_FUNCTION) {
 			Call_StartFunction(null, g_CurrentRound.on_end);
 			Call_PushCell(TFTeam_Unassigned);
@@ -622,7 +624,7 @@ public void OnMapStart()
 	char mapname[256];
 	GetCurrentMap(mapname, sizeof(mapname));
 	
-	if (strncmp(mapname, "ig_", 3) == 0) {
+	if (!strncmp(mapname, "ig_", 3)) {
 		g_IsMapIG = true;
 	}
 	
@@ -679,7 +681,7 @@ public void TF2_OnWaitingForPlayersEnd()
 public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] weaponname, bool &result)
 {
 	if (StrEqual(weaponname, "tf_weapon_revolver")) {
-		if (!g_IsRoundActive || g_CurrentRound.infinite_ammo) {
+		if (!g_IsRoundActive || g_CurrentRound.infinite_ammo && IsValidEntity(weapon)) {
 			SetEntProp(weapon, Prop_Data, "m_iClip1", g_CurrentRound.main_wep_clip+1);
 		}
 		
