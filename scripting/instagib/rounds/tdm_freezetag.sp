@@ -201,6 +201,7 @@ void SR_FreezeTag_OnAttack(int victim, int &attacker, int &inflictor, float& dam
 	if (team1 == team2) {
 		if (IsClientFrozen[victim]) {
 			SR_FreezeTag_Unfreeze(victim);
+			Forward_Unfrozen(victim, attacker);
 		}
 	} else {
 		if (IsClientFrozen[victim]) {
@@ -229,6 +230,8 @@ void SR_FreezeTag_OnDeath(Round_OnDeath_Data data)
 	
 	IsClientFrozen[data.victim] = true;
 	RequestFrame(SR_FreezeTag_Frame_Respawn, data.victim);
+	
+	Forward_Frozen(data.victim, data.attacker);
  }
  
 void SR_FreezeTag_OnEntCreated(int ent, const char[] classname)

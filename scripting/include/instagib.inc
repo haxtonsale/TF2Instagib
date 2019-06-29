@@ -65,6 +65,9 @@ native void IG_AddToTeamScore(int team, int amount);
 native int IG_GetMaxScore();
 native void IG_SetMaxScore(int amount);
 
+native int IG_GetRoundTime();
+native void IG_SetRoundTime(int seconds);
+
 /**
  * Returns client's place on the FFA leaderboards.
  *
@@ -84,3 +87,24 @@ native int IG_GetClientLeaderboardsPlace(int client);
 native int IG_GetClientFromLeaderboardsPlace(int place);
 
 native bool IG_IsFFA();
+
+// ------------------------------------------------------------------- Limited Lives
+forward void IG_LimitedLives_OnLifeLost(int client, int lives, int attacker);
+forward void IG_LimitedLives_OnAllLivesLost(int client);
+native int IG_LimitedLives_GetLives(int client);
+
+// ------------------------------------------------------------------- Freeze Tag
+forward void IG_FreezeTag_OnClientFrozen(int client, int attacker);
+forward void IG_FreezeTag_OnClientUnfrozen(int client, int attacker);
+
+// -------------------------------------------------------------------
+public SharedPlugin __pl_instagib =
+{
+	name = "instagib",
+	file = "instagib.smx",
+#if defined REQUIRE_PLUGIN
+	required = 1,
+#else
+	required = 0,
+#endif
+};

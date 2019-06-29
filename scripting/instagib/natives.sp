@@ -1,5 +1,9 @@
 // -------------------------------------------------------------------
 static Handle FwRailjump;
+static Handle FwLifeLost;
+static Handle FwAllLivesLost;
+static Handle FwFrozen;
+static Handle FwUnfrozen;
 
 // -------------------------------------------------------------------
 void Natives_Init()
@@ -14,12 +18,19 @@ void Natives_Init()
 	CreateNative("IG_GetMaxScore", Native_GetMaxScore);
 	CreateNative("IG_SetMaxScore", Native_SetMaxScore);
 	
+	CreateNative("IG_GetRoundTime", Native_GetRoundTime);
+	CreateNative("IG_SetRoundTime", Native_SetRoundTime);
+	
 	CreateNative("IG_GetClientLeaderboardsPlace", Native_GetFFAPlace);
 	CreateNative("IG_GetClientFromLeaderboardsPlace", Native_GetFFAClient);
 	
 	CreateNative("IG_IsFFA", Native_IsFFA);
 	
 	FwRailjump = CreateGlobalForward("IG_OnRailjump", ET_Ignore, Param_Cell, Param_Array);
+	FwLifeLost = CreateGlobalForward("IG_LimitedLives_OnLifeLost", ET_Ignore, Param_Cell, Param_Cell, Param_Cell);
+	FwAllLivesLost = CreateGlobalForward("IG_LimitedLives_OnAllLivesLost", ET_Ignore, Param_Cell);
+	FwFrozen = CreateGlobalForward("IG_FreezeTag_OnClientFrozen", ET_Ignore, Param_Cell, Param_Cell);
+	FwUnfrozen = CreateGlobalForward("IG_FreezeTag_OnClientUnfrozen", ET_Ignore, Param_Cell, Param_Cell);
 }
 
 // -------------------------------------------------------------------
@@ -33,6 +44,46 @@ void Forward_OnRailjump(int client, float velocity[3])
 	Call_Finish();
 }
 
+void Forward_OnLifeLost(int client, int lives, int attacker)
+{
+	Call_StartForward(FwLifeLost);
+	
+	Call_PushCell(client);
+	Call_PushCell(lives);
+	Call_PushCell(attacker);
+	
+	Call_Finish();
+}
+
+void Forward_AllLivesLost(int client)
+{
+	Call_StartForward(FwAllLivesLost);
+	
+	Call_PushCell(client);
+	
+	Call_Finish();
+}
+
+void Forward_Frozen(int client, int attacker)
+{
+	Call_StartForward(FwFrozen);
+	
+	Call_PushCell(client);
+	Call_PushCell(attacker);
+	
+	Call_Finish();
+}
+
+void Forward_Unfrozen(int client, int attacker)
+{
+	Call_StartForward(FwUnfrozen);
+	
+	Call_PushCell(client);
+	Call_PushCell(attacker);
+	
+	Call_Finish();
+}
+// -------------------------------------------------------------------
 public int Native_ForceSpecial(Handle plugin, int numParams)
 {
 	char roundname[256];
@@ -131,4 +182,18 @@ public int Native_GetFFAClient(Handle plugin, int numParams)
 public int Native_IsFFA(Handle plugin, int numParams)
 {
 	return IsFFA();
+}
+
+public int Native_GetRoundTime(Handle plugin, int numParams)
+{
+	return g_RoundTimeLeft;
+}
+
+public int Native_SetRoundTime(Handle plugin, int numParams)
+{
+	int amount = GetNativeCell(1);
+	
+	if (amount > 0) {
+		g_RoundTimeLeft = amount;
+	}
 }

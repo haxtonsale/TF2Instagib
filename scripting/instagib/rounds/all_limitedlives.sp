@@ -184,6 +184,7 @@ void SR_Lives_OnDeath(Round_OnDeath_Data data)
 	PrintToChatAll("%i",PlayerLives[client]);
 	
 	--PlayerLives[client];
+	Forward_OnLifeLost(client, PlayerLives[client], data.attacker);
 	
 	PrintToChatAll("%i",PlayerLives[client]);
 	
@@ -193,6 +194,8 @@ void SR_Lives_OnDeath(Round_OnDeath_Data data)
 	
 	if (PlayerLives[client] > 0) {
 		CreateTimer(g_CurrentRound.respawn_time, Timer_Respawn, client);
+	} else {
+		Forward_AllLivesLost(client);
 	}
 	
 	SR_Lives_CheckWinConditions();
