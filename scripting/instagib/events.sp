@@ -146,7 +146,7 @@ public void Event_Inventory(Event event, const char[] name, bool dont_broadcast)
 
 public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 {
-	if (!g_IsWaitingForPlayers) {
+	if (g_IsWaitingForPlayers) {
 		return;
 	}
 	
