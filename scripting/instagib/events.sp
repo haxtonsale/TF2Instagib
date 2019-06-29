@@ -146,6 +146,9 @@ public void Event_Inventory(Event event, const char[] name, bool dont_broadcast)
 
 public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 {
+	int client = GetClientOfUserId(event.GetInt("userid"));
+	int attacker = GetClientOfUserId(event.GetInt("attacker"));
+	
 	if (g_CurrentRound.allow_latespawn) {
 		InstagibRespawn(client, g_CurrentRound.respawn_time);
 	}
@@ -153,9 +156,6 @@ public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 	if (g_IsWaitingForPlayers) {
 		return;
 	}
-	
-	int client = GetClientOfUserId(event.GetInt("userid"));
-	int attacker = GetClientOfUserId(event.GetInt("attacker"));
 	
 	// Mark client as suicided even if death was from environment
 	if (client == attacker || !attacker) {
