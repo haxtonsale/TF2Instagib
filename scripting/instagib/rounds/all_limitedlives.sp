@@ -191,6 +191,7 @@ void SR_Lives_OnDeath(Round_OnDeath_Data data)
 	if (PlayerLives[client] > 0) {
 		CreateTimer(g_CurrentRound.respawn_time, Timer_Respawn, client);
 	} else {
+		InstagibPrintToChat(true, client, "You have run out of lives!");
 		Forward_AllLivesLost(client);
 	}
 	
