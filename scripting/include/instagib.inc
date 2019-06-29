@@ -12,7 +12,6 @@ enum struct InstagibRound
 	char desc[128];
 	
 	bool is_special;
-	bool disable_achievements;
 	
 	int roundtype_flags;
 	int round_time;
