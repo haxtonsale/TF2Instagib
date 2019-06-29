@@ -48,7 +48,7 @@ public Action Command_Settings(int client, int args)
 		}
 	}
 	
-	Menu_Settings(client);
+	Menu_Main(client);
 	
 	return Plugin_Handled;
 }

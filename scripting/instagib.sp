@@ -174,8 +174,9 @@ bool g_SteamTools;
 #include "instagib/hud.sp"
 #include "instagib/commands.sp"
 #include "instagib/natives.sp"
-#include "instagib/menu_forceround.sp"
-#include "instagib/menu_settings.sp"
+#include "instagib/menus/menu_forceround.sp"
+#include "instagib/menus/menu_settings.sp"
+#include "instagib/menus/menu_main.sp"
 
 #include "instagib/rounds/all_explosions.sp"
 #include "instagib/rounds/all_headshots.sp"

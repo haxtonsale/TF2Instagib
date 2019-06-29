@@ -213,6 +213,7 @@ void Rounds_Menu(int client, char[] title, MenuHandler handler, bool display_all
 	Menu menu = new Menu(handler);
 	
 	menu.SetTitle(title);
+	menu.AddItem("exit", "Exit");
 	
 	InstagibRound round;
 	
@@ -230,5 +231,6 @@ void Rounds_Menu(int client, char[] title, MenuHandler handler, bool display_all
 		}
 	}
 	
+	menu.ExitButton = false;
 	menu.Display(client, 60);
 }
