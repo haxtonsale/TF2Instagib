@@ -1,5 +1,5 @@
 // -------------------------------------------------------------------
-#define INSTAGIB_VERSION "1.0.3"
+#define INSTAGIB_VERSION "1.1.0"
 
 //#define DEBUG
 
@@ -13,12 +13,12 @@
 #include <lesscolors>
 #include <clientprefs>
 
-#undef REQUIRE_EXTENSIONS
-#include <steamtools>
-
 #if defined DEBUG
 #include <profiler>
 #endif
+
+#undef REQUIRE_EXTENSIONS
+#include <steamtools>
 
 // -------------------------------------------------------------------
 #pragma semicolon 1

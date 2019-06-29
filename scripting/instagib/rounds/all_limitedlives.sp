@@ -6,6 +6,9 @@ static Handle HudSync;
 
 static bool AnnouncedWin; // To prevent multiple win announcements if the final kill was penetrating
 
+static bool IsLifestealers;
+static int StartingLSLives; // Starting life count for Lifestealers
+
 // -------------------------------------------------------------------
 void SR_Lives_Init()
 {
@@ -30,9 +33,16 @@ void SR_Lives_Init()
 	sr.on_desc = SR_Lives_Description;
 	
 	MaxLives = SpecialRoundConfig_Num(sr.name, "Lives", 5);
+	SubmitInstagibRound(sr);
 	
 	HudSync = CreateHudSynchronizer();
 	
+	strcopy(sr.name, sizeof(sr.name), "Lifestealers");
+	sr.round_time = 240;
+	sr.on_start = SR_Lifesteal_OnStart;
+	sr.on_desc = SR_Lifesteal_Description;
+	
+	StartingLSLives = SpecialRoundConfig_Num("Lifestealers", "Lives", 3);
 	SubmitInstagibRound(sr);
 }
 
@@ -110,7 +120,11 @@ static void SR_Lives_GetLivesColor(int lives, int &r, int &g, int &b)
 		{0, 255, 0},
 	};
 	
-	float div = float(lives)/float(MaxLives);
+	if (IsLifestealers && lives > StartingLSLives) {
+		lives = StartingLSLives;
+	}
+	
+	float div = float(lives)/float((IsLifestealers) ? StartingLSLives : MaxLives);
 	int rounded = RoundToFloor(div*10.0);
 	
 	if (rounded > 1) {
@@ -167,7 +181,15 @@ void SR_Lives_OnDeath(Round_OnDeath_Data data)
 {
 	int client = data.victim;
 	
+	PrintToChatAll("%i",PlayerLives[client]);
+	
 	--PlayerLives[client];
+	
+	PrintToChatAll("%i",PlayerLives[client]);
+	
+	if (IsLifestealers && data.attacker > 0 && data.attacker <= MaxClients && data.attacker != client) {
+		++PlayerLives[data.attacker];
+	}
 	
 	if (PlayerLives[client] > 0) {
 		CreateTimer(g_CurrentRound.respawn_time, Timer_Respawn, client);
@@ -235,6 +257,8 @@ void SR_Lives_OnEnd(TFTeam winner_team, int score)
 	for (int i = 1; i <= MaxClients; i++) {
 		PlayerLives[i] = 0;
 	}
+	
+	IsLifestealers = false;
 }
 
 void SR_Lives_OnTeamChange(int client, TFTeam team)
@@ -265,4 +289,46 @@ public Action SR_Lives_DisplayHudText(Handle timer)
 	} else {
 		return Plugin_Stop;
 	}
+}
+
+// -------------------------------------------------------------------
+void SR_Lifesteal_OnStart()
+{
+	IsLifestealers = true;
+	
+	for (int i = 1; i <= MaxClients; i++) {
+		if (IsClientInGame(i) && IsClientPlaying(i) && !IsPlayerAlive(i)) {
+			TF2_RespawnPlayer(i);
+		}
+	}
+	
+	int red_lives;
+	int blue_lives;
+	
+	for (int i = 1; i <= MaxClients; i++) {
+		if (IsClientInGame(i) && IsPlayerAlive(i)) {
+			TFTeam team = TF2_GetClientTeam(i);
+			
+			if (team == TFTeam_Red) {
+				red_lives += StartingLSLives;
+			} else {
+				blue_lives += StartingLSLives;
+			}
+			
+			PlayerLives[i] = StartingLSLives;
+			OriginalTeam[i] = team;
+		}
+	}
+	
+	SetMaxScore(red_lives+blue_lives);
+	
+	AnnouncedWin = false;
+	
+	CreateTimer(0.10, SR_Lives_DisplayHudText, _, TIMER_REPEAT);
+	SR_Lives_CheckWinConditions();
+}
+
+void SR_Lifesteal_Description(char[] desc, int maxlength)
+{
+	FormatEx(desc, maxlength, "You start with {%i} lives! Killing an enemy will give you {1} life!", StartingLSLives);
 }
