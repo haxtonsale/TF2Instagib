@@ -5,6 +5,7 @@ void Menu_Main(int client)
 	
 	menu.SetTitle("TF2Instagib v%s", INSTAGIB_VERSION);
 	
+	menu.AddItem("exit", "Exit");
 	menu.AddItem("settings", "Settings");
 	
 	if (CheckCommandAccess(client, "forceround", ADMFLAG_CHEATS)) {
@@ -12,6 +13,7 @@ void Menu_Main(int client)
 	}
 	
 	menu.AddItem("credits", "Credits");
+	menu.ExitButton = false;
 	menu.Display(client, 60);
 }
 
