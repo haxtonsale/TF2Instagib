@@ -181,12 +181,8 @@ void SR_Lives_OnDeath(Round_OnDeath_Data data)
 {
 	int client = data.victim;
 	
-	PrintToChatAll("%i",PlayerLives[client]);
-	
 	--PlayerLives[client];
 	Forward_OnLifeLost(client, PlayerLives[client], data.attacker);
-	
-	PrintToChatAll("%i",PlayerLives[client]);
 	
 	if (IsLifestealers && data.attacker > 0 && data.attacker <= MaxClients && data.attacker != client) {
 		++PlayerLives[data.attacker];
