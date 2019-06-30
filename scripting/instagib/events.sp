@@ -19,20 +19,12 @@ public void Event_OnRoundStart(Event event, const char[] name, bool dont_broadca
 	
 	delete g_RoundTimer;
 	
-	int count = GetActivePlayerCount();
-	
-	if (count < g_Config.MinPlayersForTDM) {
-		FFA_Enable();
-	} else {
-		FFA_Disable();
-	}
-	
 	g_RoundTimeLeftFormatted = "";
 	
 	if (!g_IsWaitingForPlayers && GetRandomFloat() <= g_Config.SpecialRound_Chance) {
-		GetRandomSpecialRound(g_CurrentRound, g_RoundType);
+		GetRandomSpecialRound(g_CurrentRound);
 	} else {
-		GetDefaultRound(g_CurrentRound, g_RoundType);
+		GetDefaultRound(g_CurrentRound);
 	}
 	
 	if (g_CurrentRound.is_special) {
@@ -62,8 +54,7 @@ public void Event_OnRoundStart(Event event, const char[] name, bool dont_broadca
 		}
 	}
 	
-	g_RoundHudTextFormatted = (IsFFA() && !StrEqual(g_CurrentRound.name, "Free For All")) ? "FFA " : "";
-	StrCat(g_RoundHudTextFormatted, sizeof(g_RoundHudTextFormatted), g_CurrentRound.name);
+	strcopy(g_RoundHudTextFormatted, sizeof(g_RoundHudTextFormatted), g_CurrentRound.name);
 	
 	if (g_CurrentRound.round_time) {
 		g_RoundTimeLeft = g_CurrentRound.round_time;
@@ -187,12 +178,8 @@ public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 			if (attacker > 0 && attacker <= MaxClients && client != attacker) {
 				g_Killcount[attacker]++;
 				
-				if (IsFFA()) {
-					FFA_UpdateLeaderboards();
-				} else {
-					TFTeam team = TF2_GetClientTeam(attacker);
-					AddScore(team, g_CurrentRound.points_per_kill);
-				}
+				TFTeam team = TF2_GetClientTeam(attacker);
+				AddScore(team, g_CurrentRound.points_per_kill);
 			}
 		}
 	}
@@ -202,12 +189,10 @@ public void Event_OnRoundEnd(Event event, const char[] name, bool dont_broadcast
 {
 	TFTeam team = view_as<TFTeam>(event.GetInt("team"));
 	
-	int score = IsFFA() ? g_Killcount[FFA_GetLeaderboardPlayer(1)] : InstagibGetTeamScore(team);
+	int score = InstagibGetTeamScore(team);
 	
-	if (!IsFFA() && g_CurrentRound.announce_win && team != TFTeam_Unassigned) {
-		AnnounceWin(team, _, _, score);
-	} else if (IsFFA() && g_CurrentRound.announce_win) {
-		AnnounceWin(_, _, FFA_GetLeaderboardPlayer(1), score);
+	if (g_CurrentRound.announce_win && team != TFTeam_Unassigned) {
+		AnnounceWin(team, _, score);
 	}
 	
 	if (g_CurrentRound.on_end != INVALID_FUNCTION) {

@@ -1,5 +1,5 @@
 // -------------------------------------------------------------------
-static bool IsClientLate[MAXPLAYERS+1] = true;
+static bool IsClientLate[MAXPLAYERS+1] = {true, ...};
 static bool IsClientFrozen[MAXPLAYERS+1];
 static Handle UnfreezeTimer[MAXPLAYERS+1];
 static float UnfreezeAfter;
@@ -13,14 +13,13 @@ void SR_FreezeTag_Init()
 {
 	InstagibRound sr;
 	NewInstagibRound(sr, "Freeze Tag", "Freeze enemies using your Railgun!\nShoot at your allies to free them!");
-	sr.roundtype_flags = ROUNDTYPE_TDM;
 	sr.round_time = 300;
 	sr.minscore = 322; // dynamic
 	sr.maxscore_multi = 0.0;
 	sr.points_per_kill = 0;
 	sr.allow_killbind = false;
 	sr.announce_win = false;
-	sr.min_players_tdm = 6;
+	sr.min_players = 6;
 	sr.ig_map_only = true;
 	
 	sr.on_start = SR_FreezeTag_OnStart;

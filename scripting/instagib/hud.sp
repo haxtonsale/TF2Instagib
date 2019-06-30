@@ -21,24 +21,14 @@ public Action Timer_DisplayHudText(Handle timer)
 		color[2] = g_Config.HudText_Color[2];
 		color[3] = g_Config.HudText_Color[3];
 		
-		if (!IsFFA()) {
-			SetHudTextParams(x, y, 0.2, color[0], color[1], color[2], color[3], 0, 0.0, 0.0, 0.0);
-		}
+		SetHudTextParams(x, y, 0.2, color[0], color[1], color[2], color[3], 0, 0.0, 0.0, 0.0);
 		
 		for (int i = 1; i <= MaxClients; i++) {
 			if (IsClientInGame(i)) {
 				char kills[64];
 				
 				kills = InstagibHudPlayerInfo(i);
-				
-				if (IsFFA()) {
-					GetHudColor(color, FFA_GetLeaderboardPlace(i));
-					
-					SetHudTextParams(x, y, 0.2, color[0], color[1], color[2], color[3], 0, 0.0, 0.0, 0.0);
-					ShowSyncHudText(i, HudSync, "%s\n%s%s", kills, g_RoundHudTextFormatted, g_RoundTimeLeftFormatted);
-				} else {
-					ShowSyncHudText(i, HudSync, "%s\n%s%s", kills, g_RoundHudTextFormatted, g_RoundTimeLeftFormatted);
-				}
+				ShowSyncHudText(i, HudSync, "%s\n%s%s", kills, g_RoundHudTextFormatted, g_RoundTimeLeftFormatted);
 			}
 		}
 	}

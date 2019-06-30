@@ -54,7 +54,6 @@ void LoadConfig()
 		g_Config.HudText_y = IGConfig.GetFloat("HudText_y", 0.78);
 		IGConfig.GetColor("HudText_Color", g_Config.HudText_Color[0], g_Config.HudText_Color[1], g_Config.HudText_Color[2], g_Config.HudText_Color[3]);
 		
-		g_Config.MinPlayersForTDM = IGConfig.GetNum("MinPlayersForTDM", 12);
 		g_Config.EnabledKillstreaks = view_as<bool>(IGConfig.GetNum("EnableKillstreaks", 1));
 		g_Config.MinScore = IGConfig.GetNum("MinScore", 15);
 		g_Config.RespawnTime = IGConfig.GetFloat("RespawnTime", 2.0);
@@ -148,7 +147,6 @@ void SpecialRoundConfig_GetOverwrites(InstagibRound ig_round)
 			ig_round.is_special = view_as<bool>(IGConfig.GetNum("IsSpecialRound", ig_round.is_special));
 			ig_round.ig_map_only = view_as<bool>(IGConfig.GetNum("InstagibMapOnly", ig_round.ig_map_only));
 			
-			ig_round.roundtype_flags = IGConfig.GetNum("RoundTypeFlags", ig_round.roundtype_flags);
 			ig_round.round_time = IGConfig.GetNum("RoundLength", ig_round.round_time);
 			ig_round.minscore = IGConfig.GetNum("MinScore", ig_round.minscore);
 			ig_round.maxscore_multi = IGConfig.GetFloat("MaxScore_Multiplier", ig_round.maxscore_multi);
@@ -164,8 +162,7 @@ void SpecialRoundConfig_GetOverwrites(InstagibRound ig_round)
 			ig_round.main_wep_clip = IGConfig.GetNum("MainWeapon_Clip", ig_round.main_wep_clip);
 			ig_round.infinite_ammo = view_as<bool>(IGConfig.GetNum("InfiniteAmmo", ig_round.infinite_ammo));
 			
-			ig_round.min_players_tdm = IGConfig.GetNum("MinPlayers_TDM", ig_round.min_players_tdm);
-			ig_round.min_players_ffa = IGConfig.GetNum("MinPlayers_FFA", ig_round.min_players_ffa);
+			ig_round.min_players = IGConfig.GetNum("MinPlayers", ig_round.min_players);
 		}
 	}
 }

@@ -18,24 +18,15 @@ void Rounds_Init()
 	
 	InstagibRound tdm;
 	NewInstagibRound(tdm, "Team Deathmatch");
-	tdm.roundtype_flags = ROUNDTYPE_TDM;
 	tdm.is_special = false;
 	SubmitInstagibRound(tdm);
-	
-	InstagibRound ffa;
-	NewInstagibRound(ffa, "Free For All");
-	ffa.roundtype_flags = ROUNDTYPE_FFA;
-	ffa.is_special = false;
-	SubmitInstagibRound(ffa);
 	
 	g_CurrentRound = tdm;
 	
 	SR_Explosions_Init();
-	SR_Headshots_Init();
 	SR_OPRailguns_Init();
 	SR_TimeAttack_Init();
 	SR_Lives_Init();
-	SR_OITC_Init();
 	SR_FreezeTag_Init();
 }
 
@@ -50,7 +41,6 @@ void NewInstagibRound(InstagibRound buffer, char[] name, char[] desc = "")
 	round.minscore = g_Config.MinScore;
 	round.maxscore_multi = g_Config.MaxScoreMulti;
 	round.main_weapon = g_Weapon_Railgun;
-	round.roundtype_flags = ROUNDTYPE_TDM | ROUNDTYPE_FFA;
 	round.main_wep_clip = 32;
 	round.infinite_ammo = true;
 	round.respawn_time = g_Config.RespawnTime;
@@ -102,8 +92,6 @@ static bool CheckInstagibRoundForErrors(InstagibRound round, char error[256])
 		error = "Round.name must not be null.";
 	} else if (round.main_weapon == null) {
 		error = "Round.main_weapon must not be null.";
-	} else if (!round.roundtype_flags) {
-		error = "Round.roundtype_flags must not be 0.";
 	} else {
 		return false;
 	}
@@ -117,13 +105,11 @@ void ForceRound(InstagibRound round)
 	NextRound = round;
 }
 
-void GetDefaultRound(InstagibRound buffer, int roundtype_flags)
+void GetDefaultRound(InstagibRound buffer)
 {
 	if (!ForcedNextRound) {
 		if (g_IsWaitingForPlayers) {
 			InstagibRounds.GetArray(0, buffer);
-		} else if (roundtype_flags & ROUNDTYPE_FFA) {
-			InstagibRounds.GetArray(2, buffer);
 		} else {
 			InstagibRounds.GetArray(1, buffer);
 		}
@@ -133,7 +119,7 @@ void GetDefaultRound(InstagibRound buffer, int roundtype_flags)
 	}
 }
 
-void GetRandomSpecialRound(InstagibRound buffer, int roundtype_flags)
+void GetRandomSpecialRound(InstagibRound buffer)
 {
 	if (!ForcedNextRound) {
 		static int last_round;
@@ -143,23 +129,21 @@ void GetRandomSpecialRound(InstagibRound buffer, int roundtype_flags)
 		int count;
 		int[] suitable_rounds = new int[len];
 		
-		for (int i = 3; i < len; i++) {
+		for (int i = 2; i < len; i++) {
 			InstagibRound round;
 			InstagibRounds.GetArray(i, round);
 			
-			bool enough_players = (!IsFFA() && playercount >= round.min_players_tdm) || (IsFFA() && playercount >= round.min_players_ffa);
+			bool enough_players = (playercount >= round.min_players);
 			bool suitable_map = !round.ig_map_only || (round.ig_map_only && g_IsMapIG);
 			
 			if (last_round != i && round.is_special && suitable_map && enough_players) {
-				if (roundtype_flags & round.roundtype_flags) {
-					suitable_rounds[count] = i;
-					++count;
-				}
+				suitable_rounds[count] = i;
+				++count;
 			}
 		}
 		
 		if (!count) {
-			GetDefaultRound(buffer, roundtype_flags);
+			GetDefaultRound(buffer);
 		} else {
 			int roll = GetRandomInt(0, count-1);
 			InstagibRounds.GetArray(suitable_rounds[roll], buffer);
@@ -226,9 +210,7 @@ void Rounds_Menu(int client, char[] title, MenuHandler handler, bool display_all
 	for (int i = 1; i < len; i++) {
 		InstagibRounds.GetArray(i, round);
 		
-		if (g_RoundType & round.roundtype_flags) {
-			menu.AddItem(round.name, round.name);
-		}
+		menu.AddItem(round.name, round.name);
 	}
 	
 	menu.ExitButton = false;

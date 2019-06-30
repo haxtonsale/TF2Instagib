@@ -13,8 +13,7 @@ void SR_Explosions_Init()
 {
 	InstagibRound sr;
 	NewInstagibRound(sr, "Directed by Michael Bay", "Players explode on death!");
-	sr.min_players_tdm = 8;
-	sr.min_players_ffa = 4;
+	sr.min_players = 8;
 	sr.on_death = SR_Explosions_OnDeath;
 	sr.on_damage = SR_Explosions_OnTakeDamage;
 	

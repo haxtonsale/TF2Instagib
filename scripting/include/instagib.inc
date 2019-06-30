@@ -3,9 +3,6 @@
 #endif
 #define _instagib_included
 
-#define ROUNDTYPE_TDM (1 << 0)
-#define ROUNDTYPE_FFA (1 << 1)
-
 enum struct InstagibRound
 {
 	char name[64];
@@ -13,7 +10,6 @@ enum struct InstagibRound
 	
 	bool is_special;
 	
-	int roundtype_flags;
 	int round_time;
 	int minscore;
 	float maxscore_multi;
@@ -22,8 +18,7 @@ enum struct InstagibRound
 	bool allow_latespawn;
 	bool allow_killbind;
 	bool end_at_time_end;			// Whether the round will be forcefully ended when the round time is over
-	int min_players_tdm;
-	int min_players_ffa;
+	int min_players;
 	bool ig_map_only;				// Whether the round is meant to be played only on instagib maps
 	
 	float railjump_velXY_multi;
@@ -67,26 +62,6 @@ native void IG_SetMaxScore(int amount);
 
 native int IG_GetRoundTime();
 native void IG_SetRoundTime(int seconds);
-
-/**
- * Returns client's place on the FFA leaderboards.
- *
- * @param name			Client index.
- *
- * @return				Client's place if the current round type is FFA, -1 otherwise.
- */
-native int IG_GetClientLeaderboardsPlace(int client);
-
-/**
- * Returns which client is located on the FFA leaderboards' defined place.
- *
- * @param place			Place on the leaderboards.
- *
- * @return				Client if the current round type is FFA, -1 otherwise.
- */
-native int IG_GetClientFromLeaderboardsPlace(int place);
-
-native bool IG_IsFFA();
 
 // ------------------------------------------------------------------- Limited Lives
 forward void IG_LimitedLives_OnLifeLost(int client, int lives, int attacker);

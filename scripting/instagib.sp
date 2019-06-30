@@ -1,5 +1,5 @@
 // -------------------------------------------------------------------
-#define INSTAGIB_VERSION "1.1.0"
+#define INSTAGIB_VERSION "1.2.0"
 
 //#define DEBUG
 
@@ -24,9 +24,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define ROUNDTYPE_TDM (1 << 0)
-#define ROUNDTYPE_FFA (1 << 1)
-
 // -------------------------------------------------------------------
 enum struct InstagibRound
 {
@@ -35,7 +32,6 @@ enum struct InstagibRound
 	
 	bool is_special;
 	
-	int roundtype_flags;
 	int round_time;
 	int minscore;
 	float maxscore_multi;
@@ -44,8 +40,7 @@ enum struct InstagibRound
 	bool allow_latespawn;
 	bool allow_killbind;
 	bool end_at_time_end;		// Whether the round will be forcefully ended when the round time is over
-	int min_players_tdm;
-	int min_players_ffa;
+	int min_players;
 	bool ig_map_only;			// Whether the round is meant to be played only on instagib maps
 	
 	float railjump_velXY_multi;
@@ -96,7 +91,6 @@ enum struct Config
 	float HudText_y;
 	int HudText_Color[4];
 	
-	int MinPlayersForTDM;
 	bool EnabledKillstreaks;
 	int MinScore;
 	float RespawnTime;
@@ -136,8 +130,6 @@ bool g_CanRailjump;
 bool g_MapHasRoundSetup;
 bool g_IsMapIG;
 
-int g_RoundType = ROUNDTYPE_TDM;
-
 InstagibRound g_CurrentRound;
 int g_MaxScore;
 int g_RoundTimeLeft;
@@ -156,10 +148,8 @@ Handle g_RoundTimer;
 
 Config g_Config;
 bool g_MusicEnabled = true;
-bool g_FFAAllowed;
 
 char g_InstagibTag[64];
-ConVar g_cvar_FF;
 bool g_SteamTools;
 
 // -------------------------------------------------------------------
@@ -169,7 +159,6 @@ bool g_SteamTools;
 #include "instagib/particles.sp"
 #include "instagib/roundlogic.sp"
 #include "instagib/events.sp"
-#include "instagib/ffa.sp"
 #include "instagib/rounds.sp"
 #include "instagib/hud.sp"
 #include "instagib/commands.sp"
@@ -178,13 +167,11 @@ bool g_SteamTools;
 #include "instagib/menus/menu_settings.sp"
 #include "instagib/menus/menu_main.sp"
 
-#include "instagib/rounds/all_explosions.sp"
-#include "instagib/rounds/all_headshots.sp"
-#include "instagib/rounds/all_oprailguns.sp"
-#include "instagib/rounds/all_timeattack.sp"
-#include "instagib/rounds/all_limitedlives.sp"
-#include "instagib/rounds/ffa_oneinthechamber.sp"
-#include "instagib/rounds/tdm_freezetag.sp"
+#include "instagib/rounds/explosions.sp"
+#include "instagib/rounds/oprailguns.sp"
+#include "instagib/rounds/timeattack.sp"
+#include "instagib/rounds/limitedlives.sp"
+#include "instagib/rounds/freezetag.sp"
 
 // -------------------------------------------------------------------
 public Plugin myinfo =
@@ -256,13 +243,11 @@ bool IsClientPlaying(int client)
 	return (TF2_GetClientTeam(client) >= TFTeam_Red);
 }
 
-void AnnounceWin(TFTeam team = TFTeam_Unassigned, char[] point = "kills", int client = 0, int points = 0) 
+void AnnounceWin(TFTeam team = TFTeam_Unassigned, char[] point = "kills", int points = 0) 
 {
 	char str[128];
 	
-	if (client) {
-		FormatEx(str, sizeof(str), "%s%N%s", ColorStr(CGetTeamColor(client)), client, g_Config.ChatColor);
-	} else if (team >= TFTeam_Red) {
+	if (team >= TFTeam_Red) {
 		str = (team == TFTeam_Red) ? "\x07FF4040RED Team\x01" : "\x0799CCFFBLU Team\x01";
 	} else {
 		InstagibPrintToChatAll(true, "Stalemate!");
@@ -278,28 +263,16 @@ void AnnounceWin(TFTeam team = TFTeam_Unassigned, char[] point = "kills", int cl
 
 void InstagibForceRoundEnd()
 {
-	if (IsFFA()) {
-		FFA_UpdateLeaderboards();
-		int winner = FFA_GetLeaderboardPlayer(1);
-		
-		if (g_Killcount[winner] > 0) {
-			FFA_Win(winner);
-		} else {
-			Stalemate();
-			AnnounceWin();
-		}
+	int red = GetEntProp(g_PDLogicEnt, Prop_Send, "m_nRedTargetPoints");
+	int blue = GetEntProp(g_PDLogicEnt, Prop_Send, "m_nBlueTargetPoints");
+	
+	if (red > blue) {
+		ForceWin(TFTeam_Red);
+	} else if (blue > red) {
+		ForceWin(TFTeam_Blue);
 	} else {
-		int red = GetEntProp(g_PDLogicEnt, Prop_Send, "m_nRedTargetPoints");
-		int blue = GetEntProp(g_PDLogicEnt, Prop_Send, "m_nBlueTargetPoints");
-		
-		if (red > blue) {
-			ForceWin(TFTeam_Red);
-		} else if (blue > red) {
-			ForceWin(TFTeam_Blue);
-		} else {
-			Stalemate();
-			AnnounceWin();
-		}
+		Stalemate();
+		AnnounceWin();
 	}
 }
 
@@ -308,11 +281,7 @@ char InstagibHudPlayerInfo(int client)
 	char str[64];
 	
 	if (g_Killcount[client]) {
-		if (IsFFA()) {
-			FormatEx(str, sizeof(str), "Kills: %i (%s Place)", g_Killcount[client], GetPlaceStr(FFA_GetLeaderboardPlace(client)));
-		} else {
-			FormatEx(str, sizeof(str), "Kills: %i", g_Killcount[client]);
-		}
+		FormatEx(str, sizeof(str), "Kills: %i", g_Killcount[client]);
 	}
 	
 	return str;
@@ -453,8 +422,6 @@ void CheckForInstagibEnts()
 		
 		if (StrEqual(name, "instagib_nomusic")) {
 			g_MusicEnabled = false;
-		} else if (StrEqual(name, "instagib_ffa")) {
-			g_FFAAllowed = true;
 		}
 		
 		ent = FindEntityByClassname(ent+1, "info_target");
@@ -604,7 +571,6 @@ public void OnPluginStart()
 	
 	CreateDefaultRailgun();
 	Events_Init();
-	FFA_Init();
 	Rounds_Init();
 	Hud_Init();
 }
@@ -741,16 +707,11 @@ public void OnClientDisconnect(int client)
 	g_Killcount[client] = 0;
 	g_ClientSuicided[client] = false;
 	g_MainWeaponEnt[client] = -1;
-	
-	if (IsFFA()) {
-		FFA_UpdateLeaderboards();
-	}
 }
 
 public void OnPluginEnd()
 {
 	Steam_SetGameDescription("Team Fortress");
-	g_cvar_FF.RestoreDefault();
 	
 	GameRules_SetProp("m_nHudType", 0);
 	GameRules_SetProp("m_bPlayingRobotDestructionMode", false);

@@ -21,11 +21,6 @@ void Natives_Init()
 	CreateNative("IG_GetRoundTime", Native_GetRoundTime);
 	CreateNative("IG_SetRoundTime", Native_SetRoundTime);
 	
-	CreateNative("IG_GetClientLeaderboardsPlace", Native_GetFFAPlace);
-	CreateNative("IG_GetClientFromLeaderboardsPlace", Native_GetFFAClient);
-	
-	CreateNative("IG_IsFFA", Native_IsFFA);
-	
 	FwRailjump = CreateGlobalForward("IG_OnRailjump", ET_Ignore, Param_Cell, Param_Array);
 	FwLifeLost = CreateGlobalForward("IG_LimitedLives_OnLifeLost", ET_Ignore, Param_Cell, Param_Cell, Param_Cell);
 	FwAllLivesLost = CreateGlobalForward("IG_LimitedLives_OnAllLivesLost", ET_Ignore, Param_Cell);
@@ -155,33 +150,6 @@ public int Native_SetMaxScore(Handle plugin, int numParams)
 	SetMaxScore(value);
 	
 	return 1;
-}
-
-public int Native_GetFFAPlace(Handle plugin, int numParams)
-{
-	if (!IsFFA()) {
-		return -1;
-	}
-	
-	int client = GetNativeCell(1);
-	
-	return FFA_GetLeaderboardPlace(client);
-}
-
-public int Native_GetFFAClient(Handle plugin, int numParams)
-{
-	if (!IsFFA()) {
-		return -1;
-	}
-	
-	int place = GetNativeCell(1);
-	
-	return FFA_GetLeaderboardPlayer(place);
-}
-
-public int Native_IsFFA(Handle plugin, int numParams)
-{
-	return IsFFA();
 }
 
 public int Native_GetRoundTime(Handle plugin, int numParams)
