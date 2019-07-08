@@ -117,8 +117,6 @@ public void Event_OnSpawn(Event event, const char[] name, bool dont_broadcast)
 		ChangeRespawnTime(TFTeam_Red, 6000);
 		ChangeRespawnTime(TFTeam_Blue, 6000);
 	}
-	
-	g_ClientSuicided[client] = false;
 }
 
 public void Event_Inventory(Event event, const char[] name, bool dont_broadcast)
@@ -146,11 +144,6 @@ public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 	
 	if (g_IsWaitingForPlayers) {
 		return;
-	}
-	
-	// Mark client as suicided even if death was from environment
-	if (client == attacker || !attacker) {
-		g_ClientSuicided[client] = true;
 	}
 	
 	if (g_IsRoundActive) {
