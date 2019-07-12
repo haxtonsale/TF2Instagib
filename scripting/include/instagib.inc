@@ -15,7 +15,6 @@ enum struct InstagibRound
 	float maxscore_multi;
 	int points_per_kill;
 	bool announce_win;
-	bool allow_latespawn;
 	bool allow_killbind;
 	bool end_at_time_end;			// Whether the round will be forcefully ended when the round time is over
 	int min_players;

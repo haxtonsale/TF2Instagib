@@ -132,9 +132,7 @@ public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	int attacker = GetClientOfUserId(event.GetInt("attacker"));
 	
-	if (g_CurrentRound.allow_latespawn) {
-		InstagibRespawn(client, g_CurrentRound.respawn_time);
-	}
+	InstagibRespawn(client, g_CurrentRound.respawn_time);
 	
 	if (g_IsWaitingForPlayers) {
 		return;

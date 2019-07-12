@@ -15,7 +15,6 @@ void SR_Lives_Init()
 	InstagibRound sr;
 	NewInstagibRound(sr, "Limited Lives");
 	sr.round_time = 300;
-	sr.allow_latespawn = false;
 	sr.minscore = 322; // dynamic
 	sr.points_per_kill = 0;
 	sr.announce_win = false;

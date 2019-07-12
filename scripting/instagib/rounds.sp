@@ -47,7 +47,6 @@ void NewInstagibRound(InstagibRound buffer, char[] name, char[] desc = "")
 	round.points_per_kill = 1;
 	round.is_special = true;
 	round.announce_win = true;
-	round.allow_latespawn = true;
 	round.allow_killbind = true;
 	round.end_at_time_end = true;
 	
