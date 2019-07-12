@@ -18,6 +18,8 @@ enum TE_AttachParticle_SendTo
 	TE_ToAllButOne
 }
 
+static StringMap CachedParticles;
+
 // -------------------------------------------------------------------
 void TE_SpawnParticle(char[] particle_name, float vecOrigin[3], float vecStart[3] = NULL_VECTOR, float vecAngles[3] = NULL_VECTOR) 
 {
@@ -72,6 +74,15 @@ void TE_AttachParticle(int entity, char[] particle_name, ParticleAttachment_t at
 // -------------------------------------------------------------------
 int FindParticle(char[] particle_name, bool after_precache = false)
 {
+	if (CachedParticles == null) {
+		CachedParticles = new StringMap();
+	}
+	
+	int cached;
+	if (CachedParticles.GetValue(particle_name, cached)) {
+		return cached;
+	}
+	
 	int StringTableIndex = FindStringTable("ParticleEffectNames");
 	int StringTableNumStrings = GetStringTableNumStrings(StringTableIndex);
 	
@@ -97,6 +108,7 @@ int FindParticle(char[] particle_name, bool after_precache = false)
 		}
 	}
 	
+	CachedParticles.SetValue(particle_name, strindx);
 	return strindx;
 }
 
