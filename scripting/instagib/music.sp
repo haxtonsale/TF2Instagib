@@ -75,19 +75,23 @@ void PlayRandomMusic()
 		MusicData data;
 		
 		// Don't repeat songs :)
-		int count;
-		int[] suitable_music = new int[len];
-		for (int i = 0; i < len; i++) {
-			if (i != CurrentMusicIndex || len == 1) {
-				suitable_music[count] = i;
-				++count;
+		if (len > 1) {
+			int count;
+			int[] suitable_music = new int[len];
+			for (int i = 0; i < len; i++) {
+				if (i != CurrentMusicIndex || len == 1) {
+					suitable_music[count] = i;
+					++count;
+				}
 			}
+			
+			int roll = GetRandomInt(0, count-1);
+			InstagibMusic.GetArray(suitable_music[roll], data);
+			
+			CurrentMusicIndex = suitable_music[roll];
+		} else {
+			InstagibMusic.GetArray(0, data);
 		}
-		
-		int roll = GetRandomInt(0, count-1);
-		InstagibMusic.GetArray(suitable_music[roll], data);
-		
-		CurrentMusicIndex = suitable_music[roll];
 		
 		for (int i = 1; i <= MaxClients; i++) {
 			if (IsClientInGame(i) && g_ClientPrefs[i].MusicEnabled) {
