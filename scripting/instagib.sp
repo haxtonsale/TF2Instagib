@@ -596,7 +596,7 @@ public void OnMapStart()
 	char mapname[256];
 	GetCurrentMap(mapname, sizeof(mapname));
 	
-	if (!strncmp(mapname, "ig_", 3)) {
+	if (!strncmp(mapname, "ig_", 3) || !strncmp(mapname, "dm_", 3)) {
 		g_IsMapIG = true;
 	}
 	
