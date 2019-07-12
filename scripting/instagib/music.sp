@@ -53,7 +53,11 @@ void PrecacheMusic()
 
 void AnnounceMusicAll(char[] name)
 {
-	InstagibPrintToChatAll(true, "♫ Now Playing ♫\n%s", name);
+	for (int i = 1; i <= MaxClients; i++) {
+		if (g_ClientPrefs[i].MusicEnabled) {
+			InstagibPrintToChat(true, i, "♫ Now Playing ♫\n%s", name);
+		}
+	}
 }
 
 void AnnounceMusic(int client, char[] name)
