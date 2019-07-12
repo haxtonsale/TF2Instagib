@@ -25,6 +25,8 @@ void SR_Lives_Init()
 	
 	sr.on_start = SR_Lives_OnStart;
 	sr.on_end = SR_Lives_OnEnd;
+	sr.on_spawn = SR_Lives_OnSpawn;
+	sr.on_inv = SR_Lives_OnInventory;
 	sr.on_death = SR_Lives_OnDeath;
 	sr.on_disconnect = SR_Lives_OnDisconnect;
 	sr.on_team = SR_Lives_OnTeamChange;
@@ -150,6 +152,21 @@ void SR_Lives_OnStart()
 	
 	CreateTimer(0.10, SR_Lives_DisplayHudText, _, TIMER_REPEAT);
 	SR_Lives_CheckWinConditions();
+}
+
+void SR_Lives_OnSpawn(int client, TFTeam team)
+{
+	// Turn people with no lives to ghosts.
+	if (PlayerLives[client] <= 0 && IsClientPlaying(client)) {
+		TF2_AddCondition(client, TFCond_HalloweenGhostMode);
+	}
+}
+
+void SR_Lives_OnInventory(int client)
+{
+	if (PlayerLives[client] <= 0 && IsClientPlaying(client)) {
+		TF2_RemoveAllWeapons(client);
+	}
 }
  
 void SR_Lives_OnDeath(Round_OnDeath_Data data)
