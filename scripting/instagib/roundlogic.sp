@@ -45,16 +45,6 @@ int MapRoundSetupTime()
 	return (ent != -1) ? GetEntProp(ent, Prop_Data, "m_nSetupTimeLength") : 0;
 }
 
-void ChangeRespawnTime(TFTeam team, int time)
-{
-	char input[32];
-	
-	input = (team == TFTeam_Red) ? "SetRedTeamRespawnWaveTime" : "SetBlueTeamRespawnWaveTime";
-	
-	SetVariantInt(time);
-	AcceptEntityInput(g_GamerulesEnt, input);
-}
-
 void SetMaxScore(int score)
 {
 	SetEntProp(g_PDLogicEnt, Prop_Data, "m_nMaxPoints", score);
