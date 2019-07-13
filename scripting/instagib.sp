@@ -1,5 +1,5 @@
 // -------------------------------------------------------------------
-#define INSTAGIB_VERSION "1.3.2"
+#define INSTAGIB_VERSION "1.4.0"
 
 //#define DEBUG
 
@@ -98,6 +98,8 @@ enum struct Config
 	float MaxScoreMulti;
 	float RailjumpVelXY;
 	float RailjumpVelZ;
+	
+	bool EnabledBhop;
 }
 
 typeset Round_OnEnd
@@ -161,6 +163,7 @@ bool g_SteamTools;
 #include "instagib/hud.sp"
 #include "instagib/commands.sp"
 #include "instagib/natives.sp"
+#include "instagib/bhop.sp"
 #include "instagib/menus/menu_forceround.sp"
 #include "instagib/menus/menu_settings.sp"
 #include "instagib/menus/menu_main.sp"
@@ -335,7 +338,7 @@ void InstagibStart()
 	if (!g_IsWaitingForPlayers) {
 		int count = GetActivePlayerCount();
 		
-		int score = g_CurrentRound.minscore + RoundFloat((count * g_CurrentRound.maxscore_multi));
+		int score = g_CurrentRound.minscore + RoundFloat(float(count) * g_CurrentRound.maxscore_multi);
 		
 		SetMaxScore(score);
 		

@@ -54,7 +54,7 @@ void PrecacheMusic()
 void AnnounceMusicAll(char[] name)
 {
 	for (int i = 1; i <= MaxClients; i++) {
-		if (g_ClientPrefs[i].MusicEnabled) {
+		if (g_ClientPrefs[i].EnabledMusic) {
 			InstagibPrintToChat(true, i, "♫ Now Playing ♫\n%s", name);
 		}
 	}
@@ -98,7 +98,7 @@ void PlayRandomMusic()
 		}
 		
 		for (int i = 1; i <= MaxClients; i++) {
-			if (IsClientInGame(i) && g_ClientPrefs[i].MusicEnabled) {
+			if (IsClientInGame(i) && g_ClientPrefs[i].EnabledMusic) {
 				EmitSoundToClient(i, data.path, _, SNDCHAN_AUTO, .volume = data.volume);
 			}
 		}
@@ -114,7 +114,7 @@ void PlayRandomMusic()
 
 void PlayMusicToLateClient(int client)
 {
-	if (g_ClientPrefs[client].MusicEnabled && InstagibMusic != null && IsClientInGame(client) && g_MusicEnabled && IsMusicPlaying) {
+	if (g_ClientPrefs[client].EnabledMusic && InstagibMusic != null && IsClientInGame(client) && g_MusicEnabled && IsMusicPlaying) {
 		EmitSoundToClient(client, CurrentMusic.path, _, SNDCHAN_AUTO, .volume = CurrentMusic.volume);
 		AnnounceMusic(client, CurrentMusic.name);
 	}
