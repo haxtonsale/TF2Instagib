@@ -322,13 +322,6 @@ void InstagibPrecache()
 		}
 	}
 	
-	for (int i = 1; i <= 7; i++) {
-		char sound[PLATFORM_MAX_PATH];
-		FormatEx(sound, sizeof(sound), "vo/halloween_boo%i.mp3", i);
-		
-		PrecacheSound(sound);
-	}
-	
 	PrecacheMusic();
 }
 
