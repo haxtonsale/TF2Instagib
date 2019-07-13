@@ -178,7 +178,7 @@ public Plugin myinfo =
 	author = "Haxton Sale#3690",
 	description = "Best action packed gamemode ever",
 	version = INSTAGIB_VERSION,
-	url = " "
+	url = "https://github.com/haxtonsale/TF2Instagib"
 };
 
 // -------------------------------------------------------------------
