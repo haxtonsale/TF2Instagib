@@ -4,7 +4,7 @@ static bool IsClientFrozen[MAXPLAYERS+1];
 static Handle UnfreezeTimer[MAXPLAYERS+1];
 static float UnfreezeAfter;
 
-static float ClientVecOnDeath[MAXPLAYERS+1][2][3];
+static float ClientVecOnDeath[MAXPLAYERS+1][3][3];
 
 static bool AnnouncedWin; // To prevent multiple win announcements if the final kill was penetrating
 
@@ -157,6 +157,8 @@ void SR_FreezeTag_Unfreeze(int client)
 			SetEntityRenderColor(client, 255, 255, 255, 255);
 			
 			SR_FreezeTag_Effect(client);
+			
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, ClientVecOnDeath[client][2]);
 		}
 		
 		IsClientFrozen[client] = false;
@@ -226,6 +228,7 @@ void SR_FreezeTag_OnDeath(Round_OnDeath_Data data)
 {
 	GetClientAbsOrigin(data.victim, ClientVecOnDeath[data.victim][0]);
 	GetClientAbsAngles(data.victim, ClientVecOnDeath[data.victim][1]);
+	GetEntPropVector(data.victim, Prop_Data, "m_vecVelocity", ClientVecOnDeath[data.victim][2]);
 	
 	IsClientFrozen[data.victim] = true;
 	RequestFrame(SR_FreezeTag_Frame_Respawn, data.victim);
@@ -253,6 +256,10 @@ void SR_FreezeTag_OnDisconnect(int client)
 	SR_FreezeTag_CheckWinConditions();
 	IsClientFrozen[client] = false;
 	IsClientLate[client] = true;
+	
+	ClientVecOnDeath[client][2][0] = 0.0;
+	ClientVecOnDeath[client][2][1] = 0.0;
+	ClientVecOnDeath[client][2][2] = 0.0;
 }
 
 void SR_FreezeTag_OnEnd(TFTeam winner_team)
