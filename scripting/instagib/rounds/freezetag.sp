@@ -1,5 +1,5 @@
 // -------------------------------------------------------------------
-static bool IsClientLate[MAXPLAYERS+1] = {true, ...};
+static bool ShouldBeFrozen[MAXPLAYERS+1] = {true, ...};
 static bool IsClientFrozen[MAXPLAYERS+1];
 static Handle UnfreezeTimer[MAXPLAYERS+1];
 static float UnfreezeAfter;
@@ -17,7 +17,7 @@ void SR_FreezeTag_Init()
 	sr.minscore = 322; // dynamic
 	sr.maxscore_multi = 0.0;
 	sr.points_per_kill = 0;
-	sr.allow_killbind = false;
+	sr.allow_killbind = true;
 	sr.announce_win = false;
 	sr.min_players = 6;
 	sr.ig_map_only = true;
@@ -194,7 +194,7 @@ public void SR_FreezeTag_Frame_Respawn(int client)
 void SR_FreezeTag_OnStart()
 {
 	for (int i = 1; i <= MaxClients; i++) {
-		IsClientLate[i] = false;
+		ShouldBeFrozen[i] = false;
 	}
 	
 	AnnouncedWin = false;
@@ -215,6 +215,8 @@ void SR_FreezeTag_OnAttack(int victim, int &attacker, int &inflictor, float& dam
 		if (IsClientFrozen[victim]) {
 			damage = 0.0;
 		} else {
+			GetEntPropVector(victim, Prop_Data, "m_vecVelocity", ClientVecOnDeath[victim][2]);
+			
 			damagetype &= ~DMG_BLAST;
 		}
 	}
@@ -223,9 +225,9 @@ void SR_FreezeTag_OnAttack(int victim, int &attacker, int &inflictor, float& dam
 void SR_FreezeTag_OnSpawn(int client, TFTeam team)
 {
 	// Freeze the client if they were not present during the round start
-	if (IsClientLate[client]) {
+	if (ShouldBeFrozen[client]) {
 		SR_FreezeTag_Freeze(client, false);
-		IsClientLate[client] = false;
+		ShouldBeFrozen[client] = false;
 	} else if (IsClientFrozen[client]) {
 		SR_FreezeTag_Freeze(client, true);
 	}
@@ -233,14 +235,17 @@ void SR_FreezeTag_OnSpawn(int client, TFTeam team)
  
 void SR_FreezeTag_OnDeath(Round_OnDeath_Data data)
 {
-	GetClientAbsOrigin(data.victim, ClientVecOnDeath[data.victim][0]);
-	GetClientAbsAngles(data.victim, ClientVecOnDeath[data.victim][1]);
-	GetEntPropVector(data.victim, Prop_Data, "m_vecVelocity", ClientVecOnDeath[data.victim][2]);
-	
-	IsClientFrozen[data.victim] = true;
-	RequestFrame(SR_FreezeTag_Frame_Respawn, data.victim);
-	
-	Forward_Frozen(data.victim, data.attacker);
+	if (data.attacker > 0 && data.attacker <= MaxClients) {
+		GetClientAbsOrigin(data.victim, ClientVecOnDeath[data.victim][0]);
+		GetClientAbsAngles(data.victim, ClientVecOnDeath[data.victim][1]);
+		
+		IsClientFrozen[data.victim] = true;
+		RequestFrame(SR_FreezeTag_Frame_Respawn, data.victim);
+		
+		Forward_Frozen(data.victim, data.attacker);
+	} else {
+		ShouldBeFrozen[data.victim] = true;
+	}
  }
  
 void SR_FreezeTag_OnEntCreated(int ent, const char[] classname)
@@ -262,7 +267,7 @@ void SR_FreezeTag_OnDisconnect(int client)
 {
 	SR_FreezeTag_CheckWinConditions();
 	IsClientFrozen[client] = false;
-	IsClientLate[client] = true;
+	ShouldBeFrozen[client] = true;
 	
 	ClientVecOnDeath[client][2][0] = 0.0;
 	ClientVecOnDeath[client][2][1] = 0.0;
@@ -284,10 +289,10 @@ void SR_FreezeTag_OnEnd(TFTeam winner_team)
 
 void SR_FreezeTag_OnTeamSwitch(int client, TFTeam team)
 {
-	IsClientLate[client] = true;
+	ShouldBeFrozen[client] = true;
 }
 
 void SR_FreezeTag_OnClassSwitch(int client, int class)
 {
-	IsClientLate[client] = true;
+	ShouldBeFrozen[client] = true;
 }
