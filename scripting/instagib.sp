@@ -38,9 +38,9 @@ enum struct InstagibRound
 	int points_per_kill;
 	bool announce_win;
 	bool allow_killbind;
-	bool end_at_time_end;		// Whether the round will be forcefully ended when the round time is over
+	bool end_at_time_end;       // Whether the round will be forcefully ended when the round time is over
 	int min_players;
-	bool ig_map_only;			// Whether the round is meant to be played only on instagib maps
+	bool ig_map_only;           // Whether the round is meant to be played only on instagib maps
 	
 	float railjump_velXY_multi;
 	float railjump_velZ_multi;
@@ -100,6 +100,7 @@ enum struct Config
 	float RailjumpVelZ;
 	
 	bool EnabledBhop;
+	float BhopMaxSpeed;
 }
 
 typeset Round_OnEnd

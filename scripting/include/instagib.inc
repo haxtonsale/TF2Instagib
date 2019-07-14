@@ -16,9 +16,9 @@ enum struct InstagibRound
 	int points_per_kill;
 	bool announce_win;
 	bool allow_killbind;
-	bool end_at_time_end;			// Whether the round will be forcefully ended when the round time is over
+	bool end_at_time_end;           // Whether the round will be forcefully ended when the round time is over
 	int min_players;
-	bool ig_map_only;				// Whether the round is meant to be played only on instagib maps
+	bool ig_map_only;               // Whether the round is meant to be played only on instagib maps
 	
 	float railjump_velXY_multi;
 	float railjump_velZ_multi;
@@ -26,7 +26,7 @@ enum struct InstagibRound
 	float respawn_time;
 	float spawnuber_duration;
 	
-	Handle main_weapon; 			// TF2Items weapon handle
+	Handle main_weapon;             // TF2Items weapon handle
 	int main_wep_clip;
 	bool infinite_ammo;
 }
@@ -35,8 +35,8 @@ enum struct InstagibRound
 /**
  * Called whenever player railjumps.
  *
- * @param client		Client index.
- * @param velocity		Client's velocity.
+ * @param client        Client index.
+ * @param velocity      Client velocity.
  */
 forward void IG_OnRailjump(int client, float velocity[3]);
 
@@ -44,9 +44,9 @@ forward void IG_OnRailjump(int client, float velocity[3]);
 /**
  * Forces a special round.
  *
- * @param name			Round's name.
- * @param notify		Whether all players should get a chat notification.
- * @param client		If defined, will show that this client has forced the round.
+ * @param name          Round name.
+ * @param notify        Whether all players should get a chat notification.
+ * @param client        If defined, will show that this client has forced the round.
  */
 native void IG_ForceSpecialRound(char[] name, bool notify = false, int client = 0);
 
