@@ -8,7 +8,7 @@ public Action Timer_MultikillTick(Handle timer)
 	for (int i = 1; i <= MaxClients; i++) {
 		if (MultikillTimer[i] > 0) {
 			MultikillTimer[i] -= 1;
-		} else if (MultikillCount[i] > 0){
+		} else if (MultikillCount[i] > 0) {
 			MultikillCount[i] = 0;
 		}
 	}

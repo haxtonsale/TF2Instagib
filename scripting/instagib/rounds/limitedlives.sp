@@ -35,8 +35,6 @@ void SR_Lives_Init()
 	MaxLives = SpecialRoundConfig_Num(sr.name, "Lives", 5);
 	SubmitInstagibRound(sr);
 	
-	HudSync = CreateHudSynchronizer();
-	
 	strcopy(sr.name, sizeof(sr.name), "Lifestealers");
 	sr.round_time = 240;
 	sr.on_start = SR_Lifesteal_OnStart;
@@ -44,6 +42,15 @@ void SR_Lives_Init()
 	
 	StartingLSLives = SpecialRoundConfig_Num("Lifestealers", "Lives", 3);
 	SubmitInstagibRound(sr);
+	
+	HudSync = CreateHudSynchronizer();
+	
+	for (int i = 1; i <= 7; i++) {
+		char sound[PLATFORM_MAX_PATH];
+		FormatEx(sound, sizeof(sound), "vo/halloween_boo%i.mp3", i);
+		
+		InstagibPrecacheSound(sound);
+	}
 }
 
 // -------------------------------------------------------------------

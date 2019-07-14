@@ -159,16 +159,15 @@ public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 			Call_Finish();
 		}
 		
-		if (g_CurrentRound.points_per_kill) {
-			if (attacker > 0 && attacker <= MaxClients && client != attacker) {
-				g_Killcount[attacker]++;
-				
+		if (attacker > 0 && attacker <= MaxClients && client != attacker) {
+			g_Killcount[attacker]++;
+			AddToClientMultikill(attacker);
+			
+			if (g_CurrentRound.points_per_kill) {
 				TFTeam team = TF2_GetClientTeam(attacker);
 				AddScore(team, g_CurrentRound.points_per_kill);
 			}
 		}
-		
-		AddToClientMultikill(attacker);
 	}
 }
 

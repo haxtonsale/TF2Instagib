@@ -39,13 +39,6 @@ void SR_FreezeTag_Init()
 	InstagibPrecacheSound("physics/glass/glass_impact_bullet3.wav");
 	InstagibPrecacheSound("physics/glass/glass_impact_bullet4.wav");
 	
-	for (int i = 1; i <= 7; i++) {
-		char sound[PLATFORM_MAX_PATH];
-		FormatEx(sound, sizeof(sound), "vo/halloween_boo%i.mp3", i);
-		
-		InstagibPrecacheSound(sound);
-	}
-	
 	SubmitInstagibRound(sr);
 }
 
