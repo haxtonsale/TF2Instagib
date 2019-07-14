@@ -62,6 +62,8 @@ native void IG_SetMaxScore(int amount);
 native int IG_GetRoundTime();
 native void IG_SetRoundTime(int seconds);
 
+native int IG_GetClientMultikill(int client);
+
 // ------------------------------------------------------------------- Limited Lives
 forward void IG_LimitedLives_OnLifeLost(int client, int lives, int attacker);
 forward void IG_LimitedLives_OnAllLivesLost(int client);

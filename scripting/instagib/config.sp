@@ -64,6 +64,7 @@ void LoadConfig()
 		g_Config.RailjumpVelZ = IGConfig.GetFloat("Railjump_VelocityMultiplier_Z", 3.2);
 		g_Config.EnabledBhop = view_as<bool>(IGConfig.GetNum("AutoBhop", 1));
 		g_Config.BhopMaxSpeed = IGConfig.GetFloat("BhopMaxSpeed", 456.0);
+		g_Config.MultikillInterval = IGConfig.GetNum("MultikillInterval", 3);
 		
 		IGConfig.Rewind();
 		IGConfig.JumpToKey("Music");

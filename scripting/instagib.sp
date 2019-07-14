@@ -101,6 +101,8 @@ enum struct Config
 	
 	bool EnabledBhop;
 	float BhopMaxSpeed;
+	
+	int MultikillInterval;
 }
 
 typeset Round_OnEnd
@@ -165,6 +167,7 @@ bool g_SteamTools;
 #include "instagib/commands.sp"
 #include "instagib/natives.sp"
 #include "instagib/bhop.sp"
+#include "instagib/multikill.sp"
 #include "instagib/menus/menu_forceround.sp"
 #include "instagib/menus/menu_settings.sp"
 #include "instagib/menus/menu_main.sp"
@@ -520,7 +523,7 @@ public Action Hook_TakeDamage(int victim, int& attacker, int& inflictor, float& 
 		Call_Finish(action);
 	}
 	
-	if (damagetype & DMG_FALL && damage < 100.0) {
+	if (damagetype & DMG_FALL && damage < 200.0) {
 		damage = 0.0;
 		
 		action = Plugin_Changed;
@@ -575,6 +578,8 @@ public void OnPluginStart()
 	Events_Init();
 	Rounds_Init();
 	Hud_Init();
+	
+	CreateTimer(1.0, Timer_MultikillTick, _, TIMER_REPEAT);
 }
 
 public void OnMapStart()

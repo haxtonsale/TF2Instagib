@@ -21,6 +21,8 @@ void Natives_Init()
 	CreateNative("IG_GetRoundTime", Native_GetRoundTime);
 	CreateNative("IG_SetRoundTime", Native_SetRoundTime);
 	
+	CreateNative("IG_GetClientMultikill", Native_GetMultikill);
+	
 	FwRailjump = CreateGlobalForward("IG_OnRailjump", ET_Ignore, Param_Cell, Param_Array);
 	FwLifeLost = CreateGlobalForward("IG_LimitedLives_OnLifeLost", ET_Ignore, Param_Cell, Param_Cell, Param_Cell);
 	FwAllLivesLost = CreateGlobalForward("IG_LimitedLives_OnAllLivesLost", ET_Ignore, Param_Cell);
@@ -164,4 +166,11 @@ public int Native_SetRoundTime(Handle plugin, int numParams)
 	if (amount > 0) {
 		g_RoundTimeLeft = amount;
 	}
+}
+
+public int Native_GetMultikill(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1);
+	
+	return (IsClientInGame(client)) ? GetClientMultikill(client) : -1;
 }
