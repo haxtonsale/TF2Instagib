@@ -17,7 +17,7 @@ void SR_FreezeTag_Init()
 	sr.minscore = 322; // dynamic
 	sr.maxscore_multi = 0.0;
 	sr.points_per_kill = 0;
-	sr.allow_killbind = true;
+	sr.allow_killbind = false;
 	sr.announce_win = false;
 	sr.min_players = 6;
 	sr.ig_map_only = true;
