@@ -427,6 +427,8 @@ void CheckForInstagibEnts()
 		
 		if (StrEqual(name, "instagib_nomusic")) {
 			g_MusicEnabled = false;
+		} else if (StrEqual(name, "instagib")) {
+			g_IsMapIG = true;
 		}
 		
 		ent = FindEntityByClassname(ent+1, "info_target");
