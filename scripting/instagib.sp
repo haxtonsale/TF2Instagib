@@ -1,5 +1,5 @@
 // -------------------------------------------------------------------
-#define INSTAGIB_VERSION "1.4.0"
+#define INSTAGIB_VERSION "1.4.1"
 
 //#define DEBUG
 

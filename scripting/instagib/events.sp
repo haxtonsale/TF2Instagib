@@ -206,10 +206,6 @@ public Action Event_OnTeamChange(Event event, const char[] name, bool dont_broad
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	TFTeam team = view_as<TFTeam>(event.GetInt("team"));
 	
-	if (IsClientInGame(client) && !IsPlayerAlive(client)) {
-		InstagibRespawn(client, g_CurrentRound.respawn_time);
-	}
-	
 	if (g_IsRoundActive && g_CurrentRound.on_team != INVALID_FUNCTION) {
 		Call_StartFunction(null, g_CurrentRound.on_team);
 		Call_PushCell(client);
