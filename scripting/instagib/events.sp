@@ -1,13 +1,14 @@
 // -------------------------------------------------------------------
 void Events_Init()
 {
+	HookEvent("player_death", Event_OnDeathPre, EventHookMode_Pre);
 	HookEvent("player_death", Event_OnDeath);
 	HookEvent("player_spawn", Event_OnSpawn);
 	HookEvent("post_inventory_application", Event_Inventory);
-	HookEvent("teamplay_round_start", Event_OnRoundStart);
-	HookEvent("teamplay_round_active", Event_OnRoundActive);
+	HookEvent("teamplay_round_start", Event_OnRoundStart, EventHookMode_PostNoCopy);
+	HookEvent("teamplay_round_active", Event_OnRoundActive, EventHookMode_PostNoCopy);
 	HookEvent("teamplay_round_win", Event_OnRoundEnd);
-	HookEvent("teamplay_setup_finished", Event_SetupFinish);
+	HookEvent("teamplay_setup_finished", Event_SetupFinish, EventHookMode_PostNoCopy);
 	HookEvent("player_team", Event_OnTeamChange);
 	HookEvent("player_changeclass", Event_OnClassChange);
 }
@@ -94,7 +95,7 @@ public void Event_OnSpawn(Event event, const char[] name, bool dont_broadcast)
 	TF2_RemoveCondition(client, TFCond_SpawnOutline);
 	
 	// Force player class to be Soldier
-	if (!(class == TFClass_Soldier || class == TFClass_Unknown )) {
+	if (!(class == TFClass_Soldier || class == TFClass_Unknown)) {
 		SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", TFClass_Soldier);
 		SetEntProp(client, Prop_Send, "m_iClass", TFClass_Soldier);
 		TF2_RespawnPlayer(client);
@@ -115,8 +116,11 @@ public void Event_OnSpawn(Event event, const char[] name, bool dont_broadcast)
 
 public void Event_Inventory(Event event, const char[] name, bool dont_broadcast)
 {
-	int client = GetClientOfUserId(event.GetInt("userid"));
-	
+	RequestFrame(Frame_Inventory, GetClientOfUserId(event.GetInt("userid")));
+}
+
+public void Frame_Inventory(int client)
+{
 	TF2_RemoveAllWeapons(client);
 	g_MainWeaponEnt[client] = GiveWeapon(client, g_CurrentRound.main_weapon);
 	
@@ -127,12 +131,17 @@ public void Event_Inventory(Event event, const char[] name, bool dont_broadcast)
 	}
 }
 
+public void Event_OnDeathPre(Event event, const char[] name, bool dont_broadcast)
+{
+	int client = GetClientOfUserId(event.GetInt("userid"));
+	
+	InstagibRespawn(client, g_CurrentRound.respawn_time);
+}
+
 public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	int attacker = GetClientOfUserId(event.GetInt("attacker"));
-	
-	InstagibRespawn(client, g_CurrentRound.respawn_time);
 	
 	if (g_IsWaitingForPlayers) {
 		return;
