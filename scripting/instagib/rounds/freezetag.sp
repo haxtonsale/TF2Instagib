@@ -166,14 +166,6 @@ void SR_FreezeTag_Unfreeze(int client)
 	}
 }
 // -------------------------------------------------------------------
-public void SR_FreezeTag_Frame_Freeze(ArrayStack data)
-{
-	int client = data.Pop();
-	bool teleport = data.Pop();
-	
-	SR_FreezeTag_Freeze(client, teleport);
-}
-
 public void SR_FreezeTag_Frame_Unfreeze(int client)
 {
 	SR_FreezeTag_Unfreeze(client);
@@ -202,6 +194,7 @@ void SR_FreezeTag_OnAttack(int victim, int &attacker, int &inflictor, float& dam
 	if (team1 == team2) {
 		if (IsClientFrozen[victim]) {
 			SR_FreezeTag_Unfreeze(victim);
+			
 			Forward_Unfrozen(victim, attacker);
 		}
 	} else {
@@ -238,6 +231,8 @@ void SR_FreezeTag_OnDeath(Round_OnDeath_Data data)
 		Forward_Frozen(data.victim, data.attacker);
 	} else {
 		ShouldBeFrozen[data.victim] = true;
+		
+		Forward_Frozen(data.victim, 0);
 	}
  }
  
@@ -253,6 +248,8 @@ public Action SR_FreezeTag_AutoUnfreeze(Handle timer, int client)
 	if (IsClientInGame(client)) {
 		UnfreezeTimer[client] = null;
 		RequestFrame(SR_FreezeTag_Frame_Unfreeze, client);
+		
+		Forward_Unfrozen(client, 0);
 	}
 }
 
