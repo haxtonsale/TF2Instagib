@@ -267,7 +267,7 @@ void SR_FreezeTag_OnDisconnect(int client)
 	ClientVecOnDeath[client][2][2] = 0.0;
 }
 
-void SR_FreezeTag_OnEnd(TFTeam winner_team)
+void SR_FreezeTag_OnEnd(TFTeam winner_team, int score, int time_left)
 {
 	for (int i = 1; i <= MaxClients; i++) {
 		if (IsClientInGame(i) && IsClientPlaying(i)) {

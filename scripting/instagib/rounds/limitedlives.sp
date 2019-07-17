@@ -203,7 +203,7 @@ void SR_Lives_OnDisconnect(int client)
 	SR_Lives_CheckWinConditions();
 }
 
-void SR_Lives_OnEnd(TFTeam winner_team, int score)
+void SR_Lives_OnEnd(TFTeam winner_team, int score, int time_left)
 {
 	if (score == -1) { // score = -1 if the round time had ran out and end_at_time_end == false
 		int red_lives;

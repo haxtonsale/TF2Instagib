@@ -60,10 +60,10 @@ enum struct InstagibRound
 	Round_OnTraceAttack on_attack;
 	Round_OnEntityCreated on_ent_created;
 	Round_OnDisconnect on_disconnect;
-	Round_CustomDescription on_desc;
 	Round_OnTeamChange on_team;
 	Round_OnClassChange on_class;
 	Round_OnTakeDamage on_damage;
+	Round_CustomDescription on_desc;
 }
 
 enum struct Round_OnDeath_Data
@@ -105,25 +105,19 @@ enum struct Config
 	int MultikillInterval;
 }
 
-typeset Round_OnEnd
-{
-	function void (TFTeam winner_team, int score, int time_left);
-	function void (TFTeam winner_team, int score);
-	function void (TFTeam winner_team);
-}
-
-typedef Round_OnStart = function void ();
-typedef Round_OnSpawn = function void (int client, TFTeam team);
-typedef Round_OnPostInvApp = function void (int client);
-typedef Round_OnTraceAttack = function void (int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &ammotype, int hitbox, int hitgroup);
+typedef Round_OnStart =           function void ();
+typedef Round_OnEnd =             function void (TFTeam winner_team, int score, int time_left);
+typedef Round_OnSpawn =           function void (int client, TFTeam team);
+typedef Round_OnPostInvApp =      function void (int client);
+typedef Round_OnTraceAttack =     function void (int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &ammotype, int hitbox, int hitgroup);
 typedef Round_CustomDescription = function void (char[] description,  int maxlength);
-typedef Round_OnEntityCreated = function void (int ent, const char[] classname);
-typedef Round_OnDisconnect = function void (int client);
-typedef Round_OnRoundTimeEnd = function void ();
-typedef Round_OnDeath = function void (Round_OnDeath_Data data);
-typedef Round_OnTeamChange = function void (int client, TFTeam team);
-typedef Round_OnClassChange = function void (int client, int class);
-typedef Round_OnTakeDamage = function Action (int victim, int &attacker, int &inflictor, float &damage, int &damagetype);
+typedef Round_OnEntityCreated =   function void (int ent, const char[] classname);
+typedef Round_OnDisconnect =      function void (int client);
+typedef Round_OnRoundTimeEnd =    function void ();
+typedef Round_OnDeath =           function void (Round_OnDeath_Data data);
+typedef Round_OnTeamChange =      function void (int client, TFTeam team);
+typedef Round_OnClassChange =     function void (int client, int class);
+typedef Round_OnTakeDamage =      function Action (int victim, int &attacker, int &inflictor, float &damage, int &damagetype);
 
 static bool IsLateLoad;
 static ArrayList CachedSounds;
