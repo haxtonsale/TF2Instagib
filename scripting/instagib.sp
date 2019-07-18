@@ -437,8 +437,8 @@ public void Frame_RailjumpParticles(ArrayStack data)
 	delete data;
 	
 	TE_SpawnParticle("Explosion_ShockWave_01", vecEnd);
-	TE_AttachParticle(client, "rocketjump_smoke", PATTACH_POINT_FOLLOW, 5, _, TE_ToAllButOne, client); // Left leg smoke
-	TE_AttachParticle(client, "rocketjump_smoke", PATTACH_POINT_FOLLOW, 6, _, TE_ToAllButOne, client); // Right leg smoke
+	TE_AttachParticle(client, "rocketjump_smoke", PATTACH_POINT_FOLLOW, 5, _, TE_ToAllButOne, client); // Left foot smoke
+	TE_AttachParticle(client, "rocketjump_smoke", PATTACH_POINT_FOLLOW, 6, _, TE_ToAllButOne, client); // Right foot smoke
 }
 
 // -------------------------------------------------------------------

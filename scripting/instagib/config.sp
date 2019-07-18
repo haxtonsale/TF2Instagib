@@ -147,25 +147,20 @@ void SpecialRoundConfig_GetOverwrites(InstagibRound ig_round)
 		bool result = IGConfig.JumpToKey(ig_round.name);
 		
 		if (result) {
-			ig_round.is_special =  view_as<bool>(IGConfig.GetNum("IsSpecialRound", ig_round.is_special));
-			ig_round.ig_map_only = view_as<bool>(IGConfig.GetNum("InstagibMapOnly", ig_round.ig_map_only));
-			
-			ig_round.round_time =      IGConfig.GetNum("RoundLength", ig_round.round_time);
-			ig_round.minscore =        IGConfig.GetNum("MinScore", ig_round.minscore);
-			ig_round.maxscore_multi =  IGConfig.GetFloat("MaxScore_Multiplier", ig_round.maxscore_multi);
-			ig_round.points_per_kill = IGConfig.GetNum("PointsForKill", ig_round.points_per_kill);
-			ig_round.allow_killbind =  view_as<bool>(IGConfig.GetNum("AllowKillbind", ig_round.allow_killbind));
-			
+			ig_round.is_special =           view_as<bool>(IGConfig.GetNum("IsSpecialRound", ig_round.is_special));
+			ig_round.ig_map_only =          view_as<bool>(IGConfig.GetNum("InstagibMapOnly", ig_round.ig_map_only));
+			ig_round.round_time =           IGConfig.GetNum("RoundLength", ig_round.round_time);
+			ig_round.minscore =             IGConfig.GetNum("MinScore", ig_round.minscore);
+			ig_round.maxscore_multi =       IGConfig.GetFloat("MaxScore_Multiplier", ig_round.maxscore_multi);
+			ig_round.points_per_kill =      IGConfig.GetNum("PointsForKill", ig_round.points_per_kill);
+			ig_round.allow_killbind =       view_as<bool>(IGConfig.GetNum("AllowKillbind", ig_round.allow_killbind));
 			ig_round.railjump_velXY_multi = IGConfig.GetFloat("Railjump_VelocityMultiplier_XY", ig_round.railjump_velXY_multi);
 			ig_round.railjump_velZ_multi =  IGConfig.GetFloat("Railjump_VelocityMultiplier_Z", ig_round.railjump_velZ_multi);
-			
-			ig_round.respawn_time =       IGConfig.GetFloat("RespawnTime", ig_round.respawn_time);
-			ig_round.spawnuber_duration = IGConfig.GetFloat("UberDuration", ig_round.spawnuber_duration);
-			
-			ig_round.main_wep_clip = IGConfig.GetNum("MainWeapon_Clip", ig_round.main_wep_clip);
-			ig_round.infinite_ammo = view_as<bool>(IGConfig.GetNum("InfiniteAmmo", ig_round.infinite_ammo));
-			
-			ig_round.min_players = IGConfig.GetNum("MinPlayers", ig_round.min_players);
+			ig_round.respawn_time =         IGConfig.GetFloat("RespawnTime", ig_round.respawn_time);
+			ig_round.spawnuber_duration =   IGConfig.GetFloat("UberDuration", ig_round.spawnuber_duration);
+			ig_round.main_wep_clip =        IGConfig.GetNum("MainWeapon_Clip", ig_round.main_wep_clip);
+			ig_round.infinite_ammo =        view_as<bool>(IGConfig.GetNum("InfiniteAmmo", ig_round.infinite_ammo));
+			ig_round.min_players =          IGConfig.GetNum("MinPlayers", ig_round.min_players);
 		}
 	}
 }
