@@ -35,33 +35,33 @@ void NewInstagibRound(InstagibRound buffer, char[] name, char[] desc = "")
 {
 	InstagibRound round;
 	
-	round.spawnuber_duration = g_Config.UberDuration;
+	round.spawnuber_duration =   g_Config.UberDuration;
 	round.railjump_velXY_multi = g_Config.RailjumpVelXY;
-	round.railjump_velZ_multi = g_Config.RailjumpVelZ;
-	round.minscore = g_Config.MinScore;
-	round.maxscore_multi = g_Config.MaxScoreMulti;
-	round.main_weapon = g_Weapon_Railgun;
-	round.main_wep_clip = 32;
-	round.infinite_ammo = true;
-	round.respawn_time = g_Config.RespawnTime;
-	round.points_per_kill = 1;
-	round.is_special = true;
-	round.announce_win = true;
-	round.allow_killbind = true;
-	round.end_at_time_end = true;
+	round.railjump_velZ_multi =  g_Config.RailjumpVelZ;
+	round.minscore =             g_Config.MinScore;
+	round.maxscore_multi =       g_Config.MaxScoreMulti;
+	round.main_weapon =          g_Weapon_Railgun;
+	round.main_wep_clip =        32;
+	round.infinite_ammo =        true;
+	round.respawn_time =         g_Config.RespawnTime;
+	round.points_per_kill =      1;
+	round.is_special =           true;
+	round.announce_win =         true;
+	round.allow_killbind =       true;
+	round.end_at_time_end =      true;
 	
-	round.on_start = INVALID_FUNCTION;
-	round.on_end = INVALID_FUNCTION;
-	round.on_spawn = INVALID_FUNCTION;
-	round.on_inv = INVALID_FUNCTION;
-	round.on_death = INVALID_FUNCTION;
-	round.on_attack = INVALID_FUNCTION;
-	round.on_desc = INVALID_FUNCTION;
+	round.on_start =       INVALID_FUNCTION;
+	round.on_end =         INVALID_FUNCTION;
+	round.on_spawn =       INVALID_FUNCTION;
+	round.on_inv =         INVALID_FUNCTION;
+	round.on_death =       INVALID_FUNCTION;
+	round.on_attack =      INVALID_FUNCTION;
+	round.on_desc =        INVALID_FUNCTION;
 	round.on_ent_created = INVALID_FUNCTION;
-	round.on_disconnect = INVALID_FUNCTION;
-	round.on_team = INVALID_FUNCTION;
-	round.on_class = INVALID_FUNCTION;
-	round.on_damage = INVALID_FUNCTION;
+	round.on_disconnect =  INVALID_FUNCTION;
+	round.on_team =        INVALID_FUNCTION;
+	round.on_class =       INVALID_FUNCTION;
+	round.on_damage =      INVALID_FUNCTION;
 	
 	strcopy(round.name, sizeof(round.name), name);
 	strcopy(round.desc, sizeof(round.desc), desc);
@@ -214,4 +214,23 @@ void Rounds_Menu(int client, char[] title, MenuHandler handler, bool display_all
 	
 	menu.ExitButton = false;
 	menu.Display(client, 60);
+}
+
+void Rounds_Reload()
+{
+	delete InstagibRounds;
+	
+	InstagibRound round;
+	round = g_CurrentRound;
+	
+	Rounds_Init();
+	
+	round.spawnuber_duration =   g_Config.UberDuration;
+	round.railjump_velXY_multi = g_Config.RailjumpVelXY;
+	round.railjump_velZ_multi =  g_Config.RailjumpVelZ;
+	round.respawn_time =         g_Config.RespawnTime;
+	
+	SpecialRoundConfig_GetOverwrites(round);
+	
+	g_CurrentRound = round;
 }

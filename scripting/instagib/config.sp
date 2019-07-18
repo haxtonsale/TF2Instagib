@@ -54,17 +54,17 @@ void LoadConfig()
 		g_Config.HudText_y = IGConfig.GetFloat("HudText_y", 0.78);
 		IGConfig.GetColor("HudText_Color", g_Config.HudText_Color[0], g_Config.HudText_Color[1], g_Config.HudText_Color[2], g_Config.HudText_Color[3]);
 		
-		g_Config.EnabledKillstreaks = view_as<bool>(IGConfig.GetNum("EnableKillstreaks", 1));
-		g_Config.MinScore = IGConfig.GetNum("MinScore", 15);
-		g_Config.RespawnTime = IGConfig.GetFloat("RespawnTime", 2.0);
-		g_Config.UberDuration = IGConfig.GetFloat("UberDuration", 0.3);
+		g_Config.EnabledKillstreaks =  view_as<bool>(IGConfig.GetNum("EnableKillstreaks", 1));
+		g_Config.MinScore =            IGConfig.GetNum("MinScore", 15);
+		g_Config.RespawnTime =         IGConfig.GetFloat("RespawnTime", 2.0);
+		g_Config.UberDuration =        IGConfig.GetFloat("UberDuration", 0.3);
 		g_Config.SpecialRound_Chance = IGConfig.GetFloat("SpecialRound_Chance", 0.35);
-		g_Config.MaxScoreMulti = IGConfig.GetFloat("MaxScorePlayerMultiplier", 2.75);
-		g_Config.RailjumpVelXY = IGConfig.GetFloat("Railjump_VelocityMultiplier_XY", 2.9);
-		g_Config.RailjumpVelZ = IGConfig.GetFloat("Railjump_VelocityMultiplier_Z", 3.2);
-		g_Config.EnabledBhop = view_as<bool>(IGConfig.GetNum("AutoBhop", 1));
-		g_Config.BhopMaxSpeed = IGConfig.GetFloat("BhopMaxSpeed", 456.0);
-		g_Config.MultikillInterval = IGConfig.GetNum("MultikillInterval", 3);
+		g_Config.MaxScoreMulti =       IGConfig.GetFloat("MaxScorePlayerMultiplier", 2.75);
+		g_Config.RailjumpVelXY =       IGConfig.GetFloat("Railjump_VelocityMultiplier_XY", 2.9);
+		g_Config.RailjumpVelZ =        IGConfig.GetFloat("Railjump_VelocityMultiplier_Z", 3.2);
+		g_Config.EnabledBhop =         view_as<bool>(IGConfig.GetNum("AutoBhop", 1));
+		g_Config.BhopMaxSpeed =        IGConfig.GetFloat("BhopMaxSpeed", 456.0);
+		g_Config.MultikillInterval =   IGConfig.GetNum("MultikillInterval", 3);
 		
 		IGConfig.Rewind();
 		IGConfig.JumpToKey("Music");
@@ -147,19 +147,19 @@ void SpecialRoundConfig_GetOverwrites(InstagibRound ig_round)
 		bool result = IGConfig.JumpToKey(ig_round.name);
 		
 		if (result) {
-			ig_round.is_special = view_as<bool>(IGConfig.GetNum("IsSpecialRound", ig_round.is_special));
+			ig_round.is_special =  view_as<bool>(IGConfig.GetNum("IsSpecialRound", ig_round.is_special));
 			ig_round.ig_map_only = view_as<bool>(IGConfig.GetNum("InstagibMapOnly", ig_round.ig_map_only));
 			
-			ig_round.round_time = IGConfig.GetNum("RoundLength", ig_round.round_time);
-			ig_round.minscore = IGConfig.GetNum("MinScore", ig_round.minscore);
-			ig_round.maxscore_multi = IGConfig.GetFloat("MaxScore_Multiplier", ig_round.maxscore_multi);
+			ig_round.round_time =      IGConfig.GetNum("RoundLength", ig_round.round_time);
+			ig_round.minscore =        IGConfig.GetNum("MinScore", ig_round.minscore);
+			ig_round.maxscore_multi =  IGConfig.GetFloat("MaxScore_Multiplier", ig_round.maxscore_multi);
 			ig_round.points_per_kill = IGConfig.GetNum("PointsForKill", ig_round.points_per_kill);
-			ig_round.allow_killbind = view_as<bool>(IGConfig.GetNum("AllowKillbind", ig_round.allow_killbind));
+			ig_round.allow_killbind =  view_as<bool>(IGConfig.GetNum("AllowKillbind", ig_round.allow_killbind));
 			
 			ig_round.railjump_velXY_multi = IGConfig.GetFloat("Railjump_VelocityMultiplier_XY", ig_round.railjump_velXY_multi);
-			ig_round.railjump_velZ_multi = IGConfig.GetFloat("Railjump_VelocityMultiplier_Z", ig_round.railjump_velZ_multi);
+			ig_round.railjump_velZ_multi =  IGConfig.GetFloat("Railjump_VelocityMultiplier_Z", ig_round.railjump_velZ_multi);
 			
-			ig_round.respawn_time = IGConfig.GetFloat("RespawnTime", ig_round.respawn_time);
+			ig_round.respawn_time =       IGConfig.GetFloat("RespawnTime", ig_round.respawn_time);
 			ig_round.spawnuber_duration = IGConfig.GetFloat("UberDuration", ig_round.spawnuber_duration);
 			
 			ig_round.main_wep_clip = IGConfig.GetNum("MainWeapon_Clip", ig_round.main_wep_clip);

@@ -4,7 +4,9 @@ void Commands_Init()
 	RegConsoleCmd("kill", Command_BlockSuicide);
 	RegConsoleCmd("explode", Command_BlockSuicide);
 	RegConsoleCmd("instagib", Command_Settings);
+	
 	RegAdminCmd("forceround", Command_ForceRound, ADMFLAG_CHEATS);
+	RegAdminCmd("instagibcfg", Command_ReloadConfig, ADMFLAG_CHEATS);
 	
 	CreateConVar("instagib_version", INSTAGIB_VERSION, "Instagib version.", FCVAR_SPONLY|FCVAR_REPLICATED|FCVAR_NOTIFY|FCVAR_DONTRECORD);
 	
@@ -64,9 +66,25 @@ public Action Command_ForceRound(int client, int args)
 		
 		bool result = InstagibForceRound(argstr, true, client);
 		
-		if (!result) {
-			InstagibPrintToChat(true, client, "Usage: Round {%s} was not found!", argstr);
+		if (!result && client) {
+			InstagibPrintToChat(true, client, "Round {%s} was not found!", argstr);
+		} else if (!client) {
+			PrintToServer("Round \"%s\" was not found!", argstr);
 		}
+	}
+	
+	return Plugin_Handled;
+}
+
+public Action Command_ReloadConfig(int client, int args)
+{
+	LoadConfig();
+	Rounds_Reload();
+	
+	if (client) {
+		InstagibPrintToChat(true, client, "Reloaded config.");
+	} else {
+		PrintToServer("Reloaded config.");
 	}
 	
 	return Plugin_Handled;
