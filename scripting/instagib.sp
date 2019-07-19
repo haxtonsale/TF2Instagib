@@ -593,10 +593,13 @@ public void OnMapStart()
 	}
 	
 	char mapname[256];
+	char displayname[256];
 	GetCurrentMap(mapname, sizeof(mapname));
+	GetMapDisplayName(mapname, displayname, sizeof(displayname));
 	
-	if (!strncmp(mapname, "ig_", 3) || !strncmp(mapname, "dm_", 3)) {
+	if (!strncmp(displayname, "ig_", 3) || !strncmp(displayname, "dm_", 3)) {
 		g_IsMapIG = true;
+		PrintToServer("pingas");
 	}
 	
 	CheckForInstagibEnts();
