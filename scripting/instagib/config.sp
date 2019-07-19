@@ -66,6 +66,8 @@ void LoadConfig()
 		g_Config.BhopMaxSpeed =        IGConfig.GetFloat("BhopMaxSpeed", 456.0);
 		g_Config.MultikillInterval =   IGConfig.GetNum("MultikillInterval", 3);
 		
+		g_CvarAirAccel.SetInt(IGConfig.GetNum("AirAcceleration", 30));
+		
 		IGConfig.Rewind();
 		IGConfig.JumpToKey("Music");
 		

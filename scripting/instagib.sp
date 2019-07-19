@@ -1,5 +1,5 @@
 // -------------------------------------------------------------------
-#define INSTAGIB_VERSION "1.4.3"
+#define INSTAGIB_VERSION "1.4.4"
 
 //#define DEBUG
 
@@ -142,6 +142,7 @@ int g_GamerulesEnt;
 
 Handle g_Weapon_Railgun;
 Handle g_RoundTimer;
+ConVar g_CvarAirAccel;
 
 Config g_Config;
 bool g_MusicEnabled = true;
@@ -546,9 +547,16 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 public void OnPluginStart()
 {
+	CreateTimer(1.0, Timer_MultikillTick, _, TIMER_REPEAT);
+	g_CvarAirAccel = FindConVar("sv_airaccelerate");
+	
 	LoadConfig();
 	Cookies_Init();
 	Commands_Init();
+	CreateDefaultRailgun();
+	Events_Init();
+	Rounds_Init();
+	Hud_Init();
 	
 	if (IsLateLoad) {
 		for (int i = 1; i <= MaxClients; i++) {
@@ -569,13 +577,6 @@ public void OnPluginStart()
 		InstagibPrintToChatAll(true, "Late Load! Restarting the round...");
 		Stalemate();
 	}
-	
-	CreateDefaultRailgun();
-	Events_Init();
-	Rounds_Init();
-	Hud_Init();
-	
-	CreateTimer(1.0, Timer_MultikillTick, _, TIMER_REPEAT);
 }
 
 public void OnMapStart()
@@ -717,6 +718,8 @@ public void OnPluginEnd()
 	
 	GameRules_SetProp("m_nHudType", 0);
 	GameRules_SetProp("m_bPlayingRobotDestructionMode", false);
+	
+	g_CvarAirAccel.RestoreDefault();
 }
 
 public void OnLibraryAdded(const char[] name)
