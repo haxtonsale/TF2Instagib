@@ -1,7 +1,6 @@
 // -------------------------------------------------------------------
 void Events_Init()
 {
-	HookEvent("player_death", Event_OnDeathPre, EventHookMode_Pre);
 	HookEvent("player_death", Event_OnDeath);
 	HookEvent("player_spawn", Event_OnSpawn);
 	HookEvent("post_inventory_application", Event_Inventory);
@@ -129,13 +128,6 @@ public void Frame_Inventory(int client)
 		Call_PushCell(client);
 		Call_Finish();
 	}
-}
-
-public void Event_OnDeathPre(Event event, const char[] name, bool dont_broadcast)
-{
-	int client = GetClientOfUserId(event.GetInt("userid"));
-	
-	InstagibRespawn(client, g_CurrentRound.respawn_time);
 }
 
 public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)

@@ -1,5 +1,5 @@
 // -------------------------------------------------------------------
-#define INSTAGIB_VERSION "1.4.4"
+#define INSTAGIB_VERSION "1.4.5"
 
 //#define DEBUG
 
@@ -143,6 +143,8 @@ int g_GamerulesEnt;
 Handle g_Weapon_Railgun;
 Handle g_RoundTimer;
 ConVar g_CvarAirAccel;
+ConVar g_CvarNoRespawnTimes;
+ConVar g_CvarSpecFreezeTime;
 
 Config g_Config;
 bool g_MusicEnabled = true;
@@ -285,13 +287,6 @@ char InstagibHudPlayerInfo(int client)
 	}
 	
 	return str;
-}
-
-void InstagibRespawn(int client, float time)
-{
-	if (g_MapHasRoundSetup || g_IsRoundActive) {
-		CreateTimer(time, Timer_Respawn, client);
-	}
 }
 
 /*
@@ -549,6 +544,12 @@ public void OnPluginStart()
 {
 	CreateTimer(1.0, Timer_MultikillTick, _, TIMER_REPEAT);
 	g_CvarAirAccel = FindConVar("sv_airaccelerate");
+	g_CvarNoRespawnTimes = FindConVar("mp_disable_respawn_times");
+	g_CvarSpecFreezeTime = FindConVar("spec_freeze_time");
+	
+	// Lag fix attempt
+	g_CvarNoRespawnTimes.SetBool(true);
+	g_CvarSpecFreezeTime.SetFloat(-1.0);
 	
 	LoadConfig();
 	Cookies_Init();
