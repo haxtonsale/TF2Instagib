@@ -723,6 +723,8 @@ public void OnPluginEnd()
 	GameRules_SetProp("m_bPlayingRobotDestructionMode", false);
 	
 	g_CvarAirAccel.RestoreDefault();
+	g_CvarNoRespawnTimes.RestoreDefault();
+	g_CvarSpecFreezeTime.RestoreDefault();
 }
 
 public void OnLibraryAdded(const char[] name)
