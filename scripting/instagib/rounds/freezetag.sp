@@ -31,6 +31,7 @@ void SR_FreezeTag_Init()
 	sr.on_end = SR_FreezeTag_OnEnd;
 	sr.on_team = SR_FreezeTag_OnTeamSwitch;
 	sr.on_class = SR_FreezeTag_OnClassSwitch;
+	sr.on_inv = SR_FreezeTag_OnLoadout;
 	
 	UnfreezeAfter = SpecialRoundConfig_Float(sr.name, "FreezeLength", 60.0);
 	
@@ -120,10 +121,6 @@ void SR_FreezeTag_Freeze(int client, bool teleport)
 	if (IsClientInGame(client) && IsClientPlaying(client)) {
 		if (teleport) {
 			TeleportEntity(client, ClientVecOnDeath[client][0], ClientVecOnDeath[client][1], NULL_VECTOR);
-		}
-		
-		if (IsValidEntity(g_MainWeaponEnt[client])) {
-			SetEntProp(g_MainWeaponEnt[client], Prop_Data, "m_iClip1", 0);
 		}
 		
 		SetEntityMoveType(client, MOVETYPE_NONE);
@@ -216,6 +213,13 @@ void SR_FreezeTag_OnSpawn(int client, TFTeam team)
 		ShouldBeFrozen[client] = false;
 	} else if (IsClientFrozen[client]) {
 		SR_FreezeTag_Freeze(client, true);
+	}
+}
+
+void SR_FreezeTag_OnLoadout(int client)
+{
+	if (IsClientFrozen[client] && IsValidEntity(g_MainWeaponEnt[client])) {
+		SetEntProp(g_MainWeaponEnt[client], Prop_Data, "m_iClip1", 0);
 	}
 }
  
