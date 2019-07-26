@@ -19,7 +19,6 @@ void SR_Lives_Init()
 	sr.points_per_kill = 0;
 	sr.announce_win = false;
 	sr.end_at_time_end = false;
-	sr.announce_win = false;
 	sr.min_players = 2;
 	sr.ig_map_only = true;
 	
@@ -172,7 +171,7 @@ void SR_Lives_OnSpawn(int client, TFTeam team)
 void SR_Lives_OnInventory(int client)
 {
 	if (PlayerLives[client] <= 0 && IsClientPlaying(client)) {
-		TF2_RemoveAllWeapons(client);
+		TF2_RemoveWeaponSlot(client, 0);
 	}
 }
  
@@ -187,9 +186,7 @@ void SR_Lives_OnDeath(Round_OnDeath_Data data)
 		++PlayerLives[data.attacker];
 	}
 	
-	if (PlayerLives[client] > 0) {
-		CreateTimer(g_CurrentRound.respawn_time, Timer_Respawn, client);
-	} else {
+	if (PlayerLives[client] <= 0) {
 		InstagibPrintToChat(true, client, "You have run out of lives!");
 		Forward_AllLivesLost(client);
 	}
