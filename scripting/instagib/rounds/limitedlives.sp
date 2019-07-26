@@ -40,7 +40,7 @@ void SR_Lives_Init()
 	sr.on_start = SR_Lifesteal_OnStart;
 	sr.on_desc = SR_Lifesteal_Description;
 	
-	StartingLSLives = SpecialRoundConfig_Num("Lifestealers", "Lives", 3);
+	StartingLSLives = SpecialRoundConfig_Num(sr.name, "Lives", 3);
 	SubmitInstagibRound(sr);
 	
 	HudSync = CreateHudSynchronizer();

@@ -1,5 +1,5 @@
 // -------------------------------------------------------------------
-#define INSTAGIB_VERSION "1.4.5"
+#define INSTAGIB_VERSION "1.4.6"
 
 //#define DEBUG
 
@@ -739,5 +739,35 @@ public void OnLibraryRemoved(const char[] name)
 	if (StrEqual(name, "SteamTools", false)) {
 		g_SteamTools = false;
 		Steam_SetGameDescription("Team Fortress");
+	}
+}
+
+public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, Handle &hItem)
+{
+	static char shouldblock[][] = {
+		"tf_weapon_rocketlauncher",
+		"tf_weapon_rocketlauncher_directhit",
+		"tf_weapon_particle_cannon",
+		"tf_weapon_rocketlauncher_airstrike",
+		"tf_weapon_shotgun_soldier",
+		"tf_weapon_shotgun",
+		"tf_weapon_buff_item",
+		"tf_weapon_raygun",
+		"tf_weapon_parachute",
+		"tf_weapon_shovel",
+		"saxxy",
+		"tf_weapon_katana"
+	};
+	
+	for (int i = 0; i < sizeof(shouldblock); i++) {
+		if (StrEqual(classname, shouldblock[i])) {
+			return Plugin_Handled;
+		}
+	}
+	
+	if (index == 133 || index == 444) {
+		return Plugin_Handled;
+	} else {
+		return Plugin_Continue;
 	}
 }

@@ -120,13 +120,14 @@ public void Event_Inventory(Event event, const char[] name, bool dont_broadcast)
 
 public void Frame_Inventory(int client)
 {
-	TF2_RemoveAllWeapons(client);
-	g_MainWeaponEnt[client] = GiveWeapon(client, g_CurrentRound.main_weapon);
-	
-	if (g_IsRoundActive && g_CurrentRound.on_inv != INVALID_FUNCTION) {
-		Call_StartFunction(null, g_CurrentRound.on_inv);
-		Call_PushCell(client);
-		Call_Finish();
+	if (IsClientInGame(client)) {
+		g_MainWeaponEnt[client] = GiveWeapon(client, g_CurrentRound.main_weapon);
+		
+		if (g_IsRoundActive && g_CurrentRound.on_inv != INVALID_FUNCTION) {
+			Call_StartFunction(null, g_CurrentRound.on_inv);
+			Call_PushCell(client);
+			Call_Finish();
+		}
 	}
 }
 
