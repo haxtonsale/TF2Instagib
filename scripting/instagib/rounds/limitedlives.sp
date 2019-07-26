@@ -232,13 +232,13 @@ void SR_Lives_OnEnd(TFTeam winner_team, int score, int time_left)
 			Stalemate();
 			AnnounceWin();
 		}
+	} else {
+		for (int i = 1; i <= MaxClients; i++) {
+			PlayerLives[i] = 0;
+		}
+		
+		IsLifestealers = false;
 	}
-	
-	for (int i = 1; i <= MaxClients; i++) {
-		PlayerLives[i] = 0;
-	}
-	
-	IsLifestealers = false;
 }
 
 void SR_Lives_OnTeamChange(int client, TFTeam team)

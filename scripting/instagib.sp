@@ -582,6 +582,8 @@ public void OnMapStart()
 {
 	RoundLogic_Init();
 	InstagibPrecache();
+	PrecacheModel("models/props_halloween/ghost_no_hat.mdl");
+	PrecacheModel("models/props_halloween/ghost_no_hat_red.mdl");
 	
 	StopMusic();
 	ResetScore();
