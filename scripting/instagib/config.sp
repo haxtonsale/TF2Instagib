@@ -65,8 +65,17 @@ void LoadConfig()
 		g_Config.EnabledBhop =         view_as<bool>(IGConfig.GetNum("AutoBhop", 1));
 		g_Config.BhopMaxSpeed =        IGConfig.GetFloat("BhopMaxSpeed", 456.0);
 		g_Config.MultikillInterval =   IGConfig.GetNum("MultikillInterval", 3);
+		g_Config.InstantRespawn =      view_as<bool>(IGConfig.GetNum("InstantRespawn", 0));
 		
 		g_CvarAirAccel.SetInt(IGConfig.GetNum("AirAcceleration", 30));
+		
+		if (g_Config.InstantRespawn) {
+			g_CvarNoRespawnTimes.SetBool(true);
+			g_CvarSpecFreezeTime.SetFloat(-1.0);
+		} else {
+			g_CvarNoRespawnTimes.RestoreDefault();
+			g_CvarSpecFreezeTime.RestoreDefault();
+		}
 		
 		IGConfig.Rewind();
 		IGConfig.JumpToKey("Music");

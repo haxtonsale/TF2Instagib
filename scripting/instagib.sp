@@ -103,6 +103,8 @@ enum struct Config
 	float BhopMaxSpeed;
 	
 	int MultikillInterval;
+	
+	bool InstantRespawn;
 }
 
 typedef Round_OnStart =           function void ();
@@ -546,10 +548,6 @@ public void OnPluginStart()
 	g_CvarAirAccel = FindConVar("sv_airaccelerate");
 	g_CvarNoRespawnTimes = FindConVar("mp_disable_respawn_times");
 	g_CvarSpecFreezeTime = FindConVar("spec_freeze_time");
-	
-	// Lag fix attempt
-	g_CvarNoRespawnTimes.SetBool(true);
-	g_CvarSpecFreezeTime.SetFloat(-1.0);
 	
 	LoadConfig();
 	Cookies_Init();
