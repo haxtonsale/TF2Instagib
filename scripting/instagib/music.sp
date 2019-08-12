@@ -14,7 +14,7 @@ static MusicData CurrentMusic;
 static Handle MusicTimer;
 
 // -------------------------------------------------------------------
-void AddMusic(char[] path, char[] name, int length, bool add_to_downloads, bool announce, float volume = 1.0)
+void AddMusic(const char[] path, char[] name, int length, bool add_to_downloads, bool announce, float volume = 1.0)
 {
 	if (InstagibMusic == null) {
 		InstagibMusic = new ArrayList(sizeof(MusicData));
@@ -29,6 +29,9 @@ void AddMusic(char[] path, char[] name, int length, bool add_to_downloads, bool 
 	data.announce = announce;
 	
 	if (add_to_downloads) {
+		char pathcopy[PLATFORM_MAX_PATH];
+		Format(pathcopy, sizeof(pathcopy), "sound/%s", path);
+		
 		AddFileToDownloadsTable(path);
 	}
 	
