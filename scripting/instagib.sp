@@ -1,9 +1,8 @@
 // -------------------------------------------------------------------
-#define INSTAGIB_VERSION "1.4.8"
+#define INSTAGIB_VERSION "1.5.0"
 
 //#define DEBUG
 
-// -------------------------------------------------------------------
 #include <sourcemod>
 #include <sdktools>
 #include <sdkhooks>
@@ -20,7 +19,6 @@
 #undef REQUIRE_EXTENSIONS
 #include <steamtools>
 
-// -------------------------------------------------------------------
 #pragma semicolon 1
 #pragma newdecls required
 

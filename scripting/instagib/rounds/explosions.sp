@@ -82,7 +82,7 @@ void SR_Explosions_OnDeath(Round_OnDeath_Data data)
 	}
 }
 
-Action SR_Explosions_OnTakeDamage(int victim, int& attacker, int& inflictor, float& damage, int& damagetype)
+Action SR_Explosions_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype)
 {
 	char classname[128];
 	GetEntityClassname(inflictor, classname, sizeof(classname));

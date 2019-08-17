@@ -183,7 +183,7 @@ void SR_FreezeTag_OnStart()
 	SR_FreezeTag_CheckWinConditions();
 }
 
-void SR_FreezeTag_OnAttack(int victim, int &attacker, int &inflictor, float& damage, int& damagetype, int& ammotype, int hitbox, int hitgroup)
+void SR_FreezeTag_OnAttack(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &ammotype, int hitbox, int hitgroup)
 {
 	TFTeam team1 = TF2_GetClientTeam(victim);
 	TFTeam team2 = TF2_GetClientTeam(attacker);
