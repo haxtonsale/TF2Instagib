@@ -33,53 +33,53 @@ void Menu_Settings(int client)
 }
 
 // -------------------------------------------------------------------
-public int Settings_Handler(Menu menu, MenuAction action, int param1, int param2)
+public int Settings_Handler(Menu menu, MenuAction action, int client, int option)
 {
 	if (action == MenuAction_Select) {
 		char info[32];
-		menu.GetItem(param2, info, sizeof(info));
+		menu.GetItem(option, info, sizeof(info));
 		
 		if (StrEqual(info, "back")) {
-			Menu_Main(param1);
+			Menu_Main(client);
 		} else {
 			if (StrContains(info, "music") != -1) {
 				char exploded[2][64];
-				ExplodeString(info, ":", exploded, sizeof(exploded), exploded[]);
+				ExplodeString(info, ":", exploded, sizeof(exploded), sizeof(exploded[]));
 				
-				g_PrefMusic.Set(param1, exploded[1]);
+				g_PrefMusic.Set(client, exploded[1]);
 				
 				bool result = view_as<bool>(StringToInt(exploded[1]));
-				g_ClientPrefs[param1].EnabledMusic = result;
+				g_ClientPrefs[client].EnabledMusic = result;
 				
 				if (result) {
-					InstagibPrintToChat(true, param1, "You have enabled round music.");
-					g_ClientPrefs[param1].EnabledMusic = true;
+					InstagibPrintToChat(true, client, "You have enabled round music.");
+					g_ClientPrefs[client].EnabledMusic = true;
 				} else {
-					InstagibPrintToChat(true, param1, "You have disabled round music.");
-					g_ClientPrefs[param1].EnabledMusic = false;
-					StopMusic(param1);
+					InstagibPrintToChat(true, client, "You have disabled round music.");
+					g_ClientPrefs[client].EnabledMusic = false;
+					StopMusic(client);
 				}
 			} else if (StrEqual(info, "viewmodel")) {
-				InstagibPrintToChat(true, param1,  "Type {/instagib viewmodel (0-255)} to change weapon's transparency.");
+				InstagibPrintToChat(true, client,  "Type {/instagib viewmodel (0-255)} to change weapon's transparency.");
 			} else if (StrContains(info, "bhop") != -1) {
 				char exploded[2][64];
-				ExplodeString(info, ":", exploded, sizeof(exploded), exploded[]);
+				ExplodeString(info, ":", exploded, sizeof(exploded), sizeof(exploded[]));
 				
-				g_PrefBhop.Set(param1, exploded[1]);
+				g_PrefBhop.Set(client, exploded[1]);
 				
 				bool result = view_as<bool>(StringToInt(exploded[1]));
-				g_ClientPrefs[param1].EnabledBhop = result;
+				g_ClientPrefs[client].EnabledBhop = result;
 				
 				if (result) {
-					InstagibPrintToChat(true, param1, "You have enabled Auto Bhop.");
-					g_ClientPrefs[param1].EnabledBhop = true;
+					InstagibPrintToChat(true, client, "You have enabled Auto Bhop.");
+					g_ClientPrefs[client].EnabledBhop = true;
 				} else {
-					InstagibPrintToChat(true, param1, "You have disabled Auto Bhop.");
-					g_ClientPrefs[param1].EnabledBhop = false;
+					InstagibPrintToChat(true, client, "You have disabled Auto Bhop.");
+					g_ClientPrefs[client].EnabledBhop = false;
 				}
 			}
 			
-			Menu_Settings(param1);
+			Menu_Settings(client);
 		}
 	} else if (action == MenuAction_End) {
 		delete menu;

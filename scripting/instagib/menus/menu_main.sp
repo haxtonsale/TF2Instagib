@@ -40,29 +40,29 @@ void Credits(int client)
 }
 
 // -------------------------------------------------------------------
-public int MenuMain_Handler(Menu menu, MenuAction action, int param1, int param2)
+public int MenuMain_Handler(Menu menu, MenuAction action, int client, int option)
 {
 	if (action == MenuAction_Select) {
 		char info[32];
-		menu.GetItem(param2, info, sizeof(info));
+		menu.GetItem(option, info, sizeof(info));
 		
 		if (StrEqual(info, "settings")) {
-			Menu_Settings(param1);
+			Menu_Settings(client);
 		} else if (StrEqual(info, "forceround")) {
-			ClientCommand(param1, "forceround");
+			ClientCommand(client, "forceround");
 		} else if (StrEqual(info, "credits")) {
-			Credits(param1);
+			Credits(client);
 		} else if (StrEqual(info, "reloadcfg")) {
-			ClientCommand(param1, "instagibcfg");
+			ClientCommand(client, "instagibcfg");
 		}
 	} else if (action == MenuAction_End) {
 		delete menu;
 	}
 }
 
-public int Credits_Handler(Menu menu, MenuAction action, int param1, int param2)
+public int Credits_Handler(Menu menu, MenuAction action, int client, int option)
 {
 	if (action == MenuAction_Select) {
-		Menu_Main(param1);
+		Menu_Main(client);
 	}
 }
