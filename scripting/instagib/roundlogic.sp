@@ -40,8 +40,6 @@ void RefreshRequiredEnts()
 					"item_healthkit_full",
 					"item_healthkit_medium",
 					"item_healthkit_small",
-					"item_ammopack_full",
-					"item_ammopack_full",
 					"func_respawnroomvisualizer",
 					"trigger_capture_area"
 				};
