@@ -1,6 +1,7 @@
 // -------------------------------------------------------------------
 #define INSTAGIB_VERSION "1.5.0"
 
+#define TF2_MAXPLAYERS 32
 //#define DEBUG
 
 #include <sourcemod>
@@ -134,8 +135,8 @@ int g_RoundTimeLeft;
 char g_RoundTimeLeftFormatted[16];
 char g_RoundHudTextFormatted[128];
 
-int g_Killcount[MAXPLAYERS+1];
-int g_MainWeaponEnt[MAXPLAYERS+1] = {-1, ...};
+int g_Killcount[TF2_MAXPLAYERS+1];
+int g_MainWeaponEnt[TF2_MAXPLAYERS+1] = {-1, ...};
 
 int g_PDLogicEnt;
 int g_GamerulesEnt;

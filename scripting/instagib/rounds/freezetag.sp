@@ -1,10 +1,10 @@
 // -------------------------------------------------------------------
-static bool ShouldBeFrozen[MAXPLAYERS+1] = {true, ...};
-static bool IsClientFrozen[MAXPLAYERS+1];
-static Handle UnfreezeTimer[MAXPLAYERS+1];
+static bool ShouldBeFrozen[TF2_MAXPLAYERS+1] = {true, ...};
+static bool IsClientFrozen[TF2_MAXPLAYERS+1];
+static Handle UnfreezeTimer[TF2_MAXPLAYERS+1];
 static float UnfreezeAfter;
 
-static float ClientVecOnDeath[MAXPLAYERS+1][3][3];
+static float ClientVecOnDeath[TF2_MAXPLAYERS+1][3][3];
 
 static bool AnnouncedWin; // To prevent multiple win announcements if the final kill was penetrating
 

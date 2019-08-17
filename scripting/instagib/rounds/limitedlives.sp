@@ -1,7 +1,7 @@
 // -------------------------------------------------------------------
 static int MaxLives;
-static int PlayerLives[MAXPLAYERS+1];
-static TFTeam OriginalTeam[MAXPLAYERS+1];
+static int PlayerLives[TF2_MAXPLAYERS+1];
+static TFTeam OriginalTeam[TF2_MAXPLAYERS+1];
 static Handle HudSync;
 
 static bool AnnouncedWin; // To prevent multiple win announcements if the final kill was penetrating

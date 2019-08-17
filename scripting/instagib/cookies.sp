@@ -10,7 +10,7 @@ Cookie g_PrefMusic;
 Cookie g_PrefViewmodel;
 Cookie g_PrefBhop;
 
-Prefs g_ClientPrefs[MAXPLAYERS+1];
+Prefs g_ClientPrefs[TF2_MAXPLAYERS+1];
 
 // -------------------------------------------------------------------
 void Cookies_Init()

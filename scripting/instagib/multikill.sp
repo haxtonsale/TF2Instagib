@@ -1,6 +1,6 @@
 // -------------------------------------------------------------------
-static int MultikillTimer[MAXPLAYERS+1];
-static int MultikillCount[MAXPLAYERS+1];
+static int MultikillTimer[TF2_MAXPLAYERS+1];
+static int MultikillCount[TF2_MAXPLAYERS+1];
 
 // -------------------------------------------------------------------
 public Action Timer_MultikillTick(Handle timer)
