@@ -35,6 +35,8 @@ void Credits(int client)
 	panel.DrawItem("Back");
 	
 	panel.Send(client, Credits_Handler, 60);
+	
+	delete panel;
 }
 
 // -------------------------------------------------------------------
