@@ -6,40 +6,40 @@ enum struct Prefs
 	bool EnabledBhop;
 }
 
-Handle g_PrefMusic;
-Handle g_PrefViewmodel;
-Handle g_PrefBhop;
+Cookie g_PrefMusic;
+Cookie g_PrefViewmodel;
+Cookie g_PrefBhop;
 
 Prefs g_ClientPrefs[MAXPLAYERS+1];
 
 // -------------------------------------------------------------------
 void Cookies_Init()
 {
-	g_PrefMusic = RegClientCookie("instagib_music", "Whether Instagib should play round music.", CookieAccess_Public);
-	g_PrefViewmodel = RegClientCookie("instagib_viewmodel", "The transparency of Railgun viewmodel.", CookieAccess_Public);
-	g_PrefBhop = RegClientCookie("instagib_bhop", "Whether you have bhop enabled.", CookieAccess_Public);
+	g_PrefMusic = new Cookie("instagib_music", "Whether Instagib should play round music.", CookieAccess_Public);
+	g_PrefViewmodel = new Cookie("instagib_viewmodel", "The transparency of Railgun viewmodel.", CookieAccess_Public);
+	g_PrefBhop = new Cookie("instagib_bhop", "Whether you have auto bhop enabled.", CookieAccess_Public);
 }
 
 void GetClientCookies(int client)
 {
 	char musicstr[64];
-	GetClientCookie(client, g_PrefMusic, musicstr, sizeof(musicstr));
+	g_PrefMusic.Get(client, musicstr, sizeof(musicstr));
 	
 	char viewmodel[64];
-	GetClientCookie(client, g_PrefViewmodel, viewmodel, sizeof(viewmodel));
+	g_PrefViewmodel.Get(client, viewmodel, sizeof(viewmodel));
 	
 	char bhop[64];
-	GetClientCookie(client, g_PrefBhop, bhop, sizeof(bhop));
+	g_PrefBhop.Get(client, bhop, sizeof(bhop));
 	
 	if (musicstr[0] == '\0') {
-		SetClientCookie(client, g_PrefMusic, "1");
+		g_PrefMusic.Set(client, "1");
 		g_ClientPrefs[client].EnabledMusic = true;
 	} else {
 		g_ClientPrefs[client].EnabledMusic = view_as<bool>(StringToInt(musicstr));
 	}
 	
 	if (viewmodel[0] == '\0') {
-		SetClientCookie(client, g_PrefViewmodel, "255");
+		g_PrefViewmodel.Set(client, "255");
 		g_ClientPrefs[client].ViewmodelAlpha = 255;
 		
 		if (IsValidEntity(g_MainWeaponEnt[client])) {
@@ -62,7 +62,7 @@ void GetClientCookies(int client)
 	}
 	
 	if (bhop[0] == '\0') {
-		SetClientCookie(client, g_PrefBhop, "1");
+		g_PrefBhop.Set(client, "1");
 		g_ClientPrefs[client].EnabledBhop = true;
 	} else {
 		g_ClientPrefs[client].EnabledBhop = view_as<bool>(StringToInt(bhop));

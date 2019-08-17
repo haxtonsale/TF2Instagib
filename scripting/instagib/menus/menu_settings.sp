@@ -44,9 +44,9 @@ public int Settings_Handler(Menu menu, MenuAction action, int param1, int param2
 		} else {
 			if (StrContains(info, "music") != -1) {
 				char exploded[2][64];
-				ExplodeString(info, ":", exploded, sizeof(exploded), 64);
+				ExplodeString(info, ":", exploded, sizeof(exploded), exploded[]);
 				
-				SetClientCookie(param1, g_PrefMusic, exploded[1]);
+				g_PrefMusic.Set(param1, exploded[1]);
 				
 				bool result = view_as<bool>(StringToInt(exploded[1]));
 				g_ClientPrefs[param1].EnabledMusic = result;
@@ -63,9 +63,9 @@ public int Settings_Handler(Menu menu, MenuAction action, int param1, int param2
 				InstagibPrintToChat(true, param1,  "Type {/instagib viewmodel (0-255)} to change weapon's transparency.");
 			} else if (StrContains(info, "bhop") != -1) {
 				char exploded[2][64];
-				ExplodeString(info, ":", exploded, sizeof(exploded), 64);
+				ExplodeString(info, ":", exploded, sizeof(exploded), exploded[]);
 				
-				SetClientCookie(param1, g_PrefBhop, exploded[1]);
+				g_PrefBhop.Set(param1, exploded[1]);
 				
 				bool result = view_as<bool>(StringToInt(exploded[1]));
 				g_ClientPrefs[param1].EnabledBhop = result;
