@@ -33,16 +33,36 @@ void RefreshRequiredEnts()
 		int max = GetMaxEntities();
 		for (int i = 1; i <= max; i++) {
 			if (IsValidEntity(i)) {
+				static char delet_this[][] = {
+					"item_ammopack_full",
+					"item_ammopack_medium",
+					"item_ammopack_small",
+					"item_healthkit_full",
+					"item_healthkit_medium",
+					"item_healthkit_small",
+					"item_ammopack_full",
+					"item_ammopack_full",
+					"func_respawnroomvisualizer",
+					"trigger_capture_area"
+				};
+				
 				char classname[255];
 				GetEntityClassname(i, classname, sizeof(classname));
 				
-				if (StrEqual(classname, "func_respawnroomvisualizer") || StrEqual(classname, "trigger_capture_area")) {
+				for (int j = 0; j < sizeof(delet_this); j++) {
+					if (StrEqual(classname, delet_this[j])) {
+						AcceptEntityInput(i, "Kill");
+					}
+				}
+				
+				if (StrEqual(classname, "func_regenerate")) {
+					AcceptEntityInput(GetEntPropEnt(i, Prop_Data, "m_hAssociatedModel"), "Kill");
 					AcceptEntityInput(i, "Kill");
 				} else if (StrEqual(classname, "func_door")) {
 					AcceptEntityInput(i, "Open");
 				} else if (StrEqual(classname, "trigger_multiple")) {
 					SetEntPropFloat(i, Prop_Data, "m_flWait", -1.0); // Leave all opened doors open. This will fuck up something else that's for sure
-				} else if (StrEqual(classname, "team_round_timer")) {
+				} else if (MapRoundSetupTime() && StrEqual(classname, "team_round_timer")) {
 					SetVariantInt(5);
 					AcceptEntityInput(i, "SetSetupTime");
 				}
