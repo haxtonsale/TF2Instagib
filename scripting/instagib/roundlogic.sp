@@ -42,6 +42,9 @@ void RefreshRequiredEnts()
 					AcceptEntityInput(i, "Open");
 				} else if (StrEqual(classname, "trigger_multiple")) {
 					SetEntPropFloat(i, Prop_Data, "m_flWait", -1.0); // Leave all opened doors open. This will fuck up something else that's for sure
+				} else if (StrEqual(classname, "team_round_timer")) {
+					SetVariantInt(5);
+					AcceptEntityInput(i, "SetSetupTime");
 				}
 			}
 		}
