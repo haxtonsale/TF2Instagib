@@ -3,7 +3,7 @@ void RoundLogic_Init()
 {
 	RefreshRequiredEnts();
 	
-	g_MapHasRoundSetup = (MapRoundSetupTime() > 0) ? true : false;
+	g_MapHasRoundSetup = MapRoundSetupTime() > 0;
 }
 
 // -------------------------------------------------------------------
@@ -19,6 +19,34 @@ void ResetScore()
 
 void RefreshRequiredEnts()
 {
+	char mapname[256];
+	char displayname[256];
+	GetCurrentMap(mapname, sizeof(mapname));
+	GetMapDisplayName(mapname, displayname, sizeof(displayname));
+	
+	bool isMapPayload;
+	if (!strncmp(displayname, "pl_", 3) || !strncmp(displayname, "plr_", 4)) {
+		isMapPayload = true;
+	}
+	
+	if (!g_IsMapIG) {
+		int max = GetMaxEntities();
+		for (int i = 1; i <= max; i++) {
+			if (IsValidEntity(i)) {
+				char classname[255];
+				GetEntityClassname(i, classname, sizeof(classname));
+				
+				if (StrEqual(classname, "func_respawnroomvisualizer") || StrEqual(classname, "trigger_capture_area")) {
+					AcceptEntityInput(i, "Kill");
+				} else if (StrEqual(classname, "func_door")) {
+					AcceptEntityInput(i, "Open");
+				} else if (StrEqual(classname, "trigger_multiple")) {
+					SetEntPropFloat(i, Prop_Data, "m_flWait", -1.0); // Leave all opened doors open. This will fuck up something else that's for sure
+				}
+			}
+		}
+	}
+	
 	g_PDLogicEnt = FindEntityByClassname(-1, "tf_logic_player_destruction");
 	g_GamerulesEnt = FindEntityByClassname(-1, "tf_gamerules");
 	
@@ -34,7 +62,7 @@ void RefreshRequiredEnts()
 		DispatchSpawn(g_GamerulesEnt);
 	}
 	
-	GameRules_SetProp("m_nHudType", 2);
+	GameRules_SetProp("m_nHudType", (isMapPayload) ? 2 : 3);
 	GameRules_SetProp("m_bPlayingRobotDestructionMode", true);
 }
 

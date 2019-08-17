@@ -204,6 +204,18 @@ public Action Event_SetupFinish(Event event, const char[] name, bool dont_broadc
 {
 	if (g_MapHasRoundSetup) {
 		InstagibStart();
+		
+		int max = GetMaxEntities();
+		for (int i = 1; i <= max; i++) {
+			if (IsValidEntity(i)) {
+				char classname[255];
+				GetEntityClassname(i, classname, sizeof(classname));
+				
+				if (StrEqual(classname, "team_round_timer")) {
+					AcceptEntityInput(i, "Pause");
+				}
+			}
+		}
 	}
 }
 

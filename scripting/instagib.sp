@@ -420,7 +420,6 @@ void CheckForInstagibEnts()
 	
 	while (ent != -1) {
 		char name[128];
-		
 		GetEntPropString(ent, Prop_Data, "m_iName", name, sizeof(name));
 		
 		if (StrEqual(name, "instagib_nomusic")) {
