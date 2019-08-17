@@ -14,7 +14,7 @@ static MusicData CurrentMusic;
 static Handle MusicTimer;
 
 // -------------------------------------------------------------------
-void AddMusic(const char[] path, char[] name, int length, bool add_to_downloads, bool announce, float volume = 1.0)
+void AddMusic(const char[] path, char[] name, int length, bool announce, float volume = 1.0)
 {
 	if (InstagibMusic == null) {
 		InstagibMusic = new ArrayList(sizeof(MusicData));
@@ -28,30 +28,9 @@ void AddMusic(const char[] path, char[] name, int length, bool add_to_downloads,
 	data.volume = volume;
 	data.announce = announce;
 	
-	if (add_to_downloads) {
-		char pathcopy[PLATFORM_MAX_PATH];
-		Format(pathcopy, sizeof(pathcopy), "sound/%s", path);
-		
-		AddFileToDownloadsTable(path);
-	}
-	
 	InstagibMusic.PushArray(data);
-}
-
-void PrecacheMusic()
-{
-	if (InstagibMusic != null && g_MusicEnabled) {
-		int len = InstagibMusic.Length;
-		
-		for (int i = 0; i < len; i++) {
-			MusicData data;
-			InstagibMusic.GetArray(i, data);
-			
-			PrecacheSound(data.path);
-		}
-	} else {
-		g_MusicEnabled = false;
-	}
+	
+	InstagibPrecacheSound(path);
 }
 
 void AnnounceMusicAll(char[] name)

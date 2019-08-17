@@ -93,10 +93,9 @@ void LoadConfig()
 				int len = IGConfig.GetNum("Length");
 				float volume = IGConfig.GetFloat("Volume");
 				bool announce = view_as<bool>(IGConfig.GetNum("AnnounceInChat"));
-				bool add_to_downloads = view_as<bool>(IGConfig.GetNum("AddToDownloads"));
 				
 				if (!StrEqual(path, "")) {
-					AddMusic(path, name, len, add_to_downloads, announce, volume);
+					AddMusic(path, name, len, announce, volume);
 				}
 			} while (IGConfig.GotoNextKey());
 		}

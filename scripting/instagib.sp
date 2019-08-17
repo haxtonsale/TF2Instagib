@@ -179,7 +179,7 @@ bool g_SteamTools;
 public Plugin myinfo =
 {
 	name = "TF2Instagib",
-	author = "Haxton Sale#3690",
+	author = "Haxton Sale",
 	description = "Best action packed gamemode ever",
 	version = INSTAGIB_VERSION,
 	url = "https://github.com/haxtonsale/TF2Instagib"
@@ -294,7 +294,7 @@ char InstagibHudPlayerInfo(int client)
  * All sounds in the CachedSounds array will be precached on every map start
  * (useful if instagib is played for more than one map)
  */
-void InstagibPrecacheSound(char[] sound)
+void InstagibPrecacheSound(const char[] sound)
 {
 	if (CachedSounds == null) {
 		CachedSounds = new ArrayList(PLATFORM_MAX_PATH);
@@ -304,6 +304,12 @@ void InstagibPrecacheSound(char[] sound)
 	
 	PrecacheSound(sound);
 	CachedSounds.PushString(sound);
+	
+	char sound_copy[PLATFORM_MAX_PATH];
+	strcopy(sound_copy, sizeof(sound_copy), sound);
+	
+	FormatEx(sound_copy, sizeof(sound_copy), "sound/%s", sound);
+	AddFileToDownloadsTable(sound_copy);
 }
 
 void InstagibPrecache()
@@ -316,10 +322,11 @@ void InstagibPrecache()
 			CachedSounds.GetString(i, sound, sizeof(sound));
 			
 			PrecacheSound(sound);
+			
+			Format(sound, sizeof(sound), "sound/%s", sound);
+			AddFileToDownloadsTable(sound);
 		}
 	}
-	
-	PrecacheMusic();
 }
 
 int InstagibGetTeamScore(TFTeam team)
