@@ -158,7 +158,6 @@ void SpecialRoundConfig_GetOverwrites(InstagibRound ig_round)
 		
 		if (result) {
 			ig_round.is_special =           view_as<bool>(IGConfig.GetNum("IsSpecialRound", ig_round.is_special));
-			ig_round.ig_map_only =          view_as<bool>(IGConfig.GetNum("InstagibMapOnly", ig_round.ig_map_only));
 			ig_round.round_time =           IGConfig.GetNum("RoundLength", ig_round.round_time);
 			ig_round.minscore =             IGConfig.GetNum("MinScore", ig_round.minscore);
 			ig_round.maxscore_multi =       IGConfig.GetFloat("MaxScore_Multiplier", ig_round.maxscore_multi);

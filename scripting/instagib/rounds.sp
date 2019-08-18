@@ -133,9 +133,8 @@ void GetRandomSpecialRound(InstagibRound buffer)
 			InstagibRounds.GetArray(i, round);
 			
 			bool enough_players = (playercount >= round.min_players);
-			bool suitable_map = !round.ig_map_only || (round.ig_map_only && g_IsMapIG);
 			
-			if (last_round != i && round.is_special && suitable_map && enough_players) {
+			if (last_round != i && round.is_special && enough_players) {
 				suitable_rounds[count] = i;
 				++count;
 			}

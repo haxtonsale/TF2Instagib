@@ -39,7 +39,6 @@ enum struct InstagibRound
 	bool allow_killbind;
 	bool end_at_time_end;       // Whether the round will be forcefully ended when the round time is over
 	int min_players;
-	bool ig_map_only;           // Whether the round is meant to be played only on instagib maps
 	
 	float railjump_velXY_multi;
 	float railjump_velZ_multi;
@@ -127,7 +126,6 @@ bool g_IsWaitingForPlayers;
 bool g_IsRoundActive;
 bool g_CanRailjump;
 bool g_MapHasRoundSetup;
-bool g_IsMapIG;
 
 InstagibRound g_CurrentRound;
 int g_MaxScore;
@@ -425,8 +423,6 @@ void CheckForInstagibEnts()
 		
 		if (StrEqual(name, "instagib_nomusic")) {
 			g_MusicEnabled = false;
-		} else if (StrEqual(name, "instagib")) {
-			g_IsMapIG = true;
 		}
 		
 		ent = FindEntityByClassname(ent+1, "info_target");
@@ -614,10 +610,6 @@ public void OnMapStart()
 	char displayname[256];
 	GetCurrentMap(mapname, sizeof(mapname));
 	GetMapDisplayName(mapname, displayname, sizeof(displayname));
-	
-	if (!strncmp(displayname, "ig_", 3) || !strncmp(displayname, "dm_", 3)) {
-		g_IsMapIG = true;
-	}
 	
 	CheckForInstagibEnts();
 	LoadMapConfig(displayname);
