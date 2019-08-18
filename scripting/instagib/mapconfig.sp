@@ -26,6 +26,16 @@ enum
 MapConfig g_MapConfig;
 
 // -------------------------------------------------------------------
+void CreateMapConfigFolder()
+{
+	char path[PLATFORM_MAX_PATH];
+	BuildPath(Path_SM, path, sizeof(path), "/configs/instagib_maps");
+	
+	if (!DirExists(path)) {
+		CreateDirectory(path, FPERM_U_READ | FPERM_U_WRITE | FPERM_U_EXEC | FPERM_G_READ | FPERM_G_EXEC | FPERM_O_READ | FPERM_G_EXEC);
+	}
+}
+
 void LoadMapConfig(const char[] mapname)
 {
 	delete g_MapConfig.kv;
@@ -102,6 +112,7 @@ void CreateSpawnPoint(TFTeam team, float pos[3], float rotation)
 		g_MapConfig.SpawnPoints = new ArrayList(sizeof(SpawnPoint));
 		g_MapConfig.kv = new KeyValues("Instagib Map Config");
 		g_MapConfig.kv.SetNum("Disable Music", 0);
+		CreateMapConfigFolder();
 	}
 	
 	SpawnPoint spawn;
