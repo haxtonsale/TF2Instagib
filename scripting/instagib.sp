@@ -166,6 +166,7 @@ bool g_SteamTools;
 #include "instagib/natives.sp"
 #include "instagib/bhop.sp"
 #include "instagib/multikill.sp"
+#include "instagib/mapconfig.sp"
 #include "instagib/menus/menu_forceround.sp"
 #include "instagib/menus/menu_settings.sp"
 #include "instagib/menus/menu_main.sp"
@@ -432,6 +433,16 @@ void CheckForInstagibEnts()
 	}
 }
 
+char GetMapName()
+{
+	char mapname[256];
+	char displayname[256];
+	GetCurrentMap(mapname, sizeof(mapname));
+	GetMapDisplayName(mapname, displayname, sizeof(displayname));
+	
+	return displayname;
+}
+
 public void Frame_RailjumpParticles(ArrayStack data)
 {
 	float vecEnd[3];
@@ -589,6 +600,7 @@ public void OnMapStart()
 	InstagibPrecache();
 	PrecacheModel("models/props_halloween/ghost_no_hat.mdl");
 	PrecacheModel("models/props_halloween/ghost_no_hat_red.mdl");
+	PrecacheModel("models/items/ammopack_large.mdl"); // For map config editor
 	
 	StopMusic();
 	ResetScore();
@@ -608,6 +620,7 @@ public void OnMapStart()
 	}
 	
 	CheckForInstagibEnts();
+	LoadMapConfig(displayname);
 }
 
 public void OnEntityCreated(int ent, const char[] classname)
@@ -704,6 +717,8 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] weaponname
 				
 				Forward_OnRailjump(client, vecVel);
 			}
+			
+			delete trace;
 		}
 	}
 }

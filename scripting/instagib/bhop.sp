@@ -11,7 +11,9 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			
 			vecVel[2] = 267.0;
 			
-			if (g_Config.EnabledBhop && g_ClientPrefs[client].EnabledBhop) { 
+			if (ClientHoldingJumpFor[client] > 0 && ClientHoldingJumpFor[client] <= 4) {
+				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vecVel); // Manual bhop with speed boost :)
+			} else if (g_Config.EnabledBhop && g_ClientPrefs[client].EnabledBhop) { 
 				// Limit auto bhop speed
 				float magnitude = SquareRoot(vecVel[0] * vecVel[0] + vecVel[1] * vecVel[1]);
 				if (magnitude > g_Config.BhopMaxSpeed) {
@@ -20,10 +22,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				}
 				
 				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vecVel);
-			}
-			
-			if (ClientHoldingJumpFor[client] > 0 && ClientHoldingJumpFor[client] <= 4) {
-				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vecVel); // Manual bhop with speed boost :)
 			}
 		}
 		

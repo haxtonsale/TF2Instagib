@@ -7,6 +7,7 @@ void Commands_Init()
 	
 	RegAdminCmd("forceround", Command_ForceRound, ADMFLAG_CHEATS);
 	RegAdminCmd("instagibcfg", Command_ReloadConfig, ADMFLAG_CHEATS);
+	RegAdminCmd("instagibedit", Command_EditMode, ADMFLAG_CHEATS);
 	
 	CreateConVar("instagib_version", INSTAGIB_VERSION, "Instagib version.", FCVAR_SPONLY|FCVAR_REPLICATED|FCVAR_NOTIFY|FCVAR_DONTRECORD);
 	
@@ -79,6 +80,8 @@ public Action Command_ForceRound(int client, int args)
 public Action Command_ReloadConfig(int client, int args)
 {
 	LoadConfig();
+	LoadMapConfig(GetMapName());
+	
 	Rounds_Reload();
 	
 	if (client) {
@@ -88,6 +91,11 @@ public Action Command_ReloadConfig(int client, int args)
 	}
 	
 	return Plugin_Handled;
+}
+
+public Action Command_EditMode(int client, int args)
+{
+	ToggleEditMode(client);
 }
 
 // Return the cheat flag to the mp_forcewin command after it's been called by the server :)

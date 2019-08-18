@@ -19,10 +19,8 @@ void ResetScore()
 
 void RefreshRequiredEnts()
 {
-	char mapname[256];
 	char displayname[256];
-	GetCurrentMap(mapname, sizeof(mapname));
-	GetMapDisplayName(mapname, displayname, sizeof(displayname));
+	displayname = GetMapName();
 	
 	bool isMapPayload;
 	if (!strncmp(displayname, "pl_", 3) || !strncmp(displayname, "plr_", 4)) {
@@ -85,6 +83,8 @@ void RefreshRequiredEnts()
 	
 	GameRules_SetProp("m_nHudType", (isMapPayload) ? 2 : 3);
 	GameRules_SetProp("m_bPlayingRobotDestructionMode", true);
+	
+	SetupSpawnPoints();
 }
 
 int MapRoundSetupTime()

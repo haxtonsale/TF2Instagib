@@ -11,6 +11,7 @@ void Menu_Main(int client)
 	if (CheckCommandAccess(client, "forceround", ADMFLAG_CHEATS)) {
 		menu.AddItem("forceround", "Force Special Round");
 		menu.AddItem("reloadcfg", "Reload Config");
+		menu.AddItem("mapconfig", "Edit Map Config");
 	}
 	
 	menu.AddItem("credits", "Credits");
@@ -54,6 +55,8 @@ public int MenuMain_Handler(Menu menu, MenuAction action, int client, int option
 			Credits(client);
 		} else if (StrEqual(info, "reloadcfg")) {
 			ClientCommand(client, "instagibcfg");
+		} else if (StrEqual(info, "mapconfig")) {
+			ClientCommand(client, "instagibedit");
 		}
 	} else if (action == MenuAction_End) {
 		delete menu;
