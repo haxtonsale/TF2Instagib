@@ -291,7 +291,7 @@ void Panel_EditMode(int client)
 	panel.DrawItem("Create BLU Spawn");
 	
 	panel.DrawText(" ");
-	panel.DrawItem("Delete");
+	panel.DrawItem("Delete Spawn");
 	panel.DrawItem("Export to .cfg");
 	
 	panel.Send(client, Panel_EditMode_Handler, 300);
