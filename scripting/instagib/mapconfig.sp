@@ -279,6 +279,25 @@ void ToggleEditMode(int client)
 
 void Panel_EditMode(int client)
 {
+	int red_spawns;
+	int blue_spawns;
+	
+	int max = GetMaxEntities();
+	for (int i = 1; i <= max; i++) {
+		if (IsValidEntity(i)) {
+			char classname[255];
+			GetEntityClassname(i, classname, sizeof(classname));
+			
+			if (StrEqual(classname, "info_player_teamspawn")) {
+				if (GetEntProp(i, Prop_Data, "m_iTeamNum") == 2) {
+					++red_spawns;
+				} else {
+					++blue_spawns;
+				}
+			}
+		}
+	}
+
 	Panel panel = new Panel();
 	panel.DrawText("Map Config Editor");
 	panel.DrawItem("Exit");
@@ -287,8 +306,11 @@ void Panel_EditMode(int client)
 	panel.DrawItem(g_MapConfig.IsMusicDisabled ? "Disable Music: Yes" : "Disable Music: No");
 	
 	panel.DrawText(" ");
-	panel.DrawItem("Create RED Spawn");
-	panel.DrawItem("Create BLU Spawn");
+	char text[255];
+	FormatEx(text, sizeof(text), "Create RED Spawn (%i)", red_spawns);
+	panel.DrawItem(text);
+	FormatEx(text, sizeof(text), "Create BLU Spawn (%i)", blue_spawns);
+	panel.DrawItem(text);
 	
 	panel.DrawText(" ");
 	panel.DrawItem("Delete Spawn");
@@ -321,7 +343,7 @@ public int Panel_EditMode_Handler(Menu menu, MenuAction action, int client, int 
 				GetClientEyeAngles(client, ang);
 				
 				CreateSpawnPoint(TFTeam_Red, pos, ang[1]);
-				InstagibPrintToChat(true, client, "Created a RED spawn point at {%.2f %.2f %.2f}.", pos[0], pos[1], pos[2]);
+				InstagibPrintToChat(true, client, "Created RED spawn point at {%.2f %.2f %.2f}.", pos[0], pos[1], pos[2]);
 				ToggleEditMode(client);
 				ToggleEditMode(client);
 			}
@@ -333,7 +355,7 @@ public int Panel_EditMode_Handler(Menu menu, MenuAction action, int client, int 
 				GetClientEyeAngles(client, ang);
 				
 				CreateSpawnPoint(TFTeam_Blue, pos, ang[1]);
-				InstagibPrintToChat(true, client, "Created a BLU spawn point at {%.2f %.2f %.2f}.", pos[0], pos[1], pos[2]);
+				InstagibPrintToChat(true, client, "Created BLU spawn point at {%.2f %.2f %.2f}.", pos[0], pos[1], pos[2]);
 				ToggleEditMode(client);
 				ToggleEditMode(client);
 			}
@@ -365,7 +387,7 @@ public int Panel_EditMode_Handler(Menu menu, MenuAction action, int client, int 
 							GetEntPropVector(spawn_ent, Prop_Data, "m_vecOrigin", pos);
 							
 							DeleteSpawnPoint(view_as<TFTeam>(GetEntProp(spawn_ent, Prop_Data, "m_iTeamNum")), pos);
-							InstagibPrintToChat(true, client, "Deleted a spawn point at {%.2f %.2f %.2f}.", pos[0], pos[1], pos[2]);
+							InstagibPrintToChat(true, client, "Deleted spawn point at {%.2f %.2f %.2f}.", pos[0], pos[1], pos[2]);
 							
 							AcceptEntityInput(ent, "Kill");
 							AcceptEntityInput(spawn_ent, "Kill");
