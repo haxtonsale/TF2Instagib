@@ -54,9 +54,16 @@ void RefreshRequiredEnts()
 				AcceptEntityInput(GetEntPropEnt(i, Prop_Data, "m_hAssociatedModel"), "Kill");
 				AcceptEntityInput(i, "Kill");
 			} else if (StrEqual(classname, "func_door")) {
-				AcceptEntityInput(i, "Open");
-			} else if (StrEqual(classname, "trigger_multiple")) {
-				SetEntPropFloat(i, Prop_Data, "m_flWait", -1.0); // Leave all opened doors open. This will fuck up something else that's for sure
+				char name[128];
+				GetEntPropString(i, Prop_Data, "m_iName", name, sizeof(name));
+				
+				// hardcode for koth_nucleus
+				if (StrEqual(displayname, "koth_nucleus") && (StrEqual(name, "door_bridge") || StrEqual(name, "door_top") || StrEqual(name, "door_bottom") || StrEqual(name, "door_armleft") || StrEqual(name, "door_armright"))) {
+					AcceptEntityInput(i, "Open");
+				} else {
+					AcceptEntityInput(i, "Open");
+					AcceptEntityInput(i, "Kill"); // keel him
+				}
 			} else if (MapRoundSetupTime() && StrEqual(classname, "team_round_timer")) {
 				SetVariantInt(5);
 				AcceptEntityInput(i, "SetSetupTime");
