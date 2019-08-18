@@ -74,12 +74,6 @@ public void Event_OnRoundActive(Event event, const char[] name, bool dont_broadc
 {
 	g_CanRailjump = true;
 	
-	for (int i = 1; i <= MaxClients; i++) {
-		if (IsClientInGame(i)) {
-			TF2_RemoveCondition(i, TFCond_Ubercharged);
-		}
-	}
-	
 	if (!g_MapHasRoundSetup) {
 		InstagibStart();
 	}

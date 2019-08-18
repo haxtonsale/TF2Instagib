@@ -358,6 +358,7 @@ void InstagibStart()
 		InstagibPrintToChatAll(true, "The round has started!");
 	}
 	
+	CreateTimer(g_Config.UberDuration, Timer_RemoveUber, _, TIMER_FLAG_NO_MAPCHANGE);
 	g_IsRoundActive = true;
 }
 
@@ -488,6 +489,15 @@ public Action Timer_WelcomeMessage(Handle timer, int client)
 {
 	if (IsClientInGame(client)) {
 		InstagibPrintToChat(true, client, "Welcome to Instagib %s! \nType {/instagib} to open the menu.", INSTAGIB_VERSION);
+	}
+}
+
+public Action Timer_RemoveUber(Handle timer)
+{
+	for (int i = 1; i <= MaxClients; i++) {
+		if (IsClientInGame(i)) {
+			TF2_RemoveCondition(i, TFCond_Ubercharged);
+		}
 	}
 }
 

@@ -210,6 +210,7 @@ public void Frame_RespawnAll(any data)
 	for (int i = 1; i <= MaxClients; i++) {
 		if (IsClientInGame(i)) {
 			TF2_RespawnPlayer(i);
+			InvulnClient(i, TFCondDuration_Infinite);
 		}
 	}
 }
