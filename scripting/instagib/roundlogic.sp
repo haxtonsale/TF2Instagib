@@ -38,7 +38,6 @@ void RefreshRequiredEnts()
 				"item_healthkit_medium",
 				"item_healthkit_small",
 				"func_respawnroomvisualizer",
-				"trigger_capture_area"
 			};
 			
 			char classname[255];
@@ -64,6 +63,11 @@ void RefreshRequiredEnts()
 					AcceptEntityInput(i, "Open");
 					AcceptEntityInput(i, "Kill"); // keel him
 				}
+			} else if (StrEqual(classname, "trigger_capture_area")) {
+				SetVariantString("2 0");
+				AcceptEntityInput(i, "SetTeamCanCap");
+				SetVariantString("3 0");
+				AcceptEntityInput(i, "SetTeamCanCap");
 			} else if (MapRoundSetupTime() && StrEqual(classname, "team_round_timer")) {
 				SetVariantInt(5);
 				AcceptEntityInput(i, "SetSetupTime");
