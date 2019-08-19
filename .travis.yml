@@ -17,9 +17,10 @@ before_script:
   - cp -R configs/ scripting/ addons/sourcemod/
   - cd addons/sourcemod/scripting
 
-  - chmod +x spcomp
+  - wget "https://raw.githubusercontent.com/asherkin/TF2Items/master/pawn/tf2items.inc" -O include/tf2items.inc
+  - wget "https://raw.githubusercontent.com/asherkin/SteamTools/master/plugin/steamtools.inc" -O include/steamtools.inc
+  
   - chmod +x compile.sh
-
   - mkdir compiled
 
 script: 
