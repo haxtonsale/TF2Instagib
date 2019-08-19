@@ -3,7 +3,7 @@
 Instagib gamemode for Team Fortress 2 with special rounds and other neat stuff.
 
 # Required Extensions
-* [TF2Items](https://github.com/asherkin/TF2Items)
+* [TF2Items](https://builds.limetech.io/?project=tf2items)
 
 # Optional Extensions
 * [SteamTools](https://builds.limetech.io/?p=steamtools)
