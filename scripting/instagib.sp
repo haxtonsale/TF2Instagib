@@ -1,5 +1,5 @@
 // -------------------------------------------------------------------
-#define INSTAGIB_VERSION "1.5.2"
+#define INSTAGIB_VERSION "1.5.3"
 
 #define TF2_MAXPLAYERS 32
 //#define DEBUG
@@ -146,7 +146,6 @@ ConVar g_CvarNoRespawnTimes;
 ConVar g_CvarSpecFreezeTime;
 
 Config g_Config;
-bool g_MusicEnabled = true;
 
 char g_InstagibTag[64];
 bool g_SteamTools;
@@ -154,7 +153,6 @@ bool g_SteamTools;
 // -------------------------------------------------------------------
 #include "instagib/config.sp"
 #include "instagib/cookies.sp"
-#include "instagib/music.sp"
 #include "instagib/particles.sp"
 #include "instagib/roundlogic.sp"
 #include "instagib/events.sp"
@@ -165,6 +163,7 @@ bool g_SteamTools;
 #include "instagib/bhop.sp"
 #include "instagib/multikill.sp"
 #include "instagib/mapconfig.sp"
+#include "instagib/music.sp"
 #include "instagib/menus/menu_forceround.sp"
 #include "instagib/menus/menu_settings.sp"
 #include "instagib/menus/menu_main.sp"
@@ -423,7 +422,7 @@ void CheckForInstagibEnts()
 		GetEntPropString(ent, Prop_Data, "m_iName", name, sizeof(name));
 		
 		if (StrEqual(name, "instagib_nomusic")) {
-			g_MusicEnabled = false;
+			g_MapConfig.IsMusicDisabled = true;
 		}
 		
 		ent = FindEntityByClassname(ent+1, "info_target");

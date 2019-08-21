@@ -7,7 +7,7 @@ void Menu_Settings(int client)
 		menu.SetTitle("Settings");
 		menu.AddItem("back", "Back");
 		
-		if (g_MusicEnabled) {
+		if (!g_MapConfig.IsMusicDisabled) {
 			if (g_ClientPrefs[client].EnabledMusic) {
 				menu.AddItem("music:0", "Music: On");
 			} else {

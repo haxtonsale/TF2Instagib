@@ -49,7 +49,7 @@ void AnnounceMusic(int client, char[] name)
 
 void PlayRandomMusic()
 {
-	if (InstagibMusic != null && g_MusicEnabled) {
+	if (InstagibMusic != null && !g_MapConfig.IsMusicDisabled) {
 		static int CurrentMusicIndex = -1;
 
 		if (IsMusicPlaying) {
@@ -96,7 +96,7 @@ void PlayRandomMusic()
 
 void PlayMusicToLateClient(int client)
 {
-	if (g_ClientPrefs[client].EnabledMusic && InstagibMusic != null && IsClientInGame(client) && g_MusicEnabled && IsMusicPlaying) {
+	if (g_ClientPrefs[client].EnabledMusic && InstagibMusic != null && IsClientInGame(client) && !g_MapConfig.IsMusicDisabled && IsMusicPlaying) {
 		EmitSoundToClient(client, CurrentMusic.path, _, SNDCHAN_AUTO, .volume = CurrentMusic.volume);
 		AnnounceMusic(client, CurrentMusic.name);
 	}
