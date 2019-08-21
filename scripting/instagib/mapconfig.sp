@@ -10,7 +10,6 @@ enum struct MapConfig
 {
 	KeyValues kv;
 	ArrayList SpawnPoints;
-	
 	bool IsMusicDisabled;
 }
 
@@ -52,8 +51,13 @@ void LoadMapConfig(const char[] mapname)
 	
 	if (g_MapConfig.kv.ImportFromFile(path)) {
 		ReloadMapConfigKeyValues();
-	} else {
-		delete g_MapConfig.kv;
+	} else { // Check for the map config in instagib_maps/official
+		BuildPath(Path_SM, path, sizeof(path), "/configs/instagib_maps/official/%s.cfg", mapname);
+		if (g_MapConfig.kv.ImportFromFile(path)) {
+			ReloadMapConfigKeyValues();
+		} else {
+			delete g_MapConfig.kv;
+		}
 	}
 }
 

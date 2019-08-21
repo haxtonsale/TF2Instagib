@@ -53,8 +53,7 @@ void Web_DownloadMapConfig(const char[] url)
 		--offset;
 	}
 	
-	CSubString(url, name, sizeof(name), ++offset, index - offset - 1);
-	PrintToServer(name);
+	CSubString(url, name, sizeof(name), ++offset, index-offset-1);
 	
 	ArrayStack map_name = new ArrayStack(128);
 	map_name.PushString(name);
@@ -71,10 +70,14 @@ public int Web_GetLatestInstagibVersion_OnComplete(HTTPRequestHandle HTTPRequest
 		
 		Steam_GetHTTPResponseBodyData(HTTPRequest, response, size);
 		
-		int tag_pos = StrContains(response, "\"tag_name\":");
-		if (tag_pos != -1) {
+		int index = ReplaceStringEx(response, size, "\"tag_name\":", "");
+		if (index != -1) {
 			char version[16];
-			CSubString(response, version, sizeof(version), tag_pos+12, 5);
+			int len;
+			while (response[++index] != '"') {
+				version[len] = response[index];
+				++len;
+			}
 			
 			if (!StrEqual(INSTAGIB_VERSION, version)) {
 				PrintToServer("This server is running an outdated version of TF2Instagib! (%s)\nGet TF2Instagib %s here: https://github.com/haxtonsale/TF2Instagib/releases/latest", INSTAGIB_VERSION, version);
@@ -140,6 +143,10 @@ public int Web_DownloadMapConfig_OnComplete(HTTPRequestHandle HTTPRequest, bool 
 		BuildPath(Path_SM, path, sizeof(path), "/configs/instagib_maps/official/%s.cfg", name);
 		
 		Steam_WriteHTTPResponseBody(HTTPRequest, path);
+		
+		if (!g_MapConfig.kv && StrEqual(GetMapName(), name)) {
+			LoadMapConfig(name);
+		}
 	}
 	else
 	{

@@ -18,7 +18,7 @@
 #endif
 
 #undef REQUIRE_EXTENSIONS
-#include <steamtools>
+#tryinclude <steamtools>
 
 #pragma semicolon 1
 #pragma newdecls required
@@ -103,6 +103,9 @@ enum struct Config
 	int MultikillInterval;
 	
 	bool InstantRespawn;
+	
+	bool WebVersionCheck;
+	bool WebMapConfigs;
 }
 
 typedef Round_OnStart =           function void ();
@@ -579,9 +582,6 @@ public void OnPluginStart()
 	Rounds_Init();
 	Hud_Init();
 	
-	Web_GetLatestInstagibVersion();
-	Web_GetMapConfigs();
-	
 	if (IsLateLoad) {
 		for (int i = 1; i <= MaxClients; i++) {
 			if (IsClientConnected(i)) {
@@ -600,6 +600,16 @@ public void OnPluginStart()
 		
 		InstagibPrintToChatAll(true, "Late Load! Restarting the round...");
 		Stalemate();
+	}
+	
+	if (g_SteamTools) {
+		if (g_Config.WebVersionCheck) {
+			Web_GetLatestInstagibVersion();
+		}
+		
+		if (g_Config.WebMapConfigs) {
+			Web_GetMapConfigs();
+		}
 	}
 }
 

@@ -66,6 +66,8 @@ void LoadConfig()
 		g_Config.BhopMaxSpeed =        IGConfig.GetFloat("BhopMaxSpeed", 456.0);
 		g_Config.MultikillInterval =   IGConfig.GetNum("MultikillInterval", 3);
 		g_Config.InstantRespawn =      view_as<bool>(IGConfig.GetNum("InstantRespawn", 0));
+		g_Config.WebVersionCheck =     view_as<bool>(IGConfig.GetNum("CheckInstagibVersion", 1));
+		g_Config.WebMapConfigs =       view_as<bool>(IGConfig.GetNum("DownloadOfficialMapConfigs", 1));
 		
 		g_CvarAirAccel.SetInt(IGConfig.GetNum("AirAcceleration", 30));
 		
