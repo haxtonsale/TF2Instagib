@@ -18,7 +18,7 @@
 #endif
 
 #undef REQUIRE_EXTENSIONS
-#tryinclude <steamtools>
+#include <steamtools>
 
 #pragma semicolon 1
 #pragma newdecls required
