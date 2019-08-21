@@ -112,6 +112,13 @@ int FindParticle(char[] particle_name, bool after_precache = false)
 	return strindx;
 }
 
+void ClearParticleCache()
+{
+	if (CachedParticles != null) {
+		CachedParticles.Clear();
+	}
+}
+
 // -------------------------------------------------------------------
 // yoinked from some alliedmodders thread, don't remember which one
 stock int PrecacheParticleSystem(const char[] particleSystem)

@@ -622,6 +622,7 @@ public void OnMapStart()
 	
 	CheckForInstagibEnts();
 	LoadMapConfig(displayname);
+	ClearParticleCache();
 }
 
 public void OnEntityCreated(int ent, const char[] classname)
