@@ -22,9 +22,9 @@ void RefreshRequiredEnts()
 	char displayname[256];
 	displayname = GetMapName();
 	
-	bool isMapPayload;
+	bool is_map_payload;
 	if (!strncmp(displayname, "pl_", 3) || !strncmp(displayname, "plr_", 4)) {
-		isMapPayload = true;
+		is_map_payload = true;
 	}
 	
 	int max = GetMaxEntities();
@@ -49,26 +49,26 @@ void RefreshRequiredEnts()
 				}
 			}
 			
-			if (StrEqual(classname, "func_regenerate")) {
+			if (StrEqual(classname, "func_regenerate")) { // Delet resupply lockers
 				AcceptEntityInput(GetEntPropEnt(i, Prop_Data, "m_hAssociatedModel"), "Kill");
 				AcceptEntityInput(i, "Kill");
-			} else if (StrEqual(classname, "func_door")) {
+			} else if (StrEqual(classname, "func_door")) { // Kill all doors
 				char name[128];
 				GetEntPropString(i, Prop_Data, "m_iName", name, sizeof(name));
 				
-				// hardcode for koth_nucleus
+				// Hardcode for koth_nucleus
 				if (StrEqual(displayname, "koth_nucleus") && (StrEqual(name, "door_bridge") || StrEqual(name, "door_top") || StrEqual(name, "door_bottom") || StrEqual(name, "door_armleft") || StrEqual(name, "door_armright"))) {
 					AcceptEntityInput(i, "Open");
 				} else {
 					AcceptEntityInput(i, "Open");
-					AcceptEntityInput(i, "Kill"); // keel him
+					AcceptEntityInput(i, "Kill");
 				}
-			} else if (StrEqual(classname, "trigger_capture_area")) {
+			} else if (StrEqual(classname, "trigger_capture_area")) { // Make it impossible to capture points
 				SetVariantString("2 0");
 				AcceptEntityInput(i, "SetTeamCanCap");
 				SetVariantString("3 0");
 				AcceptEntityInput(i, "SetTeamCanCap");
-			} else if (MapRoundSetupTime() && StrEqual(classname, "team_round_timer")) {
+			} else if (MapRoundSetupTime() && StrEqual(classname, "team_round_timer")) { // Set setup time to 5 seconds
 				SetVariantInt(5);
 				AcceptEntityInput(i, "SetSetupTime");
 			}
@@ -90,7 +90,7 @@ void RefreshRequiredEnts()
 		DispatchSpawn(g_GamerulesEnt);
 	}
 	
-	GameRules_SetProp("m_nHudType", (isMapPayload) ? 2 : 3);
+	GameRules_SetProp("m_nHudType", (is_map_payload) ? 2 : 3);
 	GameRules_SetProp("m_bPlayingRobotDestructionMode", true);
 	
 	SetupSpawnPoints();

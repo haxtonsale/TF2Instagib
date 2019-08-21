@@ -9,8 +9,9 @@ enum struct SpawnPoint
 enum struct MapConfig
 {
 	KeyValues kv;
-	bool IsMusicDisabled;
 	ArrayList SpawnPoints;
+	
+	bool IsMusicDisabled;
 }
 
 enum
@@ -356,7 +357,7 @@ public int Panel_EditMode_Handler(Menu menu, MenuAction action, int client, int 
 				
 				CreateSpawnPoint(TFTeam_Red, pos, ang[1]);
 				InstagibPrintToChat(true, client, "Created RED spawn point at {%.2f %.2f %.2f}.", pos[0], pos[1], pos[2]);
-				ToggleEditMode(client);
+				
 				ToggleEditMode(client);
 			}
 			
@@ -368,7 +369,7 @@ public int Panel_EditMode_Handler(Menu menu, MenuAction action, int client, int 
 				
 				CreateSpawnPoint(TFTeam_Blue, pos, ang[1]);
 				InstagibPrintToChat(true, client, "Created BLU spawn point at {%.2f %.2f %.2f}.", pos[0], pos[1], pos[2]);
-				ToggleEditMode(client);
+				
 				ToggleEditMode(client);
 			}
 			

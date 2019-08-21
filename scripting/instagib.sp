@@ -164,6 +164,7 @@ bool g_SteamTools;
 #include "instagib/multikill.sp"
 #include "instagib/mapconfig.sp"
 #include "instagib/music.sp"
+#include "instagib/web.sp"
 #include "instagib/menus/menu_forceround.sp"
 #include "instagib/menus/menu_settings.sp"
 #include "instagib/menus/menu_main.sp"
@@ -577,6 +578,9 @@ public void OnPluginStart()
 	Events_Init();
 	Rounds_Init();
 	Hud_Init();
+	
+	Web_GetLatestInstagibVersion();
+	Web_GetMapConfigs();
 	
 	if (IsLateLoad) {
 		for (int i = 1; i <= MaxClients; i++) {
