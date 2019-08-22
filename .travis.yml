@@ -41,11 +41,8 @@ jobs:
           - tar -xzf steamcmd_linux.tar.gz -C steamcmd
           - cd steamcmd
           - mkdir tf2
-          - ./steamcmd.sh
-          - login anonymous
-          - force_install_dir ./tf2
-          - app_update 232250
-          - quit
+          - printf "login anonymous\nforce_install_dir ./tf2\napp_update 232250\nquit" > update.txt
+          - ./steamcmd.sh +runscript update.txt
           - cp -R ../addons/ tf2/tf/
           - cd tf2/tf2
           - wget --input-file=https://mms.alliedmods.net/mmsdrop/1.11/mmsource-latest-linux
