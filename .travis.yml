@@ -8,7 +8,6 @@ addons:
 
 env:
   - SMVERSION=1.10 MMVERSION=1.11
-  - SMVERSION=1.10 MMVERSION=1.10
 
 install:
   - wget --input-file=http://sourcemod.net/smdrop/$SMVERSION/sourcemod-latest-linux
