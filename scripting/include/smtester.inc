@@ -68,14 +68,11 @@ stock void SMTester_Finish()
 	
 	PrintToServer(" ");
 	
-	if (g_Fails >= g_AllowedFails) {
-		if (g_ExitOnFinish) {
-			ServerCommand("quit 1");
-		} else {
-			SetFailState("%i Failed %s", g_Fails, g_Fails == 1 ? "Test" : "Tests");
-		}
-	} else if (g_ExitOnFinish) {
-		ServerCommand("quit 0");
+	if (g_Fails > g_AllowedFails) {
+		Exit(1);
+		SetFailState("%i Failed %s", g_Fails, g_Fails == 1 ? "Test" : "Tests");
+	} else {
+		Exit(0);
 	}
 }
 
@@ -88,4 +85,21 @@ static stock char GetPadding()
 	}
 	
 	return padding;
+}
+
+// Lame workaround because i can't exit srcds with code 0 through sm
+static stock void Exit(int code)
+{
+	if (g_ExitOnFinish) {
+		char path[PLATFORM_MAX_PATH];
+		BuildPath(Path_SM, path, sizeof(path), "/logs/test_result.txt");
+		
+		Handle file = OpenFile(path, "w");
+		char codestr[16];
+		IntToString(code, codestr, sizeof(codestr));
+		WriteFileString(file, codestr, false);
+		delete file;
+		
+		ServerCommand("exit");
+	}
 }

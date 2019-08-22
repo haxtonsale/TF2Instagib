@@ -64,4 +64,8 @@ jobs:
           
           - chmod -R +w ../
           
-          - ../srcds_run +map koth_nucleus 
+          - ../srcds_run +map koth_nucleus
+          
+          - printf 'FILE="addons/sourcemod/logs/test_result.txt"\nwhile read LINE; do\nif [ $LINE = "1" ]; then\nexit 1\nelse\nexit 0\nfl;\ndone < $FILE' > check_test_result.sh
+          - chmod +x check_test_result.sh
+          - ./check_test_result.sh
