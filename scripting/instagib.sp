@@ -623,7 +623,7 @@ public void OnPluginStart()
 	SMTester_GoBack(2);
 	SMTester_CreateNode("Testing SMTester 3");
 	Assert("true == true", true);
-	Assert("false == false", false, true);
+	Assert("false == false", false, false);
 	SMTester_Finish();
 }
 
