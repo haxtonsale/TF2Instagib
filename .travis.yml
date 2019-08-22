@@ -6,7 +6,9 @@ addons:
     apt_packages:
       - lib32stdc++6
       - libc6
-      - libx32tinfo5
+      - libncurses5:i386
+      - libtinfo5:i386
+      - libcurl3-gnutls:i386
 
 env:
   - SMVERSION=1.10 MMVERSION=1.11
