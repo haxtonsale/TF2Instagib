@@ -41,7 +41,7 @@ jobs:
           - tar -xzf steamcmd_linux.tar.gz -C steamcmd
           - cd steamcmd
           - mkdir tf2
-          - fprint "login anonymous\nforce_install_dir ./tf2\napp_update 232250\nquit" > script.txt
+          - printf "login anonymous\nforce_install_dir ./tf2\napp_update 232250\nquit" > script.txt
           - ./steamcmd.sh +runscript script.txt
           - cd ..
           - cp -R addons/ steamcmd/tf2/tf/
