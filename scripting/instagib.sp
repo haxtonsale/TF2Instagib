@@ -12,6 +12,7 @@
 #include <tf2items>
 #include <lesscolors>
 #include <clientprefs>
+#include <smtester>
 
 #if defined DEBUG
 #include <profiler>
@@ -604,13 +605,26 @@ public void OnPluginStart()
 	
 	if (g_SteamTools) {
 		if (g_Config.WebVersionCheck) {
-			Web_GetLatestInstagibVersion();
+			//Web_GetLatestInstagibVersion();
 		}
 		
 		if (g_Config.WebMapConfigs) {
-			Web_GetMapConfigs();
+			//Web_GetMapConfigs();
 		}
 	}
+	
+	SMTester_Start(0, true);
+	SMTester_CreateNode("Testing SMTester");
+	Assert("3 < 4 == true", 3 < 4);
+	Assert("3 > 4 == false", 3 > 4, false);
+	SMTester_CreateNode("Testing SMTester 2");
+	Assert("2 + 2 == 4", 2 + 2, 4);
+	Assert("3 + 2 == 5", 3 + 2, 5);
+	SMTester_GoBack(2);
+	SMTester_CreateNode("Testing SMTester 3");
+	Assert("true == true", true);
+	Assert("false == false", false, true);
+	SMTester_Finish();
 }
 
 public void OnMapStart()
