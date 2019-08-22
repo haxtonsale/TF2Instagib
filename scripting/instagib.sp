@@ -3,6 +3,7 @@
 
 #define TF2_MAXPLAYERS 32
 //#define DEBUG
+//#define RUN_TESTS
 
 #include <sourcemod>
 #include <sdktools>
@@ -16,6 +17,10 @@
 
 #if defined DEBUG
 #include <profiler>
+#endif
+
+#if defined RUN_TESTS
+#include <smtester>
 #endif
 
 #undef REQUIRE_EXTENSIONS
@@ -169,6 +174,7 @@ bool g_SteamTools;
 #include "instagib/mapconfig.sp"
 #include "instagib/music.sp"
 #include "instagib/web.sp"
+#include "instagib/tests.sp"
 #include "instagib/menus/menu_forceround.sp"
 #include "instagib/menus/menu_settings.sp"
 #include "instagib/menus/menu_main.sp"
@@ -605,26 +611,13 @@ public void OnPluginStart()
 	
 	if (g_SteamTools) {
 		if (g_Config.WebVersionCheck) {
-			//Web_GetLatestInstagibVersion();
+			Web_GetLatestInstagibVersion();
 		}
 		
 		if (g_Config.WebMapConfigs) {
-			//Web_GetMapConfigs();
+			Web_GetMapConfigs();
 		}
 	}
-	
-	SMTester_Start(0, true);
-	SMTester_CreateNode("Testing SMTester");
-	Assert("3 < 4 == true", 3 < 4);
-	Assert("3 > 4 == false", 3 > 4, false);
-	SMTester_CreateNode("Testing SMTester 2");
-	Assert("2 + 2 == 4", 2 + 2, 4);
-	Assert("3 + 2 == 5", 3 + 2, 5);
-	SMTester_GoBack(2);
-	SMTester_CreateNode("Testing SMTester 3");
-	Assert("true == true", true);
-	Assert("false == false", false, true);
-	SMTester_Finish();
 }
 
 public void OnMapStart()
@@ -651,6 +644,10 @@ public void OnMapStart()
 	CheckForInstagibEnts();
 	LoadMapConfig(displayname);
 	ClearParticleCache();
+	
+	#if defined RUN_TESTS
+	Instagib_StartTests();
+	#endif
 }
 
 public void OnEntityCreated(int ent, const char[] classname)

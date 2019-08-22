@@ -37,6 +37,7 @@ jobs:
           - ./spcomp instagib.sp
       - stage: test
         script:
+          - sed -i -e "s///#define RUN_TESTS/#define RUN_TESTS/g" instagib.sp
           - ./spcomp instagib.sp
           
           - mv instagib.smx ../plugins
