@@ -70,13 +70,12 @@ stock void SMTester_Finish()
 	
 	if (g_Fails >= g_AllowedFails) {
 		if (g_ExitOnFinish) {
-			LogError("%i Failed %s", g_Fails, g_Fails == 1 ? "Test" : "Tests");
-			ServerCommand("exit 1");
+			ServerCommand("quit 1");
 		} else {
 			SetFailState("%i Failed %s", g_Fails, g_Fails == 1 ? "Test" : "Tests");
 		}
 	} else if (g_ExitOnFinish) {
-		ServerCommand("exit 0");
+		ServerCommand("quit 0");
 	}
 }
 
