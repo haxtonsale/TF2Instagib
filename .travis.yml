@@ -5,7 +5,7 @@ sudo: false
 addons:
     apt_packages:
       - lib32stdc++6
-      - glibc
+      - libc6
 
 env:
   - SMVERSION=1.10 MMVERSION=1.11
