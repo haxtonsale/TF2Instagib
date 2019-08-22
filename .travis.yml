@@ -8,7 +8,6 @@ addons:
 
 env:
   - SMVERSION=1.10
-  - MMVERSION = 1.11
 
 install:
   - wget --input-file=http://sourcemod.net/smdrop/$SMVERSION/sourcemod-latest-linux
@@ -49,6 +48,6 @@ jobs:
           - quit
           - cp -R ../addons/ tf2/tf/
           - cd tf2/tf2
-          - wget --input-file=https://mms.alliedmods.net/mmsdrop/$MMVERSION/mmsource-latest-linux
+          - wget --input-file=https://mms.alliedmods.net/mmsdrop/1.11/mmsource-latest-linux
           - tar -xzf $(cat mmsource-latest-linux)
           - ../srcds_run +map koth_nucleus 
