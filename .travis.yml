@@ -6,6 +6,7 @@ addons:
     apt_packages:
       - lib32stdc++6
       - libc6
+      - libx32tinfo5
 
 env:
   - SMVERSION=1.10 MMVERSION=1.11
