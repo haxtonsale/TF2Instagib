@@ -8,6 +8,7 @@ addons:
 
 env:
   - SMVERSION=1.10
+  - MMVERSION = 1.11
 
 install:
   - wget --input-file=http://sourcemod.net/smdrop/$SMVERSION/sourcemod-latest-linux
@@ -24,8 +25,30 @@ before_script:
   - sed -i -e "s/public(HTTPRequestHandle:HTTPRequest, bool:requestSuccessful, HTTPStatusCode:statusCode),/function void (HTTPRequestHandle HTTPRequest, bool requestSuccessful, HTTPStatusCode statusCode);/g" include/steamtools.inc
   - sed -i -e "s/public(HTTPRequestHandle:HTTPRequest, bool:requestSuccessful, HTTPStatusCode:statusCode, any:contextData),/function void (HTTPRequestHandle HTTPRequest, bool requestSuccessful, HTTPStatusCode statusCode, any contextData);/g" include/steamtools.inc
   
-  - chmod +x compile.sh
-  - mkdir compiled
-
-script: 
-  - ./compile.sh instagib.sp
+  - chmod +x ./spcomp
+ 
+jobs:
+    include:
+      - stage: compile
+        script:
+          - ./spcomp instagib.sp
+      - stage: test
+        script:
+          - ./spcomp instagib.sp
+          - mv instagib.smx ../plugins
+          - cd ~
+          - wget "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz"
+          - mkdir steamcmd
+          - tar -xzf steamcmd_linux.tar.gz -C steamcmd
+          - cd steamcmd
+          - mkdir tf2
+          - ./steamcmd.sh
+          - login anonymous
+          - force_install_dir ./tf2
+          - app_update 232250
+          - quit
+          - cp -R ../addons/ tf2/tf/
+          - cd tf2/tf2
+          - wget --input-file=https://mms.alliedmods.net/mmsdrop/$MMVERSION/mmsource-latest-linux
+          - tar -xzf $(cat mmsource-latest-linux)
+          - ../srcds_run +map koth_nucleus 
