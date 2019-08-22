@@ -32,8 +32,6 @@ jobs:
       - stage: compile
         script:
           - ./spcomp instagib.sp
-          - cd ~
-          - ls
       - stage: test
         script:
           - ./spcomp instagib.sp
