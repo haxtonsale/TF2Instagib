@@ -35,21 +35,35 @@ jobs:
       - stage: compile
         script:
           - ./spcomp instagib.sp
+          - wget https://builds.limetech.io/files/tf2items-1.6.4-hg279-linux.zip
+          - unzip tf2items-1.6.4-hg279-linux.zip
       - stage: test
         script:
           - ./spcomp instagib.sp
           - mv instagib.smx ../plugins
           - cd ../../..
+          
           - wget "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz"
           - mkdir steamcmd
           - tar -xzf steamcmd_linux.tar.gz -C steamcmd
+          
           - cd steamcmd
           - mkdir tf2
           - ./steamcmd.sh +login anonymous +force_install_dir ./tf2 +app_update 232250 +quit
+          
           - cd ..
           - cp -R addons/ steamcmd/tf2/tf/
           - cd steamcmd/tf2/tf
+          
           - wget --input-file=https://mms.alliedmods.net/mmsdrop/$MMVERSION/mmsource-latest-linux
           - tar -xzf $(cat mmsource-latest-linux)
+          
+          - wget https://builds.limetech.io/files/tf2items-1.6.4-hg279-linux.zip
+          - unzip tf2items-1.6.4-hg279-linux.zip
+          
+          - wget https://builds.limetech.io/files/steamtools-0.10.0-git179-54fdc51-linux.zip
+          - unzip tf2items-1.6.4-hg279-linux.zip
+          
           - chmod -R +w ../
+          
           - ../srcds_run +map koth_nucleus 
