@@ -7,7 +7,8 @@ addons:
       - lib32stdc++6
 
 env:
-  - SMVERSION=1.10
+  - SMVERSION=1.10 MMVERSION=1.11
+  - SMVERSION=1.10 MMVERSION=1.10
 
 install:
   - wget --input-file=http://sourcemod.net/smdrop/$SMVERSION/sourcemod-latest-linux
@@ -41,10 +42,11 @@ jobs:
           - tar -xzf steamcmd_linux.tar.gz -C steamcmd
           - cd steamcmd
           - mkdir tf2
-          - ./steamcmd.sh +runscript "login anonymous\nforce_install_dir ./tf2\napp_update 232250\nquit"
+          - fprint "login anonymous\nforce_install_dir ./tf2\napp_update 232250\nquit" > script.txt
+          - ./steamcmd.sh +runscript script.txt
           - cd ..
           - cp -R addons/ steamcmd/tf2/tf/
           - cd steamcmd/tf2/tf
-          - wget --input-file=https://mms.alliedmods.net/mmsdrop/1.11/mmsource-latest-linux
+          - wget --input-file=https://mms.alliedmods.net/mmsdrop/$MMVERSION/mmsource-latest-linux
           - tar -xzf $(cat mmsource-latest-linux)
           - ../srcds_run +map koth_nucleus 
