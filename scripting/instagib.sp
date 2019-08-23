@@ -1,9 +1,9 @@
 // -------------------------------------------------------------------
-#define INSTAGIB_VERSION "1.5.3"
+#define INSTAGIB_VERSION "1.5.4"
 
 #define TF2_MAXPLAYERS 32
 //#define DEBUG
-//#define RUN_TESTS
+#define RUN_TESTS
 
 #include <sourcemod>
 #include <sdktools>
@@ -611,11 +611,11 @@ public void OnPluginStart()
 	
 	if (g_SteamTools) {
 		if (g_Config.WebVersionCheck) {
-			Web_GetLatestInstagibVersion();
+			//Web_GetLatestInstagibVersion();
 		}
 		
 		if (g_Config.WebMapConfigs) {
-			Web_GetMapConfigs();
+			//Web_GetMapConfigs();
 		}
 	}
 }
