@@ -3,7 +3,7 @@
 
 #define TF2_MAXPLAYERS 32
 //#define DEBUG
-#define RUN_TESTS
+//#define RUN_TESTS
 
 #include <sourcemod>
 #include <sdktools>
