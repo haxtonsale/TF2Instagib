@@ -3,7 +3,7 @@
 void Instagib_StartTests()
 {
 	ServerCommand("sv_cheats 1");
-	SMTester_Start(0, false);
+	SMTester_Start(0, true);
 	
 	SMTester_CreateNode("Instagib");
 	
