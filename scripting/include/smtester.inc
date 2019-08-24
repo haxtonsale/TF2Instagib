@@ -95,6 +95,10 @@ stock void SMTester_Async(const char[] name, any expect = true, float timeout = 
 
 stock void SMTester_AsyncAssert(const char[] name, any result, const char[] reject_reason = "", any ...)
 {
+	if (g_AsyncTasks == null) {
+		return;
+	}
+	
 	int index;
 	if (g_AsyncTasks.GetValue(name, index)) {
 		SMTester_Task task;

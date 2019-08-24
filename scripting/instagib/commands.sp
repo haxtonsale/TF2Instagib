@@ -69,7 +69,7 @@ public Action Command_ForceRound(int client, int args)
 		
 		if (!result && client) {
 			InstagibPrintToChat(true, client, "Round {%s} was not found!", argstr);
-		} else if (!client) {
+		} else if (!result && !client) {
 			PrintToServer("Round \"%s\" was not found!", argstr);
 		}
 	}
