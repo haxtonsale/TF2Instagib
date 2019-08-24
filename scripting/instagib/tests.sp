@@ -2,9 +2,6 @@
 #if defined RUN_TESTS
 void Instagib_StartTests()
 {
-	ServerCommand("sv_cheats 1");
-	ServerCommand("sv_hibernate_when_empty 0");
-	ServerCommand("bot_join_after_player 0");
 	SMTester_Start(0, true);
 	
 	SMTester_CreateNode("Instagib");
