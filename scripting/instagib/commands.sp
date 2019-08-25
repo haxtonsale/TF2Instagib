@@ -8,6 +8,7 @@ void Commands_Init()
 	RegAdminCmd("forceround", Command_ForceRound, ADMFLAG_CHEATS);
 	RegAdminCmd("instagibcfg", Command_ReloadConfig, ADMFLAG_CHEATS);
 	RegAdminCmd("instagibedit", Command_EditMode, ADMFLAG_CHEATS);
+	RegAdminCmd("instagibtime", Command_SetRoundTime, ADMFLAG_CHEATS);
 	
 	CreateConVar("instagib_version", INSTAGIB_VERSION, "Instagib version.", FCVAR_SPONLY|FCVAR_REPLICATED|FCVAR_NOTIFY|FCVAR_DONTRECORD);
 	
@@ -69,7 +70,7 @@ public Action Command_ForceRound(int client, int args)
 		
 		if (!result && client) {
 			InstagibPrintToChat(true, client, "Round {%s} was not found!", argstr);
-		} else if (!client) {
+		} else if (!result && !client) {
 			PrintToServer("Round \"%s\" was not found!", argstr);
 		}
 	}
@@ -96,6 +97,19 @@ public Action Command_ReloadConfig(int client, int args)
 public Action Command_EditMode(int client, int args)
 {
 	ToggleEditMode(client);
+}
+
+public Action Command_SetRoundTime(int client, int args)
+{
+	if (args) {
+		char arg[64];
+		GetCmdArgString(arg, sizeof(arg));
+		
+		int time = StringToInt(arg);
+		if (time > 0) {
+			g_RoundTimeLeft = time;
+		}
+	}
 }
 
 // Return the cheat flag to the mp_forcewin command after it's been called by the server :)

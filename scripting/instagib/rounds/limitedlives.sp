@@ -123,12 +123,6 @@ static void SR_Lives_GetLivesColor(int lives, int &r, int &g, int &b)
 // -------------------------------------------------------------------
 void SR_Lives_OnStart()
 {
-	for (int i = 1; i <= MaxClients; i++) {
-		if (IsClientInGame(i) && IsClientPlaying(i) && !IsPlayerAlive(i)) {
-			TF2_RespawnPlayer(i);
-		}
-	}
- 	
 	int red_lives;
 	int blue_lives;
 	
@@ -147,6 +141,12 @@ void SR_Lives_OnStart()
 		}
 	}
 	
+	for (int i = 1; i <= MaxClients; i++) {
+		if (IsClientInGame(i) && IsClientPlaying(i) && !IsPlayerAlive(i)) {
+			TF2_RespawnPlayer(i);
+		}
+	}
+	
 	if (red_lives > blue_lives) {
 		SetMaxScore(red_lives+1);
 	} else {
@@ -162,7 +162,7 @@ void SR_Lives_OnStart()
 void SR_Lives_OnSpawn(int client, TFTeam team)
 {
 	// Turn people with no lives to ghosts.
-	if (PlayerLives[client] <= 0 && IsClientPlaying(client)) {
+	if (g_IsRoundActive && PlayerLives[client] <= 0 && IsClientPlaying(client)) {
 		TF2_AddCondition(client, TFCond_HalloweenGhostMode);
 	}
 }

@@ -1,8 +1,9 @@
 // -------------------------------------------------------------------
-#define INSTAGIB_VERSION "1.5.3"
+#define INSTAGIB_VERSION "1.5.4"
 
 #define TF2_MAXPLAYERS 32
 //#define DEBUG
+//#define RUN_TESTS
 
 #include <sourcemod>
 #include <sdktools>
@@ -12,9 +13,14 @@
 #include <tf2items>
 #include <lesscolors>
 #include <clientprefs>
+#include <smtester>
 
 #if defined DEBUG
 #include <profiler>
+#endif
+
+#if defined RUN_TESTS
+#include <smtester>
 #endif
 
 #undef REQUIRE_EXTENSIONS
@@ -168,6 +174,7 @@ bool g_SteamTools;
 #include "instagib/mapconfig.sp"
 #include "instagib/music.sp"
 #include "instagib/web.sp"
+#include "instagib/tests.sp"
 #include "instagib/menus/menu_forceround.sp"
 #include "instagib/menus/menu_settings.sp"
 #include "instagib/menus/menu_main.sp"
@@ -637,6 +644,10 @@ public void OnMapStart()
 	CheckForInstagibEnts();
 	LoadMapConfig(displayname);
 	ClearParticleCache();
+	
+	#if defined RUN_TESTS
+	Instagib_StartTests();
+	#endif
 }
 
 public void OnEntityCreated(int ent, const char[] classname)
@@ -684,6 +695,7 @@ public void TF2_OnWaitingForPlayersStart()
 public void TF2_OnWaitingForPlayersEnd()
 {
 	g_IsWaitingForPlayers = false;
+	g_IsRoundActive = false; // Limited lives fix
 }
 
 public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] weaponname, bool &result)

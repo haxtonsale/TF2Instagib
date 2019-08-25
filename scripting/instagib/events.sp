@@ -169,6 +169,10 @@ public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 			}
 		}
 	}
+	
+	#if defined RUN_TESTS
+	SMTester_AsyncAssert("Round score", InstagibGetTeamScore(TFTeam_Red) == 1 && InstagibGetTeamScore(TFTeam_Blue) == 0, "RED score != 1 and BLU score != 0");
+	#endif
 }
 
 public void Event_OnRoundEnd(Event event, const char[] name, bool dont_broadcast)
@@ -192,6 +196,16 @@ public void Event_OnRoundEnd(Event event, const char[] name, bool dont_broadcast
 	StopMusic();
 	ResetScore();
 	g_IsRoundActive = false;
+	
+	#if defined RUN_TESTS
+	SMTester_AsyncAssert("Round win", true);
+	if (g_CurrentRound.end_at_time_end) {
+		SMTester_AsyncAssert("Round win at round time end", true);
+	}
+	if (team == TFTeam_Unassigned) {
+		SMTester_AsyncAssert("Stalemate at round time end", true);
+	}
+	#endif
 }
 
 public Action Event_SetupFinish(Event event, const char[] name, bool dont_broadcast)

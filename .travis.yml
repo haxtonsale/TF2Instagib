@@ -5,9 +5,13 @@ sudo: false
 addons:
     apt_packages:
       - lib32stdc++6
+      - libc6
+      - libncurses5:i386
+      - libtinfo5:i386
+      - libcurl3-gnutls:i386
 
 env:
-  - SMVERSION=1.10
+  - SMVERSION=1.10 MMVERSION=1.11
 
 install:
   - wget --input-file=http://sourcemod.net/smdrop/$SMVERSION/sourcemod-latest-linux
@@ -24,8 +28,43 @@ before_script:
   - sed -i -e "s/public(HTTPRequestHandle:HTTPRequest, bool:requestSuccessful, HTTPStatusCode:statusCode),/function void (HTTPRequestHandle HTTPRequest, bool requestSuccessful, HTTPStatusCode statusCode);/g" include/steamtools.inc
   - sed -i -e "s/public(HTTPRequestHandle:HTTPRequest, bool:requestSuccessful, HTTPStatusCode:statusCode, any:contextData),/function void (HTTPRequestHandle HTTPRequest, bool requestSuccessful, HTTPStatusCode statusCode, any contextData);/g" include/steamtools.inc
   
-  - chmod +x compile.sh
-  - mkdir compiled
-
-script: 
-  - ./compile.sh instagib.sp
+  - chmod +x ./spcomp
+ 
+jobs:
+    include:
+      - stage: compile
+        script:
+          - ./spcomp instagib.sp
+      - stage: test
+        script:
+          - sed -i -e "s,//#define RUN_TESTS,#define RUN_TESTS,g" instagib.sp
+          - ./spcomp instagib.sp
+          
+          - mv instagib.smx ../plugins
+          
+          - cd ../../..
+          
+          - wget "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz"
+          - mkdir steamcmd
+          - tar -xzf steamcmd_linux.tar.gz -C steamcmd
+          - cd steamcmd
+          - mkdir tf2
+          - ./steamcmd.sh +login anonymous +force_install_dir ./tf2 +app_update 232250 +quit
+          - cd ..
+          - cp -R addons/ steamcmd/tf2/tf/
+          - cd steamcmd/tf2/tf
+          
+          - wget --input-file=https://mms.alliedmods.net/mmsdrop/$MMVERSION/mmsource-latest-linux
+          - tar -xzf $(cat mmsource-latest-linux)
+          
+          - wget https://builds.limetech.io/files/tf2items-1.6.4-hg279-linux.zip
+          - unzip -n tf2items-1.6.4-hg279-linux.zip
+          
+          - wget https://builds.limetech.io/files/steamtools-0.10.0-git179-54fdc51-linux.zip
+          - unzip -n steamtools-0.10.0-git179-54fdc51-linux.zip
+          
+          - chmod -R +w ../
+          
+          - ../srcds_run +map koth_nucleus +tf_allow_server_hibernation 0 +tf_bot_join_after_player 0 +sv_cheats 1 +mp_autoteambalance 0 || true
+          
+          - if grep -q "1" addons/sourcemod/logs/test_result.txt; then exit 1; fi
