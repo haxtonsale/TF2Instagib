@@ -65,6 +65,6 @@ jobs:
           
           - chmod -R +w ../
           
-          - ../srcds_run +map koth_nucleus +tf_allow_server_hibernation 0 +tf_bot_join_after_player 0 +sv_cheats 1 || true
+          - ../srcds_run +map koth_nucleus +tf_allow_server_hibernation 0 +tf_bot_join_after_player 0 +sv_cheats 1 +mp_autoteambalance 0 || true
           
           - if grep -q "1" addons/sourcemod/logs/test_result.txt; then exit 1; fi

@@ -3,7 +3,7 @@
 
 #define TF2_MAXPLAYERS 32
 //#define DEBUG
-//#define RUN_TESTS
+#define RUN_TESTS
 
 #include <sourcemod>
 #include <sdktools>
@@ -695,6 +695,7 @@ public void TF2_OnWaitingForPlayersStart()
 public void TF2_OnWaitingForPlayersEnd()
 {
 	g_IsWaitingForPlayers = false;
+	g_IsRoundActive = false; // Limited lives fix
 }
 
 public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] weaponname, bool &result)
