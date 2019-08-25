@@ -2,7 +2,7 @@
 #if defined RUN_TESTS
 void Instagib_StartTests()
 {
-	SMTester_Start(0, false);
+	SMTester_Start(0, true);
 	
 	SMTester_CreateNode("Instagib");
 	
