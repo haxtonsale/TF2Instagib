@@ -23,6 +23,7 @@ before_script:
 
   - wget "https://raw.githubusercontent.com/asherkin/TF2Items/master/pawn/tf2items.inc" -O include/tf2items.inc
   - wget "https://raw.githubusercontent.com/asherkin/SteamTools/master/plugin/steamtools.inc" -O include/steamtools.inc
+  - wget "https://raw.githubusercontent.com/haxtonsale/smtester.inc/master/scripting/include/smtester.inc" -O include/smtester.inc
   
   - sed -i -e "s/funcenum/typeset/g" include/steamtools.inc
   - sed -i -e "s/public(HTTPRequestHandle:HTTPRequest, bool:requestSuccessful, HTTPStatusCode:statusCode),/function void (HTTPRequestHandle HTTPRequest, bool requestSuccessful, HTTPStatusCode statusCode);/g" include/steamtools.inc
