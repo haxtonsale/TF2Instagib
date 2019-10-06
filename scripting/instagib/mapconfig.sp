@@ -29,7 +29,7 @@ MapConfig g_MapConfig;
 void CreateMapConfigFolder()
 {
 	char path[PLATFORM_MAX_PATH];
-	BuildPath(Path_SM, path, sizeof(path), "/configs/instagib_maps");
+	BuildPath(Path_SM, path, sizeof(path), "configs/instagib_maps");
 	
 	if (!DirExists(path)) {
 		CreateDirectory(path, FPERM_U_READ | FPERM_U_WRITE | FPERM_U_EXEC | FPERM_G_READ | FPERM_G_EXEC | FPERM_O_READ | FPERM_G_EXEC);
@@ -43,7 +43,7 @@ void LoadMapConfig(const char[] mapname)
 	g_MapConfig.IsMusicDisabled = false;
 	
 	char path[PLATFORM_MAX_PATH];
-	BuildPath(Path_SM, path, sizeof(path), "/configs/instagib_maps/%s.cfg", mapname);
+	BuildPath(Path_SM, path, sizeof(path), "configs/instagib_maps/%s.cfg", mapname);
 	
 	if (g_MapConfig.kv == null) {
 		g_MapConfig.kv = new KeyValues("Instagib Map Config");
@@ -52,7 +52,7 @@ void LoadMapConfig(const char[] mapname)
 	if (g_MapConfig.kv.ImportFromFile(path)) {
 		ReloadMapConfigKeyValues();
 	} else { // Check for the map config in instagib_maps/official
-		BuildPath(Path_SM, path, sizeof(path), "/configs/instagib_maps/official/%s.cfg", mapname);
+		BuildPath(Path_SM, path, sizeof(path), "configs/instagib_maps/official/%s.cfg", mapname);
 		if (g_MapConfig.kv.ImportFromFile(path)) {
 			ReloadMapConfigKeyValues();
 		} else {
@@ -107,7 +107,7 @@ void SaveMapConfig()
 	g_MapConfig.kv.Rewind();
 	
 	char path[PLATFORM_MAX_PATH];
-	BuildPath(Path_SM, path, sizeof(path), "/configs/instagib_maps/%s.cfg", GetMapName());
+	BuildPath(Path_SM, path, sizeof(path), "configs/instagib_maps/%s.cfg", GetMapName());
 	g_MapConfig.kv.ExportToFile(path);
 }
 
@@ -417,7 +417,7 @@ public int Panel_EditMode_Handler(Menu menu, MenuAction action, int client, int 
 			
 			case EditMode_Export: {
 				char path[PLATFORM_MAX_PATH];
-				BuildPath(Path_SM, path, sizeof(path), "/configs/instagib_maps/");
+				BuildPath(Path_SM, path, sizeof(path), "configs/instagib_maps/");
 			
 				SaveMapConfig();
 				InstagibPrintToChat(true, client, "Map config for {%s} has been exported to {%s}.", GetMapName(), path);
