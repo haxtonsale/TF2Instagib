@@ -13,7 +13,6 @@
 #include <tf2items>
 #include <lesscolors>
 #include <clientprefs>
-#include <smtester>
 
 #if defined DEBUG
 #include <profiler>
