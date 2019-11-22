@@ -23,6 +23,11 @@ void Natives_Init()
 	
 	CreateNative("IG_GetClientMultikill", Native_GetMultikill);
 	
+	CreateNative("IG_LimitedLives_GetLives", Native_GetLives);
+	CreateNative("IG_LimitedLives_SetLives", Native_SetLives);
+	CreateNative("IG_FreezeTag_Freeze", Native_Freeze);
+	CreateNative("IG_FreezeTag_Unfreeze", Native_Unfreeze);
+	
 	FwRailjump = CreateGlobalForward("IG_OnRailjump", ET_Ignore, Param_Cell, Param_Array);
 	FwLifeLost = CreateGlobalForward("IG_LimitedLives_OnLifeLost", ET_Ignore, Param_Cell, Param_Cell, Param_Cell);
 	FwAllLivesLost = CreateGlobalForward("IG_LimitedLives_OnAllLivesLost", ET_Ignore, Param_Cell);
@@ -173,4 +178,29 @@ public int Native_GetMultikill(Handle plugin, int numParams)
 	int client = GetNativeCell(1);
 	
 	return (IsClientInGame(client)) ? GetClientMultikill(client) : -1;
+}
+
+public int Native_GetLives(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1);
+	return SR_Lives_GetLives(client);
+}
+
+public int Native_SetLives(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1);
+	int amount = GetNativeCell(2);
+	SR_Lives_SetLives(client, amount);
+}
+
+public int Native_Freeze(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1);
+	SR_FreezeTag_Freeze(client, false);
+}
+
+public int Native_Unfreeze(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1);
+	SR_FreezeTag_Unfreeze(client);
 }

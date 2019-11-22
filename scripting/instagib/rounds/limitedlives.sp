@@ -52,7 +52,18 @@ void SR_Lives_Init()
 }
 
 // -------------------------------------------------------------------
-static void SR_Lives_CheckWinConditions()
+int SR_Lives_GetLives(int client)
+{
+	return PlayerLives[client];
+}
+
+void SR_Lives_SetLives(int client, int amount)
+{
+	PlayerLives[client] = amount;
+	SR_Lives_CheckWinConditions();
+}
+
+void SR_Lives_CheckWinConditions()
 {
 	int red_lives;
 	int blue_lives;
@@ -87,7 +98,7 @@ static void SR_Lives_CheckWinConditions()
 	}
 }
 
-static void SR_Lives_GetLivesColor(int lives, int &r, int &g, int &b)
+void SR_Lives_GetLivesColor(int lives, int &r, int &g, int &b)
 {
 	static int colors[10][3] = {
 		{255, 0, 0},

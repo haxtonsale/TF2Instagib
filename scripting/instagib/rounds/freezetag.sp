@@ -96,7 +96,7 @@ void SR_FreezeTag_CheckWinConditions()
 	}
 }
 
-static void SR_FreezeTag_Effect(int client)
+void SR_FreezeTag_Effect(int client)
 {
 	static char sounds[4][PLATFORM_MAX_PATH] = {
 		"physics/glass/glass_impact_bullet1.wav",

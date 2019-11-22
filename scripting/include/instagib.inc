@@ -16,7 +16,7 @@ enum struct InstagibRound
 	int PointsPerKill;
 	bool ShouldAnnounceWin;
 	bool ShouldAllowKillbind;
-	bool ShoudEndWithTimer;           // Whether the round will be forcefully ended when the round time is over
+	bool ShoudEndWithTimer;        // Whether the round will be forcefully ended when the round time is over
 	int MinPlayers;
 	
 	float RailjumpVelocityXY;
@@ -63,14 +63,17 @@ native void IG_SetRoundTime(int seconds);
 
 native int IG_GetClientMultikill(int client);
 
-// ------------------------------------------------------------------- Limited Lives
+// ------------------------------------------------------------------- Limited Lives & Livestealers
 forward void IG_LimitedLives_OnLifeLost(int client, int lives, int attacker);
 forward void IG_LimitedLives_OnAllLivesLost(int client);
 native int IG_LimitedLives_GetLives(int client);
+native void IG_LimitedLives_SetLives(int client, int amount);
 
 // ------------------------------------------------------------------- Freeze Tag
 forward void IG_FreezeTag_OnClientFrozen(int client, int attacker);
 forward void IG_FreezeTag_OnClientUnfrozen(int client, int attacker);
+native void IG_FreezeTag_Freeze(int client);
+native void IG_FreezeTag_Unfreeze(int client);
 
 // -------------------------------------------------------------------
 public SharedPlugin __pl_instagib =
