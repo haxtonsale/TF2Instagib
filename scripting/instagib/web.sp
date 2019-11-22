@@ -78,8 +78,50 @@ public int Web_GetLatestInstagibVersion_OnComplete(HTTPRequestHandle HTTPRequest
 				++len;
 			}
 			
-			if (!StrEqual(INSTAGIB_VERSION, version)) {
-				PrintToServer("This server is running an outdated version of TF2Instagib! (v%s)\nGet TF2Instagib v%s here: https://github.com/haxtonsale/TF2Instagib/releases/latest", INSTAGIB_VERSION, version);
+			char version_exploded[3][8];
+			int version_num[3];
+			ExplodeString(version, ".", version_exploded, sizeof(version_exploded), sizeof(version_exploded[]));
+			
+			char running_version_exploded[3][8];
+			int running_version_num[3];
+			ExplodeString(INSTAGIB_VERSION, ".", running_version_exploded, sizeof(running_version_exploded), sizeof(running_version_exploded[]));
+			
+			for (int i = 0; i < 3; i++) {
+				version_num[i] = StringToInt(version_exploded[i]);
+				running_version_num[i] = StringToInt(running_version_exploded[i]);
+			}
+			
+			bool outdated;
+			if (version_num[0] > running_version_num[0]) {
+				PrintToServer("\nNew MAJOR TF2Instagib update is available!");
+				outdated = true;
+			} else if (version_num[0] == running_version_num[0] && version_num[1] > running_version_num[1]) {
+				PrintToServer("\nNew TF2Instagib update is available!");
+				outdated = true;
+			} else if (version_num[0] == running_version_num[0] && version_num[1] == running_version_num[1] && version_num[2] > running_version_num[2]) {
+				PrintToServer("\nNew MINOR TF2Instagib update is available!");
+				outdated = true;
+			}
+			
+			if (outdated) {
+				index = ReplaceStringEx(response, size, "\"body\":", "");
+				if (index != -1) {
+					char changelog[1024];
+					len = 0;
+					while (response[++index] != '"') {
+						changelog[len] = response[index];
+						++len;
+					}
+					
+					ReplaceString(changelog, sizeof(changelog), "**", "    *");
+					ReplaceString(changelog, sizeof(changelog), "\\n", "\n");
+					ReplaceString(changelog, sizeof(changelog), "\\r", "");
+					
+					PrintToServer(changelog);
+				}
+				
+				
+				PrintToServer("Get TF2Instagib v%s here: https://github.com/haxtonsale/TF2Instagib/releases/latest\n", version);
 			}
 		}
 	} else {
