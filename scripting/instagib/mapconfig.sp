@@ -143,6 +143,7 @@ void CreateSpawnPoint(TFTeam team, float pos[3], float rotation)
 		
 		SetVariantInt(view_as<int>(team));
 		AcceptEntityInput(ent, "SetTeam");
+		DispatchKeyValue(ent, "targetname", "INSTAGIB_SPAWNPOINT");
 		DispatchSpawn(ent);
 		TeleportEntity(ent, pos, ang, NULL_VECTOR);
 	}
@@ -213,12 +214,103 @@ void SetupSpawnPoints()
 			
 			SetVariantInt(view_as<int>(spawn.team));
 			AcceptEntityInput(ent, "SetTeam");
+			DispatchKeyValue(ent, "targetname", "INSTAGIB_SPAWNPOINT");
 			DispatchSpawn(ent);
 			TeleportEntity(ent, pos, ang, NULL_VECTOR);
 		}
 	}
 	
 	RequestFrame(Frame_RespawnAll);
+}
+
+void CreateGlow(int ent, char[] color)
+{
+	char name[128];
+	GetEntPropString(ent, Prop_Data, "m_iName", name, sizeof(name));
+	
+	int glow = CreateEntityByName("tf_glow");
+	DispatchKeyValue(glow, "targetname", "INSTAGIB_GLOW");
+	DispatchKeyValue(glow, "target", name);
+	DispatchKeyValue(glow, "Mode", "0");
+	DispatchKeyValue(glow, "GlowColor", color);
+	DispatchSpawn(glow);
+	
+	AcceptEntityInput(glow, "Enable");
+}
+
+void CreateSpawnPointEnts()
+{
+	int max = GetMaxEntities();
+	for (int i = 1; i <= max; i++) {
+		if (IsValidEntity(i)) {
+			char classname[255];
+			GetEntityClassname(i, classname, sizeof(classname));
+			
+			if (StrEqual(classname, "info_player_teamspawn")) {
+				char name[128];
+				GetEntPropString(i, Prop_Data, "m_iName", name, sizeof(name));
+				
+				if (StrContains(name, "INSTAGIB_SPAWNPOINT") == 0) {
+					int ent  = CreateEntityByName("prop_dynamic_override");
+					if (ent) {
+						float pos[3];
+						float ang[3];
+						
+						GetEntPropVector(i, Prop_Data, "m_vecOrigin", pos);
+						GetEntPropVector(i, Prop_Data, "m_angAbsRotation", ang);
+						
+						FormatEx(name, sizeof(name), "INSTAGIB_SPAWNPOINT:%i", i);
+						SetEntPropString(ent, Prop_Data, "m_iName", name);
+						
+						SetEntityModel(ent, "models/items/ammopack_large.mdl");
+						SetEntityRenderMode(ent, RENDER_TRANSCOLOR);
+						SetEntityRenderColor(ent, GetEntProp(i, Prop_Data, "m_iTeamNum") == 2 ? 255 : 0, 0, GetEntProp(i, Prop_Data, "m_iTeamNum") == 2 ? 0 : 255);
+						
+						SetEntProp(ent, Prop_Data, "m_nSolidType", 0x0004 | 0x0008);
+						
+						DispatchSpawn(ent);
+						TeleportEntity(ent, pos, ang, NULL_VECTOR);
+						
+						CreateGlow(ent, GetEntProp(i, Prop_Data, "m_iTeamNum") == 2 ? "255, 0, 0, 200" : "0, 0, 255, 200");
+					}
+				}
+			}
+		}
+	}
+}
+
+void ClearSpawnPointEnts()
+{
+	int max = GetMaxEntities();
+	for (int i = 1; i <= max; i++) {
+		if (IsValidEntity(i)) {
+			char classname[255];
+			GetEntityClassname(i, classname, sizeof(classname));
+			
+			// Kill tf_glow entities first
+			if (StrEqual(classname, "tf_glow")) {
+				char name[128];
+				GetEntPropString(i, Prop_Data, "m_iName", name, sizeof(name));
+				
+				if (StrContains(name, "INSTAGIB_GLOW") == 0) {
+					AcceptEntityInput(i, "Kill");
+				}
+			} else if (StrEqual(classname, "prop_dynamic")) {
+				char name[128];
+				GetEntPropString(i, Prop_Data, "m_iName", name, sizeof(name));
+				
+				if (StrContains(name, "INSTAGIB_SPAWNPOINT") == 0) {
+					AcceptEntityInput(i, "Kill");
+				}
+			}
+		}
+	}
+}
+
+void ReloadSpawnPointEnts()
+{
+	ClearSpawnPointEnts();
+	CreateSpawnPointEnts();
 }
 
 public void Frame_RespawnAll(any data)
@@ -238,59 +330,11 @@ void ToggleEditMode(int client)
 	
 	if (!in_editmode) {
 		in_editmode = true;
-		
-		int max = GetMaxEntities();
-		for (int i = 1; i <= max; i++) {
-			if (IsValidEntity(i)) {
-				char classname[255];
-				GetEntityClassname(i, classname, sizeof(classname));
-				
-				if (StrEqual(classname, "info_player_teamspawn")) {
-					int ent  = CreateEntityByName("prop_dynamic_override");
-					if (ent) {
-						float pos[3];
-						float ang[3];
-						
-						GetEntPropVector(i, Prop_Data, "m_vecOrigin", pos);
-						GetEntPropVector(i, Prop_Data, "m_angAbsRotation", ang);
-						
-						char name[128];
-						FormatEx(name, sizeof(name), "INSTAGIB_SPAWNPOINT:%i", i);
-						SetEntPropString(ent, Prop_Data, "m_iName", name);
-						
-						SetEntityModel(ent, "models/items/ammopack_large.mdl");
-						SetEntityRenderMode(ent, RENDER_TRANSCOLOR);
-						SetEntityRenderColor(ent, GetEntProp(i, Prop_Data, "m_iTeamNum") == 2 ? 255 : 0, 0, GetEntProp(i, Prop_Data, "m_iTeamNum") == 2 ? 0 : 255);
-						
-						SetEntProp(ent, Prop_Data, "m_nSolidType", 0x0004 | 0x0008);
-						
-						DispatchSpawn(ent);
-						TeleportEntity(ent, pos, ang, NULL_VECTOR);
-					}
-				}
-			}
-		}
-		
+		CreateSpawnPointEnts();
 		Panel_EditMode(client);
 	} else {
 		in_editmode = false;
-		
-		int max = GetMaxEntities();
-		for (int i = 1; i <= max; i++) {
-			if (IsValidEntity(i)) {
-				char classname[255];
-				GetEntityClassname(i, classname, sizeof(classname));
-				
-				if (StrEqual(classname, "prop_dynamic")) {
-					char name[128];
-					GetEntPropString(i, Prop_Data, "m_iName", name, sizeof(name));
-					
-					if (StrContains(name, "INSTAGIB_SPAWNPOINT") == 0) {
-						AcceptEntityInput(i, "Kill");
-					}
-				}
-			}
-		}
+		ClearSpawnPointEnts();
 	}
 }
 
@@ -306,10 +350,15 @@ void Panel_EditMode(int client)
 			GetEntityClassname(i, classname, sizeof(classname));
 			
 			if (StrEqual(classname, "info_player_teamspawn")) {
-				if (GetEntProp(i, Prop_Data, "m_iTeamNum") == 2) {
-					++red_spawns;
-				} else {
-					++blue_spawns;
+				char name[128];
+				GetEntPropString(i, Prop_Data, "m_iName", name, sizeof(name));
+				
+				if (StrContains(name, "INSTAGIB_SPAWNPOINT") == 0) {
+					if (GetEntProp(i, Prop_Data, "m_iTeamNum") == 2) {
+						++red_spawns;
+					} else {
+						++blue_spawns;
+					}
 				}
 			}
 		}
@@ -333,7 +382,7 @@ void Panel_EditMode(int client)
 	panel.DrawItem("Delete Spawn");
 	panel.DrawItem("Export to .cfg");
 	
-	panel.Send(client, Panel_EditMode_Handler, 300);
+	panel.Send(client, Panel_EditMode_Handler, -1);
 	
 	delete panel;
 }
@@ -361,8 +410,6 @@ public int Panel_EditMode_Handler(Menu menu, MenuAction action, int client, int 
 				
 				CreateSpawnPoint(TFTeam_Red, pos, ang[1]);
 				InstagibPrintToChat(true, client, "Created RED spawn point at {%.2f %.2f %.2f}.", pos[0], pos[1], pos[2]);
-				
-				ToggleEditMode(client);
 			}
 			
 			case EditMode_CreateBlue: {
@@ -373,8 +420,6 @@ public int Panel_EditMode_Handler(Menu menu, MenuAction action, int client, int 
 				
 				CreateSpawnPoint(TFTeam_Blue, pos, ang[1]);
 				InstagibPrintToChat(true, client, "Created BLU spawn point at {%.2f %.2f %.2f}.", pos[0], pos[1], pos[2]);
-				
-				ToggleEditMode(client);
 			}
 			
 			case EditMode_Delete: {
@@ -406,7 +451,6 @@ public int Panel_EditMode_Handler(Menu menu, MenuAction action, int client, int 
 							DeleteSpawnPoint(view_as<TFTeam>(GetEntProp(spawn_ent, Prop_Data, "m_iTeamNum")), pos);
 							InstagibPrintToChat(true, client, "Deleted spawn point at {%.2f %.2f %.2f}.", pos[0], pos[1], pos[2]);
 							
-							AcceptEntityInput(ent, "Kill");
 							AcceptEntityInput(spawn_ent, "Kill");
 						}
 					}
@@ -426,6 +470,7 @@ public int Panel_EditMode_Handler(Menu menu, MenuAction action, int client, int 
 		}
 		
 		if (option != EditMode_Exit) {
+			ReloadSpawnPointEnts();
 			Panel_EditMode(client);
 		}
 	}

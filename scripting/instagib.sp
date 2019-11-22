@@ -633,7 +633,7 @@ public void OnMapStart()
 	g_IsRoundActive = false;
 	
 	if (g_SteamTools) {
-		Steam_SetGameDescription("Instagib");
+		Steam_SetGameDescription(GAME_DESCRIPTION);
 	}
 	
 	char mapname[256];
