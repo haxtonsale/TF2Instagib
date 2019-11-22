@@ -4,7 +4,7 @@
 #define TF2_MAXPLAYERS 32
 //#define DEBUG
 //#define RUN_TESTS
-#define GAME_DESCRIPTION "TF2Instagib " ... INSTAGIB_VERSION
+#define GAME_DESCRIPTION "TF2Instagib v" ... INSTAGIB_VERSION
 
 #include <sourcemod>
 #include <sdktools>
@@ -498,7 +498,7 @@ public Action Timer_Respawn(Handle timer, int client)
 public Action Timer_WelcomeMessage(Handle timer, int client)
 {
 	if (IsClientInGame(client)) {
-		InstagibPrintToChat(true, client, "Welcome to Instagib %s! \nType {/instagib} to open the menu.", INSTAGIB_VERSION);
+		InstagibPrintToChat(true, client, "Welcome to TF2Instagib v%s! \nType {/instagib} to open the menu.", INSTAGIB_VERSION);
 	}
 }
 

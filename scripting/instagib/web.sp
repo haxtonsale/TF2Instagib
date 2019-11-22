@@ -79,7 +79,7 @@ public int Web_GetLatestInstagibVersion_OnComplete(HTTPRequestHandle HTTPRequest
 			}
 			
 			if (!StrEqual(INSTAGIB_VERSION, version)) {
-				PrintToServer("This server is running an outdated version of TF2Instagib! (%s)\nGet TF2Instagib %s here: https://github.com/haxtonsale/TF2Instagib/releases/latest", INSTAGIB_VERSION, version);
+				PrintToServer("This server is running an outdated version of TF2Instagib! (v%s)\nGet TF2Instagib v%s here: https://github.com/haxtonsale/TF2Instagib/releases/latest", INSTAGIB_VERSION, version);
 			}
 		}
 	} else {

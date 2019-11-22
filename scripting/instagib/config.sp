@@ -48,7 +48,7 @@ void LoadConfig()
 			strcopy(g_Config.ChatColor_Highlight, sizeof(g_Config.ChatColor_Highlight), "\x01");
 		}
 		
-		FormatEx(g_InstagibTag, sizeof(g_InstagibTag), "\x07E50000[Instagib]%s", g_Config.ChatColor);
+		FormatEx(g_InstagibTag, sizeof(g_InstagibTag), "\x07E50000[TF2Instagib]%s", g_Config.ChatColor);
 		
 		g_Config.HudText_x = IGConfig.GetFloat("HudText_x", -1.0);
 		g_Config.HudText_y = IGConfig.GetFloat("HudText_y", 0.78);

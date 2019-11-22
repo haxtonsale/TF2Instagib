@@ -79,10 +79,6 @@ void SR_Explosions_OnDeath(Round_OnDeath_Data data)
 {
 	if (data.attacker > 0 && data.attacker <= MaxClients && data.victim != data.attacker) {
 		SR_Explosions_Explosion(data.attacker, data.victim, data.customkill == TF_CUSTOM_HEADSHOT);
-		
-		#if defined RUN_TESTS
-		SMTester_AsyncAssert("Explosion kill", true);
-		#endif
 	}
 }
 
