@@ -13,26 +13,26 @@ void SR_FreezeTag_Init()
 {
 	InstagibRound sr;
 	NewInstagibRound(sr, "Freeze Tag", "Freeze enemies using your Railgun!\nShoot at your allies to free them!");
-	sr.round_time = 300;
-	sr.minscore = 322; // dynamic
-	sr.maxscore_multi = 0.0;
-	sr.points_per_kill = 0;
-	sr.allow_killbind = false;
-	sr.announce_win = false;
-	sr.min_players = 6;
+	sr.RoundTime = 300;
+	sr.MinScore = 322; // dynamic
+	sr.MaxScoreMultiplier = 0.0;
+	sr.PointsPerKill = 0;
+	sr.ShouldAllowKillbind = false;
+	sr.ShouldAnnounceWin = false;
+	sr.MinPlayers = 6;
 	
-	sr.on_start = SR_FreezeTag_OnStart;
-	sr.on_attack = SR_FreezeTag_OnAttack;
-	sr.on_spawn = SR_FreezeTag_OnSpawn;
-	sr.on_death = SR_FreezeTag_OnDeath;
-	sr.on_ent_created = SR_FreezeTag_OnEntCreated;
-	sr.on_disconnect = SR_FreezeTag_OnDisconnect;
-	sr.on_end = SR_FreezeTag_OnEnd;
-	sr.on_team = SR_FreezeTag_OnTeamSwitch;
-	sr.on_class = SR_FreezeTag_OnClassSwitch;
-	sr.on_inv = SR_FreezeTag_OnLoadout;
+	sr.OnStart = SR_FreezeTag_OnStart;
+	sr.OnTraceAttack = SR_FreezeTag_OnAttack;
+	sr.OnPlayerSpawn = SR_FreezeTag_OnSpawn;
+	sr.OnPlayerDeath = SR_FreezeTag_OnDeath;
+	sr.OnEntCreated = SR_FreezeTag_OnEntCreated;
+	sr.OnPlayerDisconnect = SR_FreezeTag_OnDisconnect;
+	sr.OnEnd = SR_FreezeTag_OnEnd;
+	sr.OnTeamChange = SR_FreezeTag_OnTeamSwitch;
+	sr.OnClassChange = SR_FreezeTag_OnClassSwitch;
+	sr.OnPostInvApp = SR_FreezeTag_OnLoadout;
 	
-	UnfreezeAfter = SpecialRoundConfig_Float(sr.name, "FreezeLength", 60.0);
+	UnfreezeAfter = SpecialRoundConfig_Float(sr.Name, "FreezeLength", 60.0);
 	
 	InstagibPrecacheSound("physics/glass/glass_impact_bullet1.wav");
 	InstagibPrecacheSound("physics/glass/glass_impact_bullet2.wav");
@@ -147,7 +147,7 @@ void SR_FreezeTag_Unfreeze(int client)
 			SetEntityMoveType(client, MOVETYPE_WALK);
 			
 			if (IsValidEntity(g_MainWeaponEnt[client])) {
-				SetEntProp(g_MainWeaponEnt[client], Prop_Data, "m_iClip1", g_CurrentRound.main_wep_clip);
+				SetEntProp(g_MainWeaponEnt[client], Prop_Data, "m_iClip1", g_CurrentRound.MainWeaponClip);
 			}
 			
 			SetEntityRenderColor(client, 255, 255, 255, 255);

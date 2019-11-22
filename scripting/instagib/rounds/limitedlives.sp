@@ -14,31 +14,31 @@ void SR_Lives_Init()
 {
 	InstagibRound sr;
 	NewInstagibRound(sr, "Limited Lives");
-	sr.round_time = 300;
-	sr.minscore = 322; // dynamic
-	sr.points_per_kill = 0;
-	sr.announce_win = false;
-	sr.end_at_time_end = false;
-	sr.min_players = 2;
+	sr.RoundTime = 300;
+	sr.MinScore = 322; // dynamic
+	sr.PointsPerKill = 0;
+	sr.ShouldAnnounceWin = false;
+	sr.ShoudEndWithTimer = false;
+	sr.MinPlayers = 2;
 	
-	sr.on_start = SR_Lives_OnStart;
-	sr.on_end = SR_Lives_OnEnd;
-	sr.on_spawn = SR_Lives_OnSpawn;
-	sr.on_inv = SR_Lives_OnInventory;
-	sr.on_death = SR_Lives_OnDeath;
-	sr.on_disconnect = SR_Lives_OnDisconnect;
-	sr.on_team = SR_Lives_OnTeamChange;
-	sr.on_desc = SR_Lives_Description;
+	sr.OnStart = SR_Lives_OnStart;
+	sr.OnEnd = SR_Lives_OnEnd;
+	sr.OnPlayerSpawn = SR_Lives_OnSpawn;
+	sr.OnPostInvApp = SR_Lives_OnInventory;
+	sr.OnPlayerDeath = SR_Lives_OnDeath;
+	sr.OnPlayerDisconnect = SR_Lives_OnDisconnect;
+	sr.OnTeamChange = SR_Lives_OnTeamChange;
+	sr.OnDescriptionPrint = SR_Lives_Description;
 	
-	MaxLives = SpecialRoundConfig_Num(sr.name, "Lives", 5);
+	MaxLives = SpecialRoundConfig_Num(sr.Name, "Lives", 5);
 	SubmitInstagibRound(sr);
 	
-	strcopy(sr.name, sizeof(sr.name), "Lifestealers");
-	sr.round_time = 240;
-	sr.on_start = SR_Lifesteal_OnStart;
-	sr.on_desc = SR_Lifesteal_Description;
+	strcopy(sr.Name, sizeof(sr.Name), "Lifestealers");
+	sr.RoundTime = 240;
+	sr.OnStart = SR_Lifesteal_OnStart;
+	sr.OnDescriptionPrint = SR_Lifesteal_Description;
 	
-	StartingLSLives = SpecialRoundConfig_Num(sr.name, "Lives", 3);
+	StartingLSLives = SpecialRoundConfig_Num(sr.Name, "Lives", 3);
 	SubmitInstagibRound(sr);
 	
 	HudSync = CreateHudSynchronizer();
@@ -201,7 +201,7 @@ void SR_Lives_OnDisconnect(int client)
 
 void SR_Lives_OnEnd(TFTeam winner_team, int score, int time_left)
 {
-	if (score == -1) { // score = -1 if the round time had ran out and end_at_time_end == false
+	if (score == -1) { // score = -1 if the round time had ran out and ShoudEndWithTimer == false
 		int red_lives;
 		int blue_lives;
 		
@@ -246,9 +246,9 @@ void SR_Lives_OnTeamChange(int client, TFTeam team)
 	SR_Lives_CheckWinConditions();
 }
 
-void SR_Lives_Description(char[] desc, int maxlength)
+void SR_Lives_Description(char[] Desc, int maxlength)
 {
-	FormatEx(desc, maxlength, "You only have {%i} lives! Make them count!", MaxLives);
+	FormatEx(Desc, maxlength, "You only have {%i} lives! Make them count!", MaxLives);
 }
 
 public Action SR_Lives_DisplayHudText(Handle timer)
@@ -307,7 +307,7 @@ void SR_Lifesteal_OnStart()
 	SR_Lives_CheckWinConditions();
 }
 
-void SR_Lifesteal_Description(char[] desc, int maxlength)
+void SR_Lifesteal_Description(char[] Desc, int maxlength)
 {
-	FormatEx(desc, maxlength, "You start with {%i} lives! Killing an enemy will give you {1} life!", StartingLSLives);
+	FormatEx(Desc, maxlength, "You start with {%i} lives! Killing an enemy will give you {1} life!", StartingLSLives);
 }

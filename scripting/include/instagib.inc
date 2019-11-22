@@ -5,30 +5,29 @@
 
 enum struct InstagibRound
 {
-	char name[64];
-	char desc[128];
+	char Name[64];
+	char Desc[128];
 	
-	bool is_special;
+	bool IsSpecial;
 	
-	int round_time;
-	int minscore;
-	float maxscore_multi;
-	int points_per_kill;
-	bool announce_win;
-	bool allow_killbind;
-	bool end_at_time_end;           // Whether the round will be forcefully ended when the round time is over
-	int min_players;
-	bool ig_map_only;               // Whether the round is meant to be played only on instagib maps
+	int RoundTime;
+	int MinScore;
+	float MaxScoreMultiplier;
+	int PointsPerKill;
+	bool ShouldAnnounceWin;
+	bool ShouldAllowKillbind;
+	bool ShoudEndWithTimer;           // Whether the round will be forcefully ended when the round time is over
+	int MinPlayers;
 	
-	float railjump_velXY_multi;
-	float railjump_velZ_multi;
+	float RailjumpVelocityXY;
+	float RailjumpVelocityZ;
 	
-	float respawn_time;
-	float spawnuber_duration;
+	float RespawnTime;
+	float UberDuration;
 	
-	Handle main_weapon;             // TF2Items weapon handle
-	int main_wep_clip;
-	bool infinite_ammo;
+	Handle MainWeapon;             // TF2Items weapon handle
+	int MainWeaponClip;
+	bool IsAmmoInfinite;
 }
 
 // -------------------------------------------------------------------

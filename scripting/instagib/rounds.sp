@@ -11,14 +11,14 @@ void Rounds_Init()
 	
 	InstagibRound wait;
 	NewInstagibRound(wait, "Waiting For Players");
-	wait.minscore = 322;
-	wait.maxscore_multi = 0.0;
-	wait.is_special = false;
+	wait.MinScore = 322;
+	wait.MaxScoreMultiplier = 0.0;
+	wait.IsSpecial = false;
 	SubmitInstagibRound(wait);
 	
 	InstagibRound tdm;
 	NewInstagibRound(tdm, "Team Deathmatch");
-	tdm.is_special = false;
+	tdm.IsSpecial = false;
 	SubmitInstagibRound(tdm);
 	
 	g_CurrentRound = tdm;
@@ -35,36 +35,36 @@ void NewInstagibRound(InstagibRound buffer, char[] name, char[] desc = "")
 {
 	InstagibRound round;
 	
-	round.spawnuber_duration =   g_Config.UberDuration;
-	round.railjump_velXY_multi = g_Config.RailjumpVelXY;
-	round.railjump_velZ_multi =  g_Config.RailjumpVelZ;
-	round.minscore =             g_Config.MinScore;
-	round.maxscore_multi =       g_Config.MaxScoreMulti;
-	round.main_weapon =          g_Weapon_Railgun;
-	round.main_wep_clip =        32;
-	round.infinite_ammo =        true;
-	round.respawn_time =         g_Config.RespawnTime;
-	round.points_per_kill =      1;
-	round.is_special =           true;
-	round.announce_win =         true;
-	round.allow_killbind =       true;
-	round.end_at_time_end =      true;
+	round.UberDuration = g_Config.UberDuration;
+	round.RailjumpVelocityXY = g_Config.RailjumpVelXY;
+	round.RailjumpVelocityZ = g_Config.RailjumpVelZ;
+	round.MinScore = g_Config.MinScore;
+	round.MaxScoreMultiplier = g_Config.MaxScoreMulti;
+	round.MainWeapon = g_Weapon_Railgun;
+	round.MainWeaponClip =  32;
+	round.IsAmmoInfinite = true;
+	round.RespawnTime = g_Config.RespawnTime;
+	round.PointsPerKill = 1;
+	round.IsSpecial = true;
+	round.ShouldAnnounceWin = true;
+	round.ShouldAllowKillbind = true;
+	round.ShoudEndWithTimer = true;
 	
-	round.on_start =       INVALID_FUNCTION;
-	round.on_end =         INVALID_FUNCTION;
-	round.on_spawn =       INVALID_FUNCTION;
-	round.on_inv =         INVALID_FUNCTION;
-	round.on_death =       INVALID_FUNCTION;
-	round.on_attack =      INVALID_FUNCTION;
-	round.on_desc =        INVALID_FUNCTION;
-	round.on_ent_created = INVALID_FUNCTION;
-	round.on_disconnect =  INVALID_FUNCTION;
-	round.on_team =        INVALID_FUNCTION;
-	round.on_class =       INVALID_FUNCTION;
-	round.on_damage =      INVALID_FUNCTION;
+	round.OnStart = INVALID_FUNCTION;
+	round.OnEnd = INVALID_FUNCTION;
+	round.OnPlayerSpawn = INVALID_FUNCTION;
+	round.OnPostInvApp = INVALID_FUNCTION;
+	round.OnPlayerDeath = INVALID_FUNCTION;
+	round.OnTraceAttack = INVALID_FUNCTION;
+	round.OnDescriptionPrint = INVALID_FUNCTION;
+	round.OnEntCreated = INVALID_FUNCTION;
+	round.OnPlayerDisconnect = INVALID_FUNCTION;
+	round.OnTeamChange = INVALID_FUNCTION;
+	round.OnClassChange = INVALID_FUNCTION;
+	round.OnDamageTaken = INVALID_FUNCTION;
 	
-	strcopy(round.name, sizeof(round.name), name);
-	strcopy(round.desc, sizeof(round.desc), desc);
+	strcopy(round.Name, sizeof(round.Name), name);
+	strcopy(round.Desc, sizeof(round.Desc), desc);
 	
 	buffer = round;
 }
@@ -73,7 +73,7 @@ void SubmitInstagibRound(InstagibRound round)
 {
 	SpecialRoundConfig_GetOverwrites(round);
 	
-	if (round.is_special && SpecialRoundConfig_Num(round.name, "Disabled", 0)) {
+	if (round.IsSpecial && SpecialRoundConfig_Num(round.Name, "Disabled", 0)) {
 		return;
 	}
 	
@@ -87,10 +87,10 @@ void SubmitInstagibRound(InstagibRound round)
 
 static bool CheckInstagibRoundForErrors(InstagibRound round, char error[256])
 {
-	if (StrEqual(round.name, "")) {
-		error = "Round.name must not be null.";
-	} else if (round.main_weapon == null) {
-		error = "Round.main_weapon must not be null.";
+	if (StrEqual(round.Name, "")) {
+		error = "Round.Name must not be null.";
+	} else if (round.MainWeapon == null) {
+		error = "Round.MainWeapon must not be null.";
 	} else {
 		return false;
 	}
@@ -132,9 +132,9 @@ void GetRandomSpecialRound(InstagibRound buffer)
 			InstagibRound round;
 			InstagibRounds.GetArray(i, round);
 			
-			bool enough_players = (playercount >= round.min_players);
+			bool enough_players = (playercount >= round.MinPlayers);
 			
-			if (last_round != i && round.is_special && enough_players) {
+			if (last_round != i && round.IsSpecial && enough_players) {
 				suitable_rounds[count] = i;
 				++count;
 			}
@@ -177,7 +177,7 @@ bool InstagibForceRound(char[] name, bool notify = false, int client = 0)
 		return false;
 	}
 	
-	if (notify && round.is_special) {
+	if (notify && round.IsSpecial) {
 		if (!client) {
 			InstagibPrintToChatAll(true, "Special Round {%s} was forced!", name);
 		} else {
@@ -201,14 +201,14 @@ void Rounds_Menu(int client, char[] title, MenuHandler handler, bool display_all
 	
 	if (display_all) {
 		InstagibRounds.GetArray(0, round);
-		menu.AddItem(round.name, round.name);
+		menu.AddItem(round.Name, round.Name);
 	}
 	
 	int len = InstagibRounds.Length;
 	for (int i = 1; i < len; i++) {
 		InstagibRounds.GetArray(i, round);
 		
-		menu.AddItem(round.name, round.name);
+		menu.AddItem(round.Name, round.Name);
 	}
 	
 	menu.ExitButton = false;
@@ -224,10 +224,10 @@ void Rounds_Reload()
 	
 	Rounds_Init();
 	
-	round.spawnuber_duration =   g_Config.UberDuration;
-	round.railjump_velXY_multi = g_Config.RailjumpVelXY;
-	round.railjump_velZ_multi =  g_Config.RailjumpVelZ;
-	round.respawn_time =         g_Config.RespawnTime;
+	round.UberDuration = g_Config.UberDuration;
+	round.RailjumpVelocityXY = g_Config.RailjumpVelXY;
+	round.RailjumpVelocityZ = g_Config.RailjumpVelZ;
+	round.RespawnTime = g_Config.RespawnTime;
 	
 	SpecialRoundConfig_GetOverwrites(round);
 	

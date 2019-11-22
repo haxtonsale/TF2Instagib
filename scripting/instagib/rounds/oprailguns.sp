@@ -3,10 +3,10 @@ void SR_OPRailguns_Init()
 {
 	InstagibRound sr;
 	NewInstagibRound(sr, "OP Railguns", "Railguns are now much more powerful!");
-	sr.railjump_velXY_multi = 7.0;
-	sr.railjump_velZ_multi = 4.0;
-	sr.spawnuber_duration = 0.2;
-	sr.main_weapon = SR_OPRailguns_CreateOPRailgun();
+	sr.RailjumpVelocityXY = 7.0;
+	sr.RailjumpVelocityZ = 4.0;
+	sr.UberDuration = 0.2;
+	sr.MainWeapon = SR_OPRailguns_CreateOPRailgun();
 	SubmitInstagibRound(sr);
 }
 

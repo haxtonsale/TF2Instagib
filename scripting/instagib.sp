@@ -4,6 +4,7 @@
 #define TF2_MAXPLAYERS 32
 //#define DEBUG
 //#define RUN_TESTS
+#define GAME_DESCRIPTION "TF2Instagib " ... INSTAGIB_VERSION
 
 #include <sourcemod>
 #include <sdktools>
@@ -31,42 +32,42 @@
 // -------------------------------------------------------------------
 enum struct InstagibRound
 {
-	char name[64];
-	char desc[128];
+	char Name[64];
+	char Desc[128];
 	
-	bool is_special;
+	bool IsSpecial;
 	
-	int round_time;
-	int minscore;
-	float maxscore_multi;
-	int points_per_kill;
-	bool announce_win;
-	bool allow_killbind;
-	bool end_at_time_end;       // Whether the round will be forcefully ended when the round time is over
-	int min_players;
+	int RoundTime;
+	int MinScore;
+	float MaxScoreMultiplier;
+	int PointsPerKill;
+	bool ShouldAnnounceWin;
+	bool ShouldAllowKillbind;
+	bool ShoudEndWithTimer;       // Whether the round will be forcefully ended when the round time is over
+	int MinPlayers;
 	
-	float railjump_velXY_multi;
-	float railjump_velZ_multi;
+	float RailjumpVelocityXY;
+	float RailjumpVelocityZ;
 	
-	float respawn_time;
-	float spawnuber_duration;
+	float RespawnTime;
+	float UberDuration;
 	
-	Handle main_weapon;
-	int main_wep_clip;
-	bool infinite_ammo;
+	Handle MainWeapon;
+	int MainWeaponClip;
+	bool IsAmmoInfinite;
 	
-	Round_OnStart on_start;
-	Round_OnEnd on_end;
-	Round_OnSpawn on_spawn;
-	Round_OnPostInvApp on_inv;
-	Round_OnDeath on_death;
-	Round_OnTraceAttack on_attack;
-	Round_OnEntityCreated on_ent_created;
-	Round_OnDisconnect on_disconnect;
-	Round_OnTeamChange on_team;
-	Round_OnClassChange on_class;
-	Round_OnTakeDamage on_damage;
-	Round_CustomDescription on_desc;
+	Round_OnStart OnStart;
+	Round_OnEnd OnEnd;
+	Round_OnSpawn OnPlayerSpawn;
+	Round_OnPostInvApp OnPostInvApp;
+	Round_OnDeath OnPlayerDeath;
+	Round_OnTraceAttack OnTraceAttack;
+	Round_OnEntityCreated OnEntCreated;
+	Round_OnDisconnect OnPlayerDisconnect;
+	Round_OnTeamChange OnTeamChange;
+	Round_OnClassChange OnClassChange;
+	Round_OnTakeDamage OnDamageTaken;
+	Round_CustomDescription OnDescriptionPrint;
 }
 
 enum struct Round_OnDeath_Data
@@ -226,7 +227,7 @@ int GiveWeapon(int client, Handle Weapon, bool is_railgun = true)
 	
 	if (IsValidEntity(ent)) {
 		if (is_railgun) {
-			SetEntProp(ent, Prop_Data, "m_iClip1", g_CurrentRound.main_wep_clip);
+			SetEntProp(ent, Prop_Data, "m_iClip1", g_CurrentRound.MainWeaponClip);
 			SetEntityRenderMode(ent, RENDER_TRANSCOLOR);
 			
 			if (AreClientCookiesCached(client)) {
@@ -348,16 +349,16 @@ void InstagibStart()
 	if (!g_IsWaitingForPlayers) {
 		int count = GetActivePlayerCount();
 		
-		int score = g_CurrentRound.minscore + RoundFloat(float(count) * g_CurrentRound.maxscore_multi);
+		int score = g_CurrentRound.MinScore + RoundFloat(float(count) * g_CurrentRound.MaxScoreMultiplier);
 		
 		SetMaxScore(score);
 		
-		if (g_CurrentRound.round_time) {
+		if (g_CurrentRound.RoundTime) {
 			g_RoundTimer = CreateTimer(1.0, Timer_SecondTick, _, TIMER_REPEAT);
 		}
 		
-		if (g_CurrentRound.on_start != INVALID_FUNCTION) {
-			Call_StartFunction(null, g_CurrentRound.on_start);
+		if (g_CurrentRound.OnStart != INVALID_FUNCTION) {
+			Call_StartFunction(null, g_CurrentRound.OnStart);
 			Call_PushCell(score);
 			Call_Finish();
 		}
@@ -469,10 +470,10 @@ public Action Timer_SecondTick(Handle timer)
 	FormatTime(g_RoundTimeLeftFormatted, sizeof(g_RoundTimeLeftFormatted), "%M:%S", g_RoundTimeLeft);
 	
 	if (g_RoundTimeLeft <= 0) {
-		if (g_CurrentRound.end_at_time_end) {
+		if (g_CurrentRound.ShoudEndWithTimer) {
 			InstagibForceRoundEnd();
-		} else if (g_CurrentRound.on_end != INVALID_FUNCTION) {
-			Call_StartFunction(null, g_CurrentRound.on_end);
+		} else if (g_CurrentRound.OnEnd != INVALID_FUNCTION) {
+			Call_StartFunction(null, g_CurrentRound.OnEnd);
 			Call_PushCell(TFTeam_Unassigned);
 			Call_PushCell(-1);
 			Call_PushCell(g_RoundTimeLeft);
@@ -515,8 +516,8 @@ public Action Hook_TraceAttack(int victim, int &attacker, int &inflictor, float&
 	if (attacker > 0 && attacker <= MaxClients) {
 		damagetype |= DMG_BLAST; // Gib on kill
 		
-		if (g_IsRoundActive && g_CurrentRound.on_attack != INVALID_FUNCTION) {
-			Call_StartFunction(null, g_CurrentRound.on_attack);
+		if (g_IsRoundActive && g_CurrentRound.OnTraceAttack != INVALID_FUNCTION) {
+			Call_StartFunction(null, g_CurrentRound.OnTraceAttack);
 			Call_PushCell(victim);
 			Call_PushCellRef(attacker);
 			Call_PushCellRef(inflictor);
@@ -538,8 +539,8 @@ public Action Hook_TakeDamage(int victim, int& attacker, int& inflictor, float& 
 {
 	Action action;
 	
-	if (g_IsRoundActive && g_CurrentRound.on_damage != INVALID_FUNCTION) {
-		Call_StartFunction(null, g_CurrentRound.on_damage);
+	if (g_IsRoundActive && g_CurrentRound.OnDamageTaken != INVALID_FUNCTION) {
+		Call_StartFunction(null, g_CurrentRound.OnDamageTaken);
 		Call_PushCell(victim);
 		Call_PushCellRef(attacker);
 		Call_PushCellRef(inflictor);
@@ -660,8 +661,8 @@ public void OnEntityCreated(int ent, const char[] classname)
 		SDKHook(ent, SDKHook_TraceAttack, Hook_TraceAttack);
 	}
 	
-	if (g_IsRoundActive && g_CurrentRound.on_ent_created != INVALID_FUNCTION) {
-		Call_StartFunction(null, g_CurrentRound.on_ent_created);
+	if (g_IsRoundActive && g_CurrentRound.OnEntCreated != INVALID_FUNCTION) {
+		Call_StartFunction(null, g_CurrentRound.OnEntCreated);
 		Call_PushCell(ent);
 		Call_PushString(classname);
 		Call_Finish();
@@ -700,12 +701,12 @@ public void TF2_OnWaitingForPlayersEnd()
 public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] weaponname, bool &result)
 {
 	if (StrEqual(weaponname, "tf_weapon_revolver")) {
-		if (!g_IsRoundActive || g_CurrentRound.infinite_ammo && IsValidEntity(weapon)) {
-			SetEntProp(weapon, Prop_Data, "m_iClip1", g_CurrentRound.main_wep_clip+1);
+		if (!g_IsRoundActive || g_CurrentRound.IsAmmoInfinite && IsValidEntity(weapon)) {
+			SetEntProp(weapon, Prop_Data, "m_iClip1", g_CurrentRound.MainWeaponClip+1);
 		}
 		
 		// Railjump
-		if (g_CanRailjump && (g_CurrentRound.railjump_velXY_multi > 0.0 || g_CurrentRound.railjump_velZ_multi > 0.0)) {
+		if (g_CanRailjump && (g_CurrentRound.RailjumpVelocityXY > 0.0 || g_CurrentRound.RailjumpVelocityZ > 0.0)) {
 			float vecStart[3];
 			float vecDir[3];
 			float vecEnd[3];
@@ -729,9 +730,9 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] weaponname
 				GetEntPropVector(client, Prop_Data, "m_vecVelocity", vecVel);
 				
 				float boost[3];
-				boost[0] = vecSub[0] * g_CurrentRound.railjump_velXY_multi;
-				boost[1] = vecSub[1] * g_CurrentRound.railjump_velXY_multi;
-				boost[2] = 100.0  + vecSub[2] * g_CurrentRound.railjump_velZ_multi;
+				boost[0] = vecSub[0] * g_CurrentRound.RailjumpVelocityXY;
+				boost[1] = vecSub[1] * g_CurrentRound.RailjumpVelocityXY;
+				boost[2] = 100.0  + vecSub[2] * g_CurrentRound.RailjumpVelocityZ;
 				
 				AddVectors(vecVel, boost, vecVel);
 				
@@ -752,8 +753,8 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] weaponname
 
 public void OnClientDisconnect(int client)
 {
-	if (g_IsRoundActive && g_CurrentRound.on_disconnect != INVALID_FUNCTION) {
-		Call_StartFunction(null, g_CurrentRound.on_disconnect);
+	if (g_IsRoundActive && g_CurrentRound.OnPlayerDisconnect != INVALID_FUNCTION) {
+		Call_StartFunction(null, g_CurrentRound.OnPlayerDisconnect);
 		Call_PushCell(client);
 		Call_Finish();
 	}
@@ -764,7 +765,7 @@ public void OnClientDisconnect(int client)
 
 public void OnPluginEnd()
 {
-	Steam_SetGameDescription("Team Fortress");
+	Steam_SetGameDescription(GAME_DESCRIPTION);
 	
 	GameRules_SetProp("m_nHudType", 0);
 	GameRules_SetProp("m_bPlayingRobotDestructionMode", false);
@@ -812,7 +813,7 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, 
 		}
 	}
 	
-	if (index == 133 || index == 444) {
+	if (index == 133 || index == 444) { // Boots
 		return Plugin_Handled;
 	} else {
 		return Plugin_Continue;

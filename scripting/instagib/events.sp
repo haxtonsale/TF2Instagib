@@ -27,16 +27,16 @@ public void Event_OnRoundStart(Event event, const char[] name, bool dont_broadca
 		GetDefaultRound(g_CurrentRound);
 	}
 	
-	if (g_CurrentRound.is_special) {
-		InstagibPrintToChatAll(true, "Special Round: {%s}!", g_CurrentRound.name);
+	if (g_CurrentRound.IsSpecial) {
+		InstagibPrintToChatAll(true, "Special Round: {%s}!", g_CurrentRound.Name);
 		
-		if (!StrEqual(g_CurrentRound.desc, "")) {
-			InstagibPrintToChatAll(false, g_CurrentRound.desc);
-		} else if (g_CurrentRound.on_desc != INVALID_FUNCTION) {
+		if (!StrEqual(g_CurrentRound.Desc, "")) {
+			InstagibPrintToChatAll(false, g_CurrentRound.Desc);
+		} else if (g_CurrentRound.OnDescriptionPrint != INVALID_FUNCTION) {
 			// Custom description callback (if text needs to be formatted)
 			char desc[128];
 			
-			Call_StartFunction(null, g_CurrentRound.on_desc);
+			Call_StartFunction(null, g_CurrentRound.OnDescriptionPrint);
 			Call_PushStringEx(desc, sizeof(desc), SM_PARAM_COPYBACK, SM_PARAM_COPYBACK);
 			Call_PushCell(sizeof(desc));
 			Call_Finish();
@@ -50,21 +50,21 @@ public void Event_OnRoundStart(Event event, const char[] name, bool dont_broadca
 		if (IsClientInGame(i) && IsClientPlaying(i) && IsPlayerAlive(i)) {
 			InvulnClient(i, TFCondDuration_Infinite);
 			TF2_RemoveAllWeapons(i);
-			g_MainWeaponEnt[i] = GiveWeapon(i, g_CurrentRound.main_weapon);
+			g_MainWeaponEnt[i] = GiveWeapon(i, g_CurrentRound.MainWeapon);
 		}
 	}
 	
-	strcopy(g_RoundHudTextFormatted, sizeof(g_RoundHudTextFormatted), g_CurrentRound.name);
+	strcopy(g_RoundHudTextFormatted, sizeof(g_RoundHudTextFormatted), g_CurrentRound.Name);
 	
-	if (g_CurrentRound.round_time) {
-		g_RoundTimeLeft = g_CurrentRound.round_time;
+	if (g_CurrentRound.RoundTime) {
+		g_RoundTimeLeft = g_CurrentRound.RoundTime;
 		
 		StrCat(g_RoundHudTextFormatted, sizeof(g_RoundHudTextFormatted), " | Time Left: ");
 		FormatTime(g_RoundTimeLeftFormatted, sizeof(g_RoundTimeLeftFormatted), "%M:%S", g_RoundTimeLeft);
 	}
 	
 	if (g_SteamTools) {
-		Steam_SetGameDescription("Instagib");
+		Steam_SetGameDescription(GAME_DESCRIPTION);
 	}
 	
 	g_CanRailjump = false;
@@ -95,12 +95,12 @@ public void Event_OnSpawn(Event event, const char[] name, bool dont_broadcast)
 		return;
 	}
 	
-	InvulnClient(client, g_CurrentRound.spawnuber_duration);
+	InvulnClient(client, g_CurrentRound.UberDuration);
 	
-	if (g_IsRoundActive && g_CurrentRound.on_spawn != INVALID_FUNCTION) {
+	if (g_IsRoundActive && g_CurrentRound.OnPlayerSpawn != INVALID_FUNCTION) {
 		TFTeam team = view_as<TFTeam>(event.GetInt("team"));
 		
-		Call_StartFunction(null, g_CurrentRound.on_spawn);
+		Call_StartFunction(null, g_CurrentRound.OnPlayerSpawn);
 		Call_PushCell(client);
 		Call_PushCell(team);
 		Call_Finish();
@@ -115,10 +115,10 @@ public void Event_Inventory(Event event, const char[] name, bool dont_broadcast)
 public void Frame_Inventory(int client)
 {
 	if (IsClientInGame(client)) {
-		g_MainWeaponEnt[client] = GiveWeapon(client, g_CurrentRound.main_weapon);
+		g_MainWeaponEnt[client] = GiveWeapon(client, g_CurrentRound.MainWeapon);
 		
-		if (g_IsRoundActive && g_CurrentRound.on_inv != INVALID_FUNCTION) {
-			Call_StartFunction(null, g_CurrentRound.on_inv);
+		if (g_IsRoundActive && g_CurrentRound.OnPostInvApp != INVALID_FUNCTION) {
+			Call_StartFunction(null, g_CurrentRound.OnPostInvApp);
 			Call_PushCell(client);
 			Call_Finish();
 		}
@@ -131,7 +131,7 @@ public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 	int attacker = GetClientOfUserId(event.GetInt("attacker"));
 	
 	if (!g_Config.InstantRespawn && (g_MapHasRoundSetup || g_IsRoundActive)) {
-		CreateTimer(g_CurrentRound.respawn_time, Timer_Respawn, client);
+		CreateTimer(g_CurrentRound.RespawnTime, Timer_Respawn, client);
 	}
 	
 	if (g_IsWaitingForPlayers) {
@@ -139,7 +139,7 @@ public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 	}
 	
 	if (g_IsRoundActive) {
-		if (g_CurrentRound.on_death != INVALID_FUNCTION) {
+		if (g_CurrentRound.OnPlayerDeath != INVALID_FUNCTION) {
 			Round_OnDeath_Data data;
 			
 			data.victim = client;
@@ -154,7 +154,7 @@ public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 			data.killstreak_victim = event.GetInt("kill_streak_victim");
 			data.inflictor_entity = event.GetInt("inflictor_entindex");
 			
-			Call_StartFunction(null, g_CurrentRound.on_death);
+			Call_StartFunction(null, g_CurrentRound.OnPlayerDeath);
 			Call_PushArray(data, sizeof(Round_OnDeath_Data));
 			Call_Finish();
 		}
@@ -163,9 +163,9 @@ public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 			g_Killcount[attacker]++;
 			AddToClientMultikill(attacker);
 			
-			if (g_CurrentRound.points_per_kill) {
+			if (g_CurrentRound.PointsPerKill) {
 				TFTeam team = TF2_GetClientTeam(attacker);
-				AddScore(team, g_CurrentRound.points_per_kill);
+				AddScore(team, g_CurrentRound.PointsPerKill);
 			}
 		}
 	}
@@ -177,12 +177,12 @@ public void Event_OnRoundEnd(Event event, const char[] name, bool dont_broadcast
 	
 	int score = InstagibGetTeamScore(team);
 	
-	if (g_CurrentRound.announce_win && team != TFTeam_Unassigned) {
+	if (g_CurrentRound.ShouldAnnounceWin && team != TFTeam_Unassigned) {
 		AnnounceWin(team, _, score);
 	}
 	
-	if (g_CurrentRound.on_end != INVALID_FUNCTION) {
-		Call_StartFunction(null, g_CurrentRound.on_end);
+	if (g_CurrentRound.OnEnd != INVALID_FUNCTION) {
+		Call_StartFunction(null, g_CurrentRound.OnEnd);
 		Call_PushCell(team);
 		Call_PushCell(score);
 		Call_PushCell(g_RoundTimeLeft);
@@ -218,8 +218,8 @@ public Action Event_OnTeamChange(Event event, const char[] name, bool dont_broad
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	TFTeam team = view_as<TFTeam>(event.GetInt("team"));
 	
-	if (g_IsRoundActive && g_CurrentRound.on_team != INVALID_FUNCTION) {
-		Call_StartFunction(null, g_CurrentRound.on_team);
+	if (g_IsRoundActive && g_CurrentRound.OnTeamChange != INVALID_FUNCTION) {
+		Call_StartFunction(null, g_CurrentRound.OnTeamChange);
 		Call_PushCell(client);
 		Call_PushCell(team);
 		Call_Finish();
@@ -231,8 +231,8 @@ public Action Event_OnClassChange(Event event, const char[] name, bool dont_broa
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	int class = event.GetInt("class");
 	
-	if (g_IsRoundActive && g_CurrentRound.on_class != INVALID_FUNCTION) {
-		Call_StartFunction(null, g_CurrentRound.on_class);
+	if (g_IsRoundActive && g_CurrentRound.OnClassChange != INVALID_FUNCTION) {
+		Call_StartFunction(null, g_CurrentRound.OnClassChange);
 		Call_PushCell(client);
 		Call_PushCell(class);
 		Call_Finish();

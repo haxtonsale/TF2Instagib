@@ -13,16 +13,16 @@ void SR_Explosions_Init()
 {
 	InstagibRound sr;
 	NewInstagibRound(sr, "Directed by Michael Bay", "Players explode on death!");
-	sr.min_players = 8;
-	sr.on_death = SR_Explosions_OnDeath;
-	sr.on_damage = SR_Explosions_OnTakeDamage;
+	sr.MinPlayers = 8;
+	sr.OnPlayerDeath = SR_Explosions_OnDeath;
+	sr.OnDamageTaken = SR_Explosions_OnTakeDamage;
 	
-	SpecialRoundConfig_String(sr.name, "ExplosionParticle", DefParticle, sizeof(DefParticle), "ExplosionCore_MidAir");
-	SpecialRoundConfig_String(sr.name, "ExplosionParticleHeadshot", HeadshotParticle, sizeof(HeadshotParticle), "ExplosionCore_MidAir");
-	SpecialRoundConfig_String(sr.name, "ExplosionSound", DefSound, sizeof(DefSound), "items/pumpkin_explode1.wav");
-	SpecialRoundConfig_String(sr.name, "ExplosionSoundHeadshot", HeadshotSound, sizeof(HeadshotSound), "items/pumpkin_explode1.wav");
-	ExplRadius = SpecialRoundConfig_Float(sr.name, "ExplosionRadius", 250.0);
-	HeadshotExplRadius = SpecialRoundConfig_Float(sr.name, "ExplosionRadiusHeadshot", 450.0);
+	SpecialRoundConfig_String(sr.Name, "ExplosionParticle", DefParticle, sizeof(DefParticle), "ExplosionCore_MidAir");
+	SpecialRoundConfig_String(sr.Name, "ExplosionParticleHeadshot", HeadshotParticle, sizeof(HeadshotParticle), "ExplosionCore_MidAir");
+	SpecialRoundConfig_String(sr.Name, "ExplosionSound", DefSound, sizeof(DefSound), "items/pumpkin_explode1.wav");
+	SpecialRoundConfig_String(sr.Name, "ExplosionSoundHeadshot", HeadshotSound, sizeof(HeadshotSound), "items/pumpkin_explode1.wav");
+	ExplRadius = SpecialRoundConfig_Float(sr.Name, "ExplosionRadius", 250.0);
+	HeadshotExplRadius = SpecialRoundConfig_Float(sr.Name, "ExplosionRadiusHeadshot", 450.0);
 	
 	InstagibPrecacheSound(DefSound);
 	InstagibPrecacheSound(HeadshotSound);
