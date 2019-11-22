@@ -1,5 +1,5 @@
 // -------------------------------------------------------------------
-#define INSTAGIB_VERSION "1.5.4"
+#define INSTAGIB_VERSION "1.6.0"
 
 #define TF2_MAXPLAYERS 32
 //#define DEBUG
