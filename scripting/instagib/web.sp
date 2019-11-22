@@ -63,8 +63,7 @@ void Web_DownloadMapConfig(const char[] url)
 
 public int Web_GetLatestInstagibVersion_OnComplete(HTTPRequestHandle HTTPRequest, bool requestSuccessful, HTTPStatusCode statusCode, int contextData)
 {
-	if (requestSuccessful && statusCode == HTTPStatusCode_OK)
-	{
+	if (requestSuccessful && statusCode == HTTPStatusCode_OK) {
 		int size = Steam_GetHTTPResponseBodySize(HTTPRequest);
 		char[] response = new char[size];
 		
@@ -83,9 +82,7 @@ public int Web_GetLatestInstagibVersion_OnComplete(HTTPRequestHandle HTTPRequest
 				PrintToServer("This server is running an outdated version of TF2Instagib! (%s)\nGet TF2Instagib %s here: https://github.com/haxtonsale/TF2Instagib/releases/latest", INSTAGIB_VERSION, version);
 			}
 		}
-	}
-	else
-	{
+	} else {
 		LogError("Failed to get latest Instagib version! (%i)\n%s", statusCode, GetMessage(HTTPRequest));
 	}
 	
@@ -94,8 +91,7 @@ public int Web_GetLatestInstagibVersion_OnComplete(HTTPRequestHandle HTTPRequest
 
 public int Web_GetMapConfigs_OnComplete(HTTPRequestHandle HTTPRequest, bool requestSuccessful, HTTPStatusCode statusCode, int contextData)
 {
-	if (requestSuccessful && statusCode == HTTPStatusCode_OK)
-	{
+	if (requestSuccessful && statusCode == HTTPStatusCode_OK) {
 		int size = Steam_GetHTTPResponseBodySize(HTTPRequest);
 		char[] response = new char[size];
 		
@@ -115,9 +111,7 @@ public int Web_GetMapConfigs_OnComplete(HTTPRequestHandle HTTPRequest, bool requ
 			
 			Web_DownloadMapConfig(url);
 		}
-	}
-	else
-	{
+	} else {
 		LogError("Failed to get map configs! (%i)\n%s", statusCode, GetMessage(HTTPRequest));
 	}
 	
@@ -134,8 +128,7 @@ public int Web_DownloadMapConfig_OnComplete(HTTPRequestHandle HTTPRequest, bool 
 		CreateDirectory(path, FPERM_U_READ | FPERM_U_WRITE | FPERM_U_EXEC | FPERM_G_READ | FPERM_G_EXEC | FPERM_O_READ | FPERM_G_EXEC);
 	}
 	
-	if (requestSuccessful && statusCode == HTTPStatusCode_OK)
-	{
+	if (requestSuccessful && statusCode == HTTPStatusCode_OK) {
 		char name[128];
 		data.PopString(name, sizeof(name));
 		delete data;
@@ -147,9 +140,7 @@ public int Web_DownloadMapConfig_OnComplete(HTTPRequestHandle HTTPRequest, bool 
 		if (!g_MapConfig.kv && StrEqual(GetMapName(), name)) {
 			LoadMapConfig(name);
 		}
-	}
-	else
-	{
+	} else {
 		LogError("Failed to download the map config! (%i)\n%s", statusCode, GetMessage(HTTPRequest));
 	}
 	
