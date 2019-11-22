@@ -773,6 +773,9 @@ public void OnPluginEnd()
 	g_CvarAirAccel.RestoreDefault();
 	g_CvarNoRespawnTimes.RestoreDefault();
 	g_CvarSpecFreezeTime.RestoreDefault();
+	
+	InstagibPrintToChatAll(true, "The plugin has been unloaded! Restarting the round...");
+	Stalemate();
 }
 
 public void OnLibraryAdded(const char[] name)
