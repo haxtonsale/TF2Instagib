@@ -197,10 +197,12 @@ public int Native_Freeze(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1);
 	SR_FreezeTag_Freeze(client, false);
+	Forward_Frozen(client, 0);
 }
 
 public int Native_Unfreeze(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1);
 	SR_FreezeTag_Unfreeze(client);
+	Forward_Unfrozen(client, 0);
 }
