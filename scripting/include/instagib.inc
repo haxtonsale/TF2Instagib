@@ -49,7 +49,7 @@ forward void IG_OnRailjump(int client, float velocity[3]);
  */
 native void IG_ForceSpecialRound(char[] name, bool notify = false, int client = 0);
 
-native void IG_GetCurrentRound(InstagibRound buffer, int size = sizeof(InstagibRound));
+native void IG_GetCurrentRound(any[] buffer, int size = sizeof(InstagibRound));
 
 native int IG_GetTeamScore(int team);
 native void IG_SetTeamScore(int team, int value);
