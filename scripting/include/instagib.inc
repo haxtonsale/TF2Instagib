@@ -16,7 +16,7 @@ enum struct InstagibRound
 	int PointsPerKill;
 	bool ShouldAnnounceWin;
 	bool ShouldAllowKillbind;
-	bool ShoudEndWithTimer;        // Whether the round will be forcefully ended when the round time is over
+	bool ShouldEndWithTimer;        // Whether the round will be forcefully ended when the round time is over
 	int MinPlayers;
 	
 	float RailjumpVelocityXY;

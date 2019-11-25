@@ -48,7 +48,7 @@ void NewInstagibRound(InstagibRound buffer, char[] name, char[] desc = "")
 	round.IsSpecial = true;
 	round.ShouldAnnounceWin = true;
 	round.ShouldAllowKillbind = true;
-	round.ShoudEndWithTimer = true;
+	round.ShouldEndWithTimer = true;
 	
 	round.OnStart = INVALID_FUNCTION;
 	round.OnEnd = INVALID_FUNCTION;

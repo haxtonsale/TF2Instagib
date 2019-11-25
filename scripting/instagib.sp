@@ -43,7 +43,7 @@ enum struct InstagibRound
 	int PointsPerKill;
 	bool ShouldAnnounceWin;
 	bool ShouldAllowKillbind;
-	bool ShoudEndWithTimer;       // Whether the round will be forcefully ended when the round time is over
+	bool ShouldEndWithTimer;       // Whether the round will be forcefully ended when the round time is over
 	int MinPlayers;
 	
 	float RailjumpVelocityXY;
@@ -470,7 +470,7 @@ public Action Timer_SecondTick(Handle timer)
 	FormatTime(g_RoundTimeLeftFormatted, sizeof(g_RoundTimeLeftFormatted), "%M:%S", g_RoundTimeLeft);
 	
 	if (g_RoundTimeLeft <= 0) {
-		if (g_CurrentRound.ShoudEndWithTimer) {
+		if (g_CurrentRound.ShouldEndWithTimer) {
 			InstagibForceRoundEnd();
 		} else if (g_CurrentRound.OnEnd != INVALID_FUNCTION) {
 			Call_StartFunction(null, g_CurrentRound.OnEnd);
