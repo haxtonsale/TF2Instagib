@@ -50,7 +50,10 @@ void RefreshRequiredEnts()
 			}
 			
 			if (StrEqual(classname, "func_regenerate")) { // Delet resupply lockers
-				AcceptEntityInput(GetEntPropEnt(i, Prop_Data, "m_hAssociatedModel"), "Kill");
+				int model_index = GetEntPropEnt(i, Prop_Data, "m_hAssociatedModel");
+				if (model_index > MaxClients && IsValidEntity(model_index))
+					AcceptEntityInput(model_index, "Kill");
+				
 				AcceptEntityInput(i, "Kill");
 			} else if (StrEqual(classname, "func_door")) { // Kill all doors
 				char name[128];
