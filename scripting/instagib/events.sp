@@ -21,7 +21,7 @@ public void Event_OnRoundStart(Event event, const char[] name, bool dont_broadca
 	
 	g_RoundTimeLeftFormatted = "";
 	
-	if (!g_IsWaitingForPlayers && GetRandomFloat() <= g_Config.SpecialRound_Chance) {
+	if (!g_IsWaitingForPlayers && GetRandomFloat() <= g_Config.SpecialRoundChance) {
 		GetRandomSpecialRound(g_CurrentRound);
 	} else {
 		GetDefaultRound(g_CurrentRound);
@@ -177,7 +177,7 @@ public void Event_OnRoundEnd(Event event, const char[] name, bool dont_broadcast
 	
 	int score = InstagibGetTeamScore(team);
 	
-	if (g_CurrentRound.ShouldAnnounceWin && team != TFTeam_Unassigned) {
+	if (g_CurrentRound.AnnounceWin && team != TFTeam_Unassigned) {
 		AnnounceWin(team, _, score);
 	}
 	

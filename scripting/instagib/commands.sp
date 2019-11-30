@@ -18,7 +18,7 @@ void Commands_Init()
 // -------------------------------------------------------------------
 public Action Command_BlockSuicide(int client, int args)
 {
-	return (!g_CurrentRound.ShouldAllowKillbind) ? Plugin_Handled : Plugin_Continue;
+	return (!g_CurrentRound.AllowKillbind) ? Plugin_Handled : Plugin_Continue;
 }
 
 public Action Command_Settings(int client, int args)

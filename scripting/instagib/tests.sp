@@ -30,7 +30,7 @@ static bool Test_StringProcess(char[] buffer)
 	InstagibProcessString(true, "Normal text {Highligthed text} Normal text again", buffer, 256);
 	
 	char should_be[256];
-	FormatEx(should_be, sizeof(should_be), "%s Normal text %sHighligthed text%s Normal text again", g_InstagibTag, g_Config.ChatColor_Highlight, g_Config.ChatColor);
+	FormatEx(should_be, sizeof(should_be), "%s Normal text %sHighligthed text%s Normal text again", g_InstagibTag, g_Config.ChatColorHighlight, g_Config.ChatColor);
 	
 	if (StrEqual(buffer, should_be)) {
 		return true;

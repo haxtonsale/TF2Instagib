@@ -17,8 +17,8 @@ void SR_FreezeTag_Init()
 	sr.MinScore = 322; // dynamic
 	sr.MaxScoreMultiplier = 0.0;
 	sr.PointsPerKill = 0;
-	sr.ShouldAllowKillbind = false;
-	sr.ShouldAnnounceWin = false;
+	sr.AllowKillbind = false;
+	sr.AnnounceWin = false;
 	sr.MinPlayers = 6;
 	
 	sr.OnStart = SR_FreezeTag_OnStart;

@@ -36,21 +36,18 @@ enum struct InstagibRound
 	char Desc[128];
 	
 	bool IsSpecial;
-	
 	int RoundTime;
 	int MinScore;
 	float MaxScoreMultiplier;
 	int PointsPerKill;
-	bool ShouldAnnounceWin;
-	bool ShouldAllowKillbind;
-	bool ShouldEndWithTimer;       // Whether the round will be forcefully ended when the round time is over
+	bool AnnounceWin;
+	bool AllowKillbind;
+	bool EndWithTimer;       // Whether the round will be forcefully ended when the round time is over
 	int MinPlayers;
-	
-	float RailjumpVelocityXY;
-	float RailjumpVelocityZ;
-	
 	float RespawnTime;
 	float UberDuration;
+	float RailjumpVelocityXY;
+	float RailjumpVelocityZ;
 	
 	Handle MainWeapon;
 	int MainWeaponClip;
@@ -88,30 +85,34 @@ enum struct Round_OnDeath_Data
 enum struct Config
 {
 	char ChatColor[16];
-	char ChatColor_Highlight[16];
+	char ChatColorHighlight[16];
 	
-	float HudText_x;
-	float HudText_y;
-	int HudText_Color[4];
+	float HudTextX;
+	float HudTextY;
+	int HudTextColor[4];
 	
 	bool EnabledKillstreaks;
 	int MinScore;
 	float RespawnTime;
 	float UberDuration;
-	float SpecialRound_Chance;
+	float SpecialRoundChance;
 	float MaxScoreMulti;
+	bool InstantRespawn;
+	int MultikillInterval;
 	float RailjumpVelXY;
 	float RailjumpVelZ;
-	
 	bool EnabledBhop;
 	float BhopMaxSpeed;
 	
-	int MultikillInterval;
-	
-	bool InstantRespawn;
-	
 	bool WebVersionCheck;
 	bool WebMapConfigs;
+}
+
+enum struct MapConfig
+{
+	KeyValues kv;
+	ArrayList SpawnPoints;
+	bool IsMusicDisabled;
 }
 
 typedef Round_OnStart =           function void ();
@@ -155,6 +156,7 @@ ConVar g_CvarNoRespawnTimes;
 ConVar g_CvarSpecFreezeTime;
 
 Config g_Config;
+MapConfig g_MapConfig;
 
 char g_InstagibTag[64];
 bool g_SteamTools;
@@ -396,7 +398,7 @@ void InstagibProcessString(bool tag, const char[] format, char[] buffer, int max
 		FormatEx(buffer, maxlen, "%s%s", g_Config.ChatColor, format);
 	}
 	
-	ReplaceString(buffer, maxlen, "{", g_Config.ChatColor_Highlight);
+	ReplaceString(buffer, maxlen, "{", g_Config.ChatColorHighlight);
 	ReplaceString(buffer, maxlen, "}", g_Config.ChatColor);
 }
 
@@ -470,7 +472,7 @@ public Action Timer_SecondTick(Handle timer)
 	FormatTime(g_RoundTimeLeftFormatted, sizeof(g_RoundTimeLeftFormatted), "%M:%S", g_RoundTimeLeft);
 	
 	if (g_RoundTimeLeft <= 0) {
-		if (g_CurrentRound.ShouldEndWithTimer) {
+		if (g_CurrentRound.EndWithTimer) {
 			InstagibForceRoundEnd();
 		} else if (g_CurrentRound.OnEnd != INVALID_FUNCTION) {
 			Call_StartFunction(null, g_CurrentRound.OnEnd);
@@ -586,7 +588,6 @@ public void OnPluginStart()
 	Commands_Init();
 	CreateDefaultRailgun();
 	Events_Init();
-	Rounds_Init();
 	Hud_Init();
 	
 	if (IsLateLoad) {
@@ -622,7 +623,17 @@ public void OnPluginStart()
 
 public void OnMapStart()
 {
+	char mapname[256];
+	char displayname[256];
+	GetCurrentMap(mapname, sizeof(mapname));
+	GetMapDisplayName(mapname, displayname, sizeof(displayname));
+	
+	CheckForInstagibEnts();
+	ClearParticleCache();
+	LoadMapConfig(displayname);
+	
 	RoundLogic_Init();
+	Rounds_Init();
 	InstagibPrecache();
 	PrecacheModel("models/props_halloween/ghost_no_hat.mdl");
 	PrecacheModel("models/props_halloween/ghost_no_hat_red.mdl");
@@ -635,15 +646,6 @@ public void OnMapStart()
 	if (g_SteamTools) {
 		Steam_SetGameDescription(GAME_DESCRIPTION);
 	}
-	
-	char mapname[256];
-	char displayname[256];
-	GetCurrentMap(mapname, sizeof(mapname));
-	GetMapDisplayName(mapname, displayname, sizeof(displayname));
-	
-	CheckForInstagibEnts();
-	LoadMapConfig(displayname);
-	ClearParticleCache();
 	
 	#if defined RUN_TESTS
 	Instagib_StartTests();

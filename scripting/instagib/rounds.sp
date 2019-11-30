@@ -46,9 +46,9 @@ void NewInstagibRound(InstagibRound buffer, char[] name, char[] desc = "")
 	round.RespawnTime = g_Config.RespawnTime;
 	round.PointsPerKill = 1;
 	round.IsSpecial = true;
-	round.ShouldAnnounceWin = true;
-	round.ShouldAllowKillbind = true;
-	round.ShouldEndWithTimer = true;
+	round.AnnounceWin = true;
+	round.AllowKillbind = true;
+	round.EndWithTimer = true;
 	
 	round.OnStart = INVALID_FUNCTION;
 	round.OnEnd = INVALID_FUNCTION;
@@ -71,7 +71,8 @@ void NewInstagibRound(InstagibRound buffer, char[] name, char[] desc = "")
 
 void SubmitInstagibRound(InstagibRound round)
 {
-	SpecialRoundConfig_GetOverwrites(round);
+	LoadConfigRoundOverwrites(round);
+	LoadMapRoundOverwrites(round);
 	
 	if (round.IsSpecial && SpecialRoundConfig_Num(round.Name, "Disabled", 0)) {
 		return;
@@ -79,7 +80,8 @@ void SubmitInstagibRound(InstagibRound round)
 	
 	char error[256];
 	if (CheckInstagibRoundForErrors(round, error)) {
-		ThrowError(error);
+		LogError(error);
+		return;
 	}
 	
 	InstagibRounds.PushArray(round); 
@@ -87,8 +89,8 @@ void SubmitInstagibRound(InstagibRound round)
 
 static bool CheckInstagibRoundForErrors(InstagibRound round, char error[256])
 {
-	if (StrEqual(round.Name, "")) {
-		error = "Round.Name must not be null.";
+	if (round.Name[0] == '\0') {
+		error = "Round.Name must not be empty.";
 	} else if (round.MainWeapon == null) {
 		error = "Round.MainWeapon must not be null.";
 	} else {
@@ -133,7 +135,6 @@ void GetRandomSpecialRound(InstagibRound buffer)
 			InstagibRounds.GetArray(i, round);
 			
 			bool enough_players = (playercount >= round.MinPlayers);
-			
 			if (last_round != i && round.IsSpecial && enough_players) {
 				suitable_rounds[count] = i;
 				++count;
@@ -229,7 +230,8 @@ void Rounds_Reload()
 	round.RailjumpVelocityZ = g_Config.RailjumpVelZ;
 	round.RespawnTime = g_Config.RespawnTime;
 	
-	SpecialRoundConfig_GetOverwrites(round);
+	LoadConfigRoundOverwrites(round);
+	LoadMapRoundOverwrites(round);
 	
 	g_CurrentRound = round;
 }

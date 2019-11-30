@@ -17,8 +17,8 @@ void SR_Lives_Init()
 	sr.RoundTime = 300;
 	sr.MinScore = 322; // dynamic
 	sr.PointsPerKill = 0;
-	sr.ShouldAnnounceWin = false;
-	sr.ShouldEndWithTimer = false;
+	sr.AnnounceWin = false;
+	sr.EndWithTimer = false;
 	sr.MinPlayers = 2;
 	
 	sr.OnStart = SR_Lives_OnStart;
@@ -212,7 +212,7 @@ void SR_Lives_OnDisconnect(int client)
 
 void SR_Lives_OnEnd(TFTeam winner_team, int score, int time_left)
 {
-	if (score == -1) { // score = -1 if the round time had ran out and ShouldEndWithTimer == false
+	if (score == -1) { // score = -1 if the round time had ran out and EndWithTimer == false
 		int red_lives;
 		int blue_lives;
 		

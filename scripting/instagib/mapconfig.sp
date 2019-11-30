@@ -6,13 +6,6 @@ enum struct SpawnPoint
 	float rotation;
 }
 
-enum struct MapConfig
-{
-	KeyValues kv;
-	ArrayList SpawnPoints;
-	bool IsMusicDisabled;
-}
-
 enum
 {
 	EditMode_Exit = 1,
@@ -22,8 +15,6 @@ enum
 	EditMode_Delete,
 	EditMode_Export,
 }
-
-MapConfig g_MapConfig;
 
 // -------------------------------------------------------------------
 void CreateMapConfigFolder()
@@ -45,9 +36,10 @@ void LoadMapConfig(const char[] mapname)
 	char path[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, path, sizeof(path), "configs/instagib_maps/%s.cfg", mapname);
 	
-	if (g_MapConfig.kv == null) {
-		g_MapConfig.kv = new KeyValues("Instagib Map Config");
-	}
+	g_MapConfig.SpawnPoints = new ArrayList(sizeof(SpawnPoint));
+	g_MapConfig.kv = new KeyValues("Instagib Map Config");
+	g_MapConfig.kv.SetNum("Disable Music", 0);
+	CreateMapConfigFolder();
 	
 	if (g_MapConfig.kv.ImportFromFile(path)) {
 		ReloadMapConfigKeyValues();
@@ -63,10 +55,6 @@ void LoadMapConfig(const char[] mapname)
 
 void ReloadMapConfigKeyValues()
 {
-	if (g_MapConfig.kv == null) {
-		return;
-	}
-	
 	g_MapConfig.kv.Rewind();
 	g_MapConfig.IsMusicDisabled = view_as<bool>(g_MapConfig.kv.GetNum("Disable Music"));
 	if (g_MapConfig.kv.JumpToKey("Spawn Points", false)) {
@@ -85,8 +73,9 @@ void ReloadMapConfigKeyValues()
 				spawn.pos[1] = StringToFloat(data[2]);
 				spawn.pos[2] = StringToFloat(data[3]);
 				
-				if (g_MapConfig.SpawnPoints == null)
+				if (g_MapConfig.SpawnPoints == null) {
 					g_MapConfig.SpawnPoints = new ArrayList(sizeof(SpawnPoint));
+				}
 				
 				g_MapConfig.SpawnPoints.PushArray(spawn);
 				
@@ -100,10 +89,6 @@ void ReloadMapConfigKeyValues()
 
 void SaveMapConfig()
 {
-	if (g_MapConfig.kv == null) {
-		return;
-	}
-	
 	g_MapConfig.kv.Rewind();
 	
 	char path[PLATFORM_MAX_PATH];
@@ -113,13 +98,6 @@ void SaveMapConfig()
 
 void CreateSpawnPoint(TFTeam team, float pos[3], float rotation)
 {
-	if (g_MapConfig.kv == null) {
-		g_MapConfig.SpawnPoints = new ArrayList(sizeof(SpawnPoint));
-		g_MapConfig.kv = new KeyValues("Instagib Map Config");
-		g_MapConfig.kv.SetNum("Disable Music", 0);
-		CreateMapConfigFolder();
-	}
-	
 	SpawnPoint spawn;
 	spawn.team = team;
 	spawn.pos[0] = pos[0];
@@ -151,14 +129,8 @@ void CreateSpawnPoint(TFTeam team, float pos[3], float rotation)
 
 void DeleteSpawnPoint(TFTeam team, float pos[3])
 {
-	if (g_MapConfig.kv == null) {
-		return;
-	}
-	
 	g_MapConfig.kv.Rewind();
-	g_MapConfig.kv.JumpToKey("Instagib Map Config");
-	g_MapConfig.kv.JumpToKey("Spawn Points");
-	if (g_MapConfig.kv.GotoFirstSubKey(false)) {
+	if (g_MapConfig.kv.JumpToKey("Spawn Points") && g_MapConfig.kv.GotoFirstSubKey(false)) {
 		do {
 			char name[255];
 			char data[4][32];
@@ -182,7 +154,8 @@ void DeleteSpawnPoint(TFTeam team, float pos[3])
 
 void SetupSpawnPoints()
 {
-	if (g_MapConfig.SpawnPoints == null || !g_MapConfig.SpawnPoints.Length) {
+	int len = g_MapConfig.SpawnPoints.Length;
+	if (!len) {
 		return;
 	}
 	
@@ -198,7 +171,6 @@ void SetupSpawnPoints()
 		}
 	}
 	
-	int len = g_MapConfig.SpawnPoints.Length;
 	for (int i = 0; i < len; i++) {
 		SpawnPoint spawn;
 		g_MapConfig.SpawnPoints.GetArray(i, spawn);
@@ -221,21 +193,6 @@ void SetupSpawnPoints()
 	}
 	
 	RequestFrame(Frame_RespawnAll);
-}
-
-void CreateGlow(int ent, char[] color)
-{
-	char name[128];
-	GetEntPropString(ent, Prop_Data, "m_iName", name, sizeof(name));
-	
-	int glow = CreateEntityByName("tf_glow");
-	DispatchKeyValue(glow, "targetname", "INSTAGIB_GLOW");
-	DispatchKeyValue(glow, "target", name);
-	DispatchKeyValue(glow, "Mode", "0");
-	DispatchKeyValue(glow, "GlowColor", color);
-	DispatchSpawn(glow);
-	
-	AcceptEntityInput(glow, "Enable");
 }
 
 void CreateSpawnPointEnts()
@@ -270,8 +227,6 @@ void CreateSpawnPointEnts()
 						
 						DispatchSpawn(ent);
 						TeleportEntity(ent, pos, ang, NULL_VECTOR);
-						
-						CreateGlow(ent, GetEntProp(i, Prop_Data, "m_iTeamNum") == 2 ? "255, 0, 0, 200" : "0, 0, 255, 200");
 					}
 				}
 			}
@@ -287,15 +242,7 @@ void ClearSpawnPointEnts()
 			char classname[255];
 			GetEntityClassname(i, classname, sizeof(classname));
 			
-			// Kill tf_glow entities first
-			if (StrEqual(classname, "tf_glow")) {
-				char name[128];
-				GetEntPropString(i, Prop_Data, "m_iName", name, sizeof(name));
-				
-				if (StrContains(name, "INSTAGIB_GLOW") == 0) {
-					AcceptEntityInput(i, "Kill");
-				}
-			} else if (StrEqual(classname, "prop_dynamic")) {
+			if (StrEqual(classname, "prop_dynamic")) {
 				char name[128];
 				GetEntPropString(i, Prop_Data, "m_iName", name, sizeof(name));
 				
@@ -311,6 +258,18 @@ void ReloadSpawnPointEnts()
 {
 	ClearSpawnPointEnts();
 	CreateSpawnPointEnts();
+}
+
+// Overwrite some of the special round's properties through the map config
+void LoadMapRoundOverwrites(InstagibRound ig_round)
+{
+	if (g_MapConfig.kv != null) {
+		g_MapConfig.kv.Rewind();
+		if (g_MapConfig.kv.JumpToKey("Rounds")) {
+			LoadRoundOverwrites(ig_round, g_MapConfig.kv, "All Rounds");
+			LoadRoundOverwrites(ig_round, g_MapConfig.kv, ig_round.Name);
+		}
+	}
 }
 
 public void Frame_RespawnAll(any data)

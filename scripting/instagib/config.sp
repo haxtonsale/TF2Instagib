@@ -8,13 +8,9 @@ KeyValues GetConfig()
 	BuildPath(Path_SM, path, sizeof(path), "/configs/instagib.cfg");
 	
 	KeyValues kv = new KeyValues("Instagib");
-	bool success = kv.ImportFromFile(path);
-	
-	if (!success) {
+	if (!kv.ImportFromFile(path)) {
 		BuildPath(Path_SM, path, sizeof(path), "/configs/instagib.txt");
-		success = kv.ImportFromFile(path);
-		
-		if (!success) {
+		if (!kv.ImportFromFile(path)) {
 			LogError("Couldn't find %s!", path);
 			delete kv;
 		}
@@ -43,31 +39,31 @@ void LoadConfig()
 		}
 		
 		if (chatcolor2[0] + chatcolor2[1] + chatcolor2[2] > 0) {
-			strcopy(g_Config.ChatColor_Highlight, sizeof(g_Config.ChatColor_Highlight), ColorStr(rgb(chatcolor2[0], chatcolor2[1], chatcolor2[2])));
+			strcopy(g_Config.ChatColorHighlight, sizeof(g_Config.ChatColorHighlight), ColorStr(rgb(chatcolor2[0], chatcolor2[1], chatcolor2[2])));
 		} else {
-			strcopy(g_Config.ChatColor_Highlight, sizeof(g_Config.ChatColor_Highlight), "\x01");
+			strcopy(g_Config.ChatColorHighlight, sizeof(g_Config.ChatColorHighlight), "\x01");
 		}
 		
 		FormatEx(g_InstagibTag, sizeof(g_InstagibTag), "\x07E50000[TF2Instagib]%s", g_Config.ChatColor);
 		
-		g_Config.HudText_x = IGConfig.GetFloat("HudText_x", -1.0);
-		g_Config.HudText_y = IGConfig.GetFloat("HudText_y", 0.78);
-		IGConfig.GetColor("HudText_Color", g_Config.HudText_Color[0], g_Config.HudText_Color[1], g_Config.HudText_Color[2], g_Config.HudText_Color[3]);
+		g_Config.HudTextX = IGConfig.GetFloat("HudText_x", -1.0);
+		g_Config.HudTextY = IGConfig.GetFloat("HudText_y", 0.78);
+		IGConfig.GetColor("HudText_Color", g_Config.HudTextColor[0], g_Config.HudTextColor[1], g_Config.HudTextColor[2], g_Config.HudTextColor[3]);
 		
-		g_Config.EnabledKillstreaks =  view_as<bool>(IGConfig.GetNum("EnableKillstreaks", 1));
-		g_Config.MinScore =            IGConfig.GetNum("MinScore", 15);
-		g_Config.RespawnTime =         IGConfig.GetFloat("RespawnTime", 2.0);
-		g_Config.UberDuration =        IGConfig.GetFloat("UberDuration", 0.3);
-		g_Config.SpecialRound_Chance = IGConfig.GetFloat("SpecialRound_Chance", 0.35);
-		g_Config.MaxScoreMulti =       IGConfig.GetFloat("MaxScorePlayerMultiplier", 2.75);
-		g_Config.RailjumpVelXY =       IGConfig.GetFloat("Railjump_VelocityMultiplier_XY", 2.9);
-		g_Config.RailjumpVelZ =        IGConfig.GetFloat("Railjump_VelocityMultiplier_Z", 3.2);
-		g_Config.EnabledBhop =         view_as<bool>(IGConfig.GetNum("AutoBhop", 1));
-		g_Config.BhopMaxSpeed =        IGConfig.GetFloat("BhopMaxSpeed", 456.0);
-		g_Config.MultikillInterval =   IGConfig.GetNum("MultikillInterval", 3);
-		g_Config.InstantRespawn =      view_as<bool>(IGConfig.GetNum("InstantRespawn", 0));
-		g_Config.WebVersionCheck =     view_as<bool>(IGConfig.GetNum("CheckInstagibVersion", 1));
-		g_Config.WebMapConfigs =       view_as<bool>(IGConfig.GetNum("DownloadOfficialMapConfigs", 1));
+		g_Config.EnabledKillstreaks = view_as<bool>(IGConfig.GetNum("EnableKillstreaks", 1));
+		g_Config.MinScore = IGConfig.GetNum("MinScore", 15);
+		g_Config.RespawnTime = IGConfig.GetFloat("RespawnTime", 2.0);
+		g_Config.UberDuration = IGConfig.GetFloat("UberDuration", 0.3);
+		g_Config.SpecialRoundChance = IGConfig.GetFloat("SpecialRound_Chance", 0.35);
+		g_Config.MaxScoreMulti = IGConfig.GetFloat("MaxScorePlayerMultiplier", 2.75);
+		g_Config.RailjumpVelXY = IGConfig.GetFloat("Railjump_VelocityMultiplier_XY", 2.9);
+		g_Config.RailjumpVelZ = IGConfig.GetFloat("Railjump_VelocityMultiplier_Z", 3.2);
+		g_Config.EnabledBhop = view_as<bool>(IGConfig.GetNum("AutoBhop", 1));
+		g_Config.BhopMaxSpeed = IGConfig.GetFloat("BhopMaxSpeed", 456.0);
+		g_Config.MultikillInterval = IGConfig.GetNum("MultikillInterval", 3);
+		g_Config.InstantRespawn = view_as<bool>(IGConfig.GetNum("InstantRespawn", 0));
+		g_Config.WebVersionCheck = view_as<bool>(IGConfig.GetNum("CheckInstagibVersion", 1));
+		g_Config.WebMapConfigs = view_as<bool>(IGConfig.GetNum("DownloadOfficialMapConfigs", 1));
 		
 		g_CvarAirAccel.SetInt(IGConfig.GetNum("AirAcceleration", 30));
 		
@@ -82,9 +78,7 @@ void LoadConfig()
 		IGConfig.Rewind();
 		IGConfig.JumpToKey("Music");
 		
-		bool result = IGConfig.GotoFirstSubKey();
-		
-		if (result) {
+		if (IGConfig.GotoFirstSubKey()) {
 			do {
 				char name[256]; 
 				IGConfig.GetSectionName(name, sizeof(name));
@@ -109,9 +103,8 @@ stock int SpecialRoundConfig_Num(const char[] round, const char[] key, int defva
 	if (IGConfig != null) {
 		IGConfig.Rewind();
 		IGConfig.JumpToKey("Rounds");
-		bool result = IGConfig.JumpToKey(round);
 		
-		if (result) {
+		if (IGConfig.JumpToKey(round)) {
 			return IGConfig.GetNum(key, defvalue);
 		}
 	}
@@ -124,9 +117,8 @@ stock float SpecialRoundConfig_Float(const char[] round, const char[] key, float
 	if (IGConfig != null) {
 		IGConfig.Rewind();
 		IGConfig.JumpToKey("Rounds");
-		bool result = IGConfig.JumpToKey(round);
 		
-		if (result) {
+		if (IGConfig.JumpToKey(round)) {
 			return IGConfig.GetFloat(key, defvalue);
 		}
 	}
@@ -139,9 +131,8 @@ stock void SpecialRoundConfig_String(const char[] round, const char[] key, char[
 	if (IGConfig != null) {
 		IGConfig.Rewind();
 		IGConfig.JumpToKey("Rounds");
-		bool result = IGConfig.JumpToKey(round);
 		
-		if (result) {
+		if (IGConfig.JumpToKey(round)) {
 			IGConfig.GetString(key, buffer, maxlength, defvalue);
 			return;
 		}
@@ -150,28 +141,34 @@ stock void SpecialRoundConfig_String(const char[] round, const char[] key, char[
 	strcopy(buffer, maxlength, defvalue);
 }
 
+void LoadRoundOverwrites(InstagibRound round, KeyValues kv, char[] key)
+{
+	if (kv.JumpToKey(key)) {
+		round.RoundTime = kv.GetNum("RoundLength", round.RoundTime);
+		round.MinScore = kv.GetNum("MinScore", round.MinScore);
+		round.MaxScoreMultiplier = kv.GetFloat("MaxScore_Multiplier", round.MaxScoreMultiplier);
+		round.PointsPerKill = kv.GetNum("PointsForKill", round.PointsPerKill);
+		round.AllowKillbind = view_as<bool>(kv.GetNum("AllowKillbind", round.AllowKillbind));
+		round.RailjumpVelocityXY = kv.GetFloat("Railjump_VelocityMultiplier_XY", round.RailjumpVelocityXY);
+		round.RailjumpVelocityZ = kv.GetFloat("Railjump_VelocityMultiplier_Z", round.RailjumpVelocityZ);
+		round.RespawnTime = kv.GetFloat("RespawnTime", round.RespawnTime);
+		round.UberDuration = kv.GetFloat("UberDuration", round.UberDuration);
+		round.MainWeaponClip = kv.GetNum("MainWeapon_Clip", round.MainWeaponClip);
+		round.IsAmmoInfinite = view_as<bool>(kv.GetNum("InfiniteAmmo", round.IsAmmoInfinite));
+		
+		kv.GoBack();
+	}
+}
+
 // Overwrite some of the special round's properties through config
-void SpecialRoundConfig_GetOverwrites(InstagibRound ig_round)
+void LoadConfigRoundOverwrites(InstagibRound ig_round)
 {
 	if (IGConfig != null) {
 		IGConfig.Rewind();
-		IGConfig.JumpToKey("Rounds");
-		bool result = IGConfig.JumpToKey(ig_round.Name);
 		
-		if (result) {
-			ig_round.IsSpecial = view_as<bool>(IGConfig.GetNum("IsSpecialRound", ig_round.IsSpecial));
-			ig_round.RoundTime = IGConfig.GetNum("RoundLength", ig_round.RoundTime);
-			ig_round.MinScore = IGConfig.GetNum("MinScore", ig_round.MinScore);
-			ig_round.MaxScoreMultiplier = IGConfig.GetFloat("MaxScore_Multiplier", ig_round.MaxScoreMultiplier);
-			ig_round.PointsPerKill = IGConfig.GetNum("PointsForKill", ig_round.PointsPerKill);
-			ig_round.ShouldAllowKillbind = view_as<bool>(IGConfig.GetNum("AllowKillbind", ig_round.ShouldAllowKillbind));
-			ig_round.RailjumpVelocityXY = IGConfig.GetFloat("Railjump_VelocityMultiplier_XY", ig_round.RailjumpVelocityXY);
-			ig_round.RailjumpVelocityZ = IGConfig.GetFloat("Railjump_VelocityMultiplier_Z", ig_round.RailjumpVelocityZ);
-			ig_round.RespawnTime = IGConfig.GetFloat("RespawnTime", ig_round.RespawnTime);
-			ig_round.UberDuration = IGConfig.GetFloat("UberDuration", ig_round.UberDuration);
-			ig_round.MainWeaponClip = IGConfig.GetNum("MainWeapon_Clip", ig_round.MainWeaponClip);
-			ig_round.IsAmmoInfinite = view_as<bool>(IGConfig.GetNum("InfiniteAmmo", ig_round.IsAmmoInfinite));
-			ig_round.MinPlayers = IGConfig.GetNum("MinPlayers", ig_round.MinPlayers);
+		if (IGConfig.JumpToKey("Rounds")) {
+			LoadRoundOverwrites(ig_round, IGConfig, "All Rounds");
+			LoadRoundOverwrites(ig_round, IGConfig, ig_round.Name);
 		}
 	}
 }

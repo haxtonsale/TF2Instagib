@@ -14,9 +14,9 @@ enum struct InstagibRound
 	int MinScore;
 	float MaxScoreMultiplier;
 	int PointsPerKill;
-	bool ShouldAnnounceWin;
-	bool ShouldAllowKillbind;
-	bool ShouldEndWithTimer;        // Whether the round will be forcefully ended when the round time is over
+	bool AnnounceWin;
+	bool AllowKillbind;
+	bool EndWithTimer;        // Whether the round will be forcefully ended when the round time is over
 	int MinPlayers;
 	
 	float RailjumpVelocityXY;

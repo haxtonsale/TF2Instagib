@@ -12,14 +12,14 @@ void Hud_Init()
 public Action Timer_DisplayHudText(Handle timer)
 {
 	if (g_IsRoundActive) {
-		float x = g_Config.HudText_x;
-		float y = g_Config.HudText_y;
+		float x = g_Config.HudTextX;
+		float y = g_Config.HudTextY;
 		
 		int color[4];
-		color[0] = g_Config.HudText_Color[0];
-		color[1] = g_Config.HudText_Color[1];
-		color[2] = g_Config.HudText_Color[2];
-		color[3] = g_Config.HudText_Color[3];
+		color[0] = g_Config.HudTextColor[0];
+		color[1] = g_Config.HudTextColor[1];
+		color[2] = g_Config.HudTextColor[2];
+		color[3] = g_Config.HudTextColor[3];
 		
 		SetHudTextParams(x, y, 0.2, color[0], color[1], color[2], color[3], 0, 0.0, 0.0, 0.0);
 		
