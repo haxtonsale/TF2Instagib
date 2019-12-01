@@ -41,16 +41,13 @@ void LoadMapConfig(const char[] mapname)
 	g_MapConfig.kv.SetNum("Disable Music", 0);
 	CreateMapConfigFolder();
 	
-	if (g_MapConfig.kv.ImportFromFile(path)) {
-		ReloadMapConfigKeyValues();
-	} else { // Check for the map config in instagib_maps/official
+	if (!g_MapConfig.kv.ImportFromFile(path)) {
+		// Check for the map config in instagib_maps/official
 		BuildPath(Path_SM, path, sizeof(path), "configs/instagib_maps/official/%s.cfg", mapname);
-		if (g_MapConfig.kv.ImportFromFile(path)) {
-			ReloadMapConfigKeyValues();
-		} else {
-			delete g_MapConfig.kv;
-		}
+		g_MapConfig.kv.ImportFromFile(path);
 	}
+	
+	ReloadMapConfigKeyValues();
 }
 
 void ReloadMapConfigKeyValues()
@@ -263,12 +260,10 @@ void ReloadSpawnPointEnts()
 // Overwrite some of the special round's properties through the map config
 void LoadMapRoundOverwrites(InstagibRound ig_round)
 {
-	if (g_MapConfig.kv != null) {
-		g_MapConfig.kv.Rewind();
-		if (g_MapConfig.kv.JumpToKey("Rounds")) {
-			LoadRoundOverwrites(ig_round, g_MapConfig.kv, "All Rounds");
-			LoadRoundOverwrites(ig_round, g_MapConfig.kv, ig_round.Name);
-		}
+	g_MapConfig.kv.Rewind();
+	if (g_MapConfig.kv.JumpToKey("Rounds")) {
+		LoadRoundOverwrites(ig_round, g_MapConfig.kv, "All Rounds");
+		LoadRoundOverwrites(ig_round, g_MapConfig.kv, ig_round.Name);
 	}
 }
 

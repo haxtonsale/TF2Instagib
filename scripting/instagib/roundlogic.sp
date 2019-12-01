@@ -2,7 +2,6 @@
 void RoundLogic_Init()
 {
 	RefreshRequiredEnts();
-	
 	g_MapHasRoundSetup = MapRoundSetupTime() > 0;
 }
 

@@ -100,6 +100,13 @@ void LoadConfig()
 
 stock int SpecialRoundConfig_Num(const char[] round, const char[] key, int defvalue)
 {
+	g_MapConfig.kv.Rewind();
+	if (g_MapConfig.kv.JumpToKey("Rounds")) {
+		if (g_MapConfig.kv.JumpToKey(round)) {
+			return g_MapConfig.kv.GetNum(key, defvalue);
+		}
+	}
+	
 	if (IGConfig != null) {
 		IGConfig.Rewind();
 		IGConfig.JumpToKey("Rounds");
@@ -114,6 +121,13 @@ stock int SpecialRoundConfig_Num(const char[] round, const char[] key, int defva
 
 stock float SpecialRoundConfig_Float(const char[] round, const char[] key, float defvalue)
 {
+	g_MapConfig.kv.Rewind();
+	if (g_MapConfig.kv.JumpToKey("Rounds")) {
+		if (g_MapConfig.kv.JumpToKey(round)) {
+			return g_MapConfig.kv.GetFloat(key, defvalue);
+		}
+	}
+	
 	if (IGConfig != null) {
 		IGConfig.Rewind();
 		IGConfig.JumpToKey("Rounds");
@@ -128,6 +142,14 @@ stock float SpecialRoundConfig_Float(const char[] round, const char[] key, float
 
 stock void SpecialRoundConfig_String(const char[] round, const char[] key, char[] buffer, int maxlength, char[] defvalue)
 {
+	g_MapConfig.kv.Rewind();
+	if (g_MapConfig.kv.JumpToKey("Rounds")) {
+		if (g_MapConfig.kv.JumpToKey(round)) {
+			IGConfig.GetString(key, buffer, maxlength, defvalue);
+			return;
+		}
+	}
+	
 	if (IGConfig != null) {
 		IGConfig.Rewind();
 		IGConfig.JumpToKey("Rounds");

@@ -339,6 +339,10 @@ void InstagibPrecache()
 			AddFileToDownloadsTable(sound);
 		}
 	}
+	
+	PrecacheModel("models/props_halloween/ghost_no_hat.mdl");
+	PrecacheModel("models/props_halloween/ghost_no_hat_red.mdl");
+	PrecacheModel("models/items/ammopack_large.mdl"); // For map config editor
 }
 
 int InstagibGetTeamScore(TFTeam team)
@@ -628,17 +632,13 @@ public void OnMapStart()
 	GetCurrentMap(mapname, sizeof(mapname));
 	GetMapDisplayName(mapname, displayname, sizeof(displayname));
 	
+	LoadMapConfig(displayname);
+	RoundLogic_Init();
+	Rounds_Init(); // Only create rounds after all configs are loaded
+	
+	InstagibPrecache();
 	CheckForInstagibEnts();
 	ClearParticleCache();
-	LoadMapConfig(displayname);
-	
-	RoundLogic_Init();
-	Rounds_Init();
-	InstagibPrecache();
-	PrecacheModel("models/props_halloween/ghost_no_hat.mdl");
-	PrecacheModel("models/props_halloween/ghost_no_hat_red.mdl");
-	PrecacheModel("models/items/ammopack_large.mdl"); // For map config editor
-	
 	StopMusic();
 	ResetScore();
 	g_IsRoundActive = false;
