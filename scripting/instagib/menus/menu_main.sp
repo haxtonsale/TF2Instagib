@@ -3,7 +3,7 @@ void Menu_Main(int client)
 {
 	Menu menu = new Menu(MenuMain_Handler);
 	
-	menu.SetTitle("TF2Instagib v%s", INSTAGIB_VERSION);
+	menu.SetTitle("TF2Instagib v" ... INSTAGIB_VERSION);
 	
 	menu.AddItem("exit", "Exit");
 	menu.AddItem("settings", "Settings");
@@ -23,9 +23,7 @@ void Credits(int client)
 {
 	Panel panel = new Panel();
 	
-	char igtext[128];
-	FormatEx(igtext, sizeof(igtext), "TF2Instagib v%s", INSTAGIB_VERSION);
-	panel.DrawText(igtext);
+	panel.DrawText("TF2Instagib v" ... INSTAGIB_VERSION);
 	panel.DrawText("Made by Haxton Sale (76561197999759379)");
 	
 	panel.DrawText(" ");
