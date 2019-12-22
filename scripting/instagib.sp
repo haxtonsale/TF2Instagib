@@ -210,16 +210,16 @@ void CreateDefaultRailgun()
 	TF2Items_SetQuality(g_Weapon_Railgun, 4);
 	TF2Items_SetNumAttributes(g_Weapon_Railgun, 9);
 	
-	TF2Items_SetAttribute(g_Weapon_Railgun, 0, 397, 1.0);	// Bullets penetrate +1 enemies
-	TF2Items_SetAttribute(g_Weapon_Railgun, 1, 303, -1.0);	// no reloads
-	TF2Items_SetAttribute(g_Weapon_Railgun, 2, 2, 10.0);	// +900% damage bonus
-	TF2Items_SetAttribute(g_Weapon_Railgun, 3, 5, 2.9);		// Slower firing speed
-	TF2Items_SetAttribute(g_Weapon_Railgun, 4, 106, 0.1);	// +90% more accurate
-	TF2Items_SetAttribute(g_Weapon_Railgun, 5, 51, 1.0);	// Crits on headshot
-	TF2Items_SetAttribute(g_Weapon_Railgun, 6, 305, -1.0);	// Fires tracer rounds
-	TF2Items_SetAttribute(g_Weapon_Railgun, 7, 851, 1.9);	// i am speed
+	TF2Items_SetAttribute(g_Weapon_Railgun, 0, 397, 1.0);   // Bullets penetrate +1 enemies
+	TF2Items_SetAttribute(g_Weapon_Railgun, 1, 303, -1.0);  // no reloads
+	TF2Items_SetAttribute(g_Weapon_Railgun, 2, 2, 10.0);    // +900% damage bonus
+	TF2Items_SetAttribute(g_Weapon_Railgun, 3, 5, 2.9);     // Slower firing speed
+	TF2Items_SetAttribute(g_Weapon_Railgun, 4, 106, 0.1);   // +90% more accurate
+	TF2Items_SetAttribute(g_Weapon_Railgun, 5, 51, 1.0);    // Crits on headshot
+	TF2Items_SetAttribute(g_Weapon_Railgun, 6, 305, -1.0);  // Fires tracer rounds
+	TF2Items_SetAttribute(g_Weapon_Railgun, 7, 851, 1.9);   // i am speed
 	if (g_Config.EnabledKillstreaks) {
-		TF2Items_SetAttribute(g_Weapon_Railgun, 8, 2025, 1.0);	// killstreak
+		TF2Items_SetAttribute(g_Weapon_Railgun, 8, 2025, 1.0);  // killstreak
 	}
 }
 
