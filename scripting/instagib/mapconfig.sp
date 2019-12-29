@@ -33,21 +33,58 @@ void LoadMapConfig(const char[] mapname)
 	delete g_MapConfig.SpawnPoints;
 	g_MapConfig.IsMusicDisabled = false;
 	
-	char path[PLATFORM_MAX_PATH];
-	BuildPath(Path_SM, path, sizeof(path), "configs/instagib_maps/%s.cfg", mapname);
-	
 	g_MapConfig.SpawnPoints = new ArrayList(sizeof(SpawnPoint));
 	g_MapConfig.kv = new KeyValues("Instagib Map Config");
 	g_MapConfig.kv.SetNum("Disable Music", 0);
 	CreateMapConfigFolder();
 	
+	char path[PLATFORM_MAX_PATH];
+	BuildPath(Path_SM, path, sizeof(path), "configs/instagib_maps/%s.cfg", mapname);
 	if (!g_MapConfig.kv.ImportFromFile(path)) {
-		// Check for the map config in instagib_maps/official
-		BuildPath(Path_SM, path, sizeof(path), "configs/instagib_maps/official/%s.cfg", mapname);
-		g_MapConfig.kv.ImportFromFile(path);
+		// Look for a more generic map configs (e.g. koth_.cfg and koth_coalplant.cfg will work for koth_coalplant_b8)
+		if (ParseDirForMapConfig("configs/instagib_maps", mapname, path)) {
+			g_MapConfig.kv.ImportFromFile(path);
+		} else {
+			// Check for the map config in instagib_maps/official
+			BuildPath(Path_SM, path, sizeof(path), "configs/instagib_maps/official/%s.cfg", mapname);
+			if (!g_MapConfig.kv.ImportFromFile(path)) {
+				// Look for a more generic map configs in instagib_maps/official
+				ParseDirForMapConfig("configs/instagib_maps/official", mapname, path);
+				g_MapConfig.kv.ImportFromFile(path);
+			}
+		}
 	}
 	
 	ReloadMapConfigKeyValues();
+}
+
+bool ParseDirForMapConfig(const char[] path, const char[] mapname, char cfgpath[PLATFORM_MAX_PATH])
+{
+	char folderpath[PLATFORM_MAX_PATH];
+	BuildPath(Path_SM, folderpath, sizeof(folderpath), path);
+	DirectoryListing list = OpenDirectory(folderpath);
+	
+	int returnstrlen;
+	char returnstr[PLATFORM_MAX_PATH];
+	char filename[PLATFORM_MAX_PATH];
+	while (list.GetNext(filename, sizeof(filename))) {
+		if (StrContains(filename, ".cfg") != -1) {
+			char filename2[PLATFORM_MAX_PATH];
+			CSubString(filename, filename2, sizeof(filename2), 0, strlen(filename)-4);
+			
+			if (strlen(mapname) > returnstrlen && StrContains(mapname, filename2) > -1) {
+				BuildPath(Path_SM, returnstr, sizeof(returnstr), "%s/%s", path, mapname);
+				returnstrlen = strlen(mapname);
+			}
+		}
+	}
+	
+	if (returnstrlen) {
+		cfgpath = returnstr;
+		return true;
+	}
+	
+	return false;
 }
 
 void ReloadMapConfigKeyValues()
