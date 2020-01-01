@@ -106,9 +106,9 @@ public int Web_GetLatestInstagibVersion_OnComplete(HTTPRequestHandle HTTPRequest
 			if (outdated) {
 				index = ReplaceStringEx(response, size, "\"body\":", "");
 				if (index != -1) {
-					char changelog[1024];
+					char changelog[2048];
 					len = 0;
-					while (response[++index] != '"') {
+					while (response[++index] != '"' && len < sizeof(changelog)) {
 						changelog[len] = response[index];
 						++len;
 					}
