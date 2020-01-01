@@ -98,7 +98,7 @@ enum struct Config
 	float SpecialRoundChance;
 	float MaxScoreMulti;
 	bool InstantRespawn;
-	int MultikillInterval;
+	float MultikillInterval;
 	float RailjumpVelXY;
 	float RailjumpVelZ;
 	bool EnabledBhop;
@@ -583,7 +583,6 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 public void OnPluginStart()
 {
-	CreateTimer(1.0, Timer_MultikillTick, _, TIMER_REPEAT);
 	g_CvarAirAccel = FindConVar("sv_airaccelerate");
 	g_CvarNoRespawnTimes = FindConVar("mp_disable_respawn_times");
 	g_CvarSpecFreezeTime = FindConVar("spec_freeze_time");

@@ -1,52 +1,77 @@
 // -------------------------------------------------------------------
-static int MultikillTimer[TF2_MAXPLAYERS+1];
+enum struct MultikillTier
+{
+	int kills;
+	bool announce;
+	char article[4];
+	char name[32];
+	char color[16];
+	char sound[PLATFORM_MAX_PATH];
+}
+
+static float LastKill[TF2_MAXPLAYERS+1];
 static int MultikillCount[TF2_MAXPLAYERS+1];
+static ArrayList MultikillTiers;
 
 // -------------------------------------------------------------------
-public Action Timer_MultikillTick(Handle timer)
+void NewMultikillTier(int kills_required, bool announce, char[] article, char[] name, char[] color, char[] sound)
 {
-	for (int i = 1; i <= MaxClients; i++) {
-		if (MultikillTimer[i] > 0) {
-			MultikillTimer[i] -= 1;
-		} else if (MultikillCount[i] > 0) {
-			MultikillCount[i] = 0;
-		}
+	if (MultikillTiers == null) {
+		MultikillTiers = new ArrayList(sizeof(MultikillTier));
 	}
+	
+	MultikillTier tier;
+	
+	tier.kills = kills_required;
+	tier.announce = announce;
+	strcopy(tier.article, sizeof(tier.article), article);
+	strcopy(tier.name, sizeof(tier.name), name);
+	strcopy(tier.color, sizeof(tier.color), color);
+	strcopy(tier.sound, sizeof(tier.sound), sound);
+	
+	if (sound[0] != '\0') {
+		InstagibPrecacheSound(sound);
+	}
+	
+	MultikillTiers.PushArray(tier);
 }
 
 int GetClientMultikill(int client)
 {
+	if (GetEngineTime() - LastKill[client] >= g_Config.MultikillInterval) {
+		MultikillCount[client] = 0;
+	}
+	
 	return MultikillCount[client];
 }
 
 void AddToClientMultikill(int client)
 {
-	++MultikillCount[client];
-	MultikillTimer[client] = g_Config.MultikillInterval;
-	
-	switch (MultikillCount[client]) {
-		case 2:
-			AnnounceMultikill(client, "\x07FF4747Double Kill!", false);
-		case 3:
-			AnnounceMultikill(client, "\x07F02222Triple Kill!");
-		case 4:
-			AnnounceMultikill(client, "\x07F75F19Multi Kill!");
-		case 5:
-			AnnounceMultikill(client, "\x07F7A619Mega Kill!");
-		case 6:
-			AnnounceMultikill(client, "\x07FFDB0DUltra Kill!", _, "an");
-		case 10:
-			AnnounceMultikill(client, "\x07FF0000MONSTER KILL!");
+	if (GetEngineTime() - LastKill[client] >= g_Config.MultikillInterval) {
+		MultikillCount[client] = 0;
 	}
-}
-
-void AnnounceMultikill(int client, char[] text, bool announce = true, char[] article = "a")
-{
-	InstagibPrintToChat(true, client, text);
 	
-	for (int i = 1; announce && i <= MaxClients; i++) {
-		if (IsClientInGame(i) && i != client) {
-			InstagibPrintToChat(true, i, "%N got %s %s", client, article, text);
+	++MultikillCount[client];
+	LastKill[client] = GetEngineTime();
+	
+	for (int i = MultikillTiers.Length-1; i >= 0; i--) {
+		MultikillTier tier;
+		MultikillTiers.GetArray(i, tier);
+		
+		if (MultikillCount[client] == tier.kills) {
+			InstagibPrintToChat(true, client, "\x07%s%s!", tier.color, tier.name);
+			
+			if (tier.sound[0] != '\0') {
+				EmitSoundToClient(client, tier.sound);
+			}
+			
+			for (int j = 1; tier.announce && j <= MaxClients; j++) {
+				if (IsClientInGame(j) && j != client) {
+					InstagibPrintToChat(true, j, "%N got %s \x07%s%s!", client, tier.article, tier.color, tier.name);
+				}
+			}
+			
+			break;
 		}
 	}
 }

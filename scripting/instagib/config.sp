@@ -60,7 +60,7 @@ void LoadConfig()
 		g_Config.RailjumpVelZ = IGConfig.GetFloat("Railjump_VelocityMultiplier_Z", 3.2);
 		g_Config.EnabledBhop = view_as<bool>(IGConfig.GetNum("AutoBhop", 1));
 		g_Config.BhopMaxSpeed = IGConfig.GetFloat("BhopMaxSpeed", 456.0);
-		g_Config.MultikillInterval = IGConfig.GetNum("MultikillInterval", 3);
+		g_Config.MultikillInterval = IGConfig.GetFloat("MultikillInterval", 3.0);
 		g_Config.InstantRespawn = view_as<bool>(IGConfig.GetNum("InstantRespawn", 0));
 		g_Config.WebVersionCheck = view_as<bool>(IGConfig.GetNum("CheckInstagibVersion", 1));
 		g_Config.WebMapConfigs = view_as<bool>(IGConfig.GetNum("DownloadOfficialMapConfigs", 1));
@@ -90,10 +90,34 @@ void LoadConfig()
 				float volume = IGConfig.GetFloat("Volume");
 				bool announce = view_as<bool>(IGConfig.GetNum("AnnounceInChat"));
 				
-				if (!StrEqual(path, "")) {
+				if (path[0] != '\0') {
 					AddMusic(path, name, len, announce, volume);
 				}
 			} while (IGConfig.GotoNextKey());
+		}
+		
+		IGConfig.Rewind();
+		if (IGConfig.JumpToKey("Multikills")) {
+			if (IGConfig.GotoFirstSubKey()) {
+				do {
+					char name[32]; 
+					IGConfig.GetSectionName(name, sizeof(name));
+					
+					char article[4];
+					IGConfig.GetString("Article", article, sizeof(article));
+					
+					char color[16];
+					IGConfig.GetString("Color", color, sizeof(color));
+					
+					char sound[PLATFORM_MAX_PATH];
+					IGConfig.GetString("Sound", sound, sizeof(sound));
+					
+					int kills = IGConfig.GetNum("KillsRequired");
+					bool announce = view_as<bool>(IGConfig.GetNum("AnnounceInChat"));
+					
+					NewMultikillTier(kills, announce, article, name, color, sound);
+				} while (IGConfig.GotoNextKey());
+			}
 		}
 	}
 }

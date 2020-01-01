@@ -25,12 +25,10 @@ public Action Command_Settings(int client, int args)
 {
 	if (args > 0) {
 		char arg1[256];
-		
 		GetCmdArg(1, arg1, sizeof(arg1));
 		
 		if (StrEqual(arg1, "viewmodel", false)) {
 			char arg2[128];
-			
 			GetCmdArg(2, arg2, sizeof(arg2));
 			
 			int value = StringToInt(arg2);
@@ -63,7 +61,6 @@ public Action Command_ForceRound(int client, int args)
 		Rounds_Menu(client, "Select a Round", ForceRound_Handler);
 	} else {
 		char argstr[128];
-		
 		GetCmdArgString(argstr, sizeof(argstr));
 		
 		bool result = InstagibForceRound(argstr, true, client);
@@ -117,6 +114,6 @@ public Action ForceWinListener(int client, const char[] command, int argc)
 {
 	if (!client) {
 		int flags = GetCommandFlags("mp_forcewin");
-		SetCommandFlags("mp_forcewin", flags | FCVAR_CHEAT );
+		SetCommandFlags("mp_forcewin", flags | FCVAR_CHEAT);
 	}
 }
