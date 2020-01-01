@@ -132,7 +132,7 @@ public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	int attacker = GetClientOfUserId(event.GetInt("attacker"));
 	
-	if (!g_Config.InstantRespawn && (g_MapHasRoundSetup || g_IsRoundActive)) {
+	if (!g_Config.InstantRespawn && g_IsRoundActive) {
 		CreateTimer(g_CurrentRound.RespawnTime, Timer_Respawn, client);
 	}
 	
