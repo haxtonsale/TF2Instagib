@@ -74,6 +74,8 @@ public void Event_OnRoundActive(Event event, const char[] name, bool dont_broadc
 {
 	g_CanRailjump = true;
 	
+	CreateTimer(g_Config.UberDuration, Timer_RemoveUber, _, TIMER_FLAG_NO_MAPCHANGE);
+	
 	if (!g_MapHasRoundSetup) {
 		InstagibStart();
 	}

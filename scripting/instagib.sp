@@ -369,7 +369,6 @@ void InstagibStart()
 		int count = GetActivePlayerCount();
 		
 		int score = g_CurrentRound.MinScore + RoundFloat(float(count) * g_CurrentRound.MaxScoreMultiplier);
-		
 		SetMaxScore(score);
 		
 		if (g_CurrentRound.RoundTime) {
@@ -382,12 +381,16 @@ void InstagibStart()
 			Call_Finish();
 		}
 		
+		int ent = FindEntityByClassname(-1, "team_round_timer");
+		if (ent > -1) {
+			AcceptEntityInput(ent, "Pause");
+		}
+		
 		PlayRandomMusic();
 		
 		InstagibPrintToChatAll(true, "The round has started!");
 	}
 	
-	CreateTimer(g_Config.UberDuration, Timer_RemoveUber, _, TIMER_FLAG_NO_MAPCHANGE);
 	g_IsRoundActive = true;
 }
 
