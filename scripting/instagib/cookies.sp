@@ -1,18 +1,4 @@
 // -------------------------------------------------------------------
-enum struct Prefs
-{
-	bool EnabledMusic;
-	int ViewmodelAlpha;
-	bool EnabledBhop;
-}
-
-Cookie g_PrefMusic;
-Cookie g_PrefViewmodel;
-Cookie g_PrefBhop;
-
-Prefs g_ClientPrefs[TF2_MAXPLAYERS+1];
-
-// -------------------------------------------------------------------
 void Cookies_Init()
 {
 	g_PrefMusic = new Cookie("instagib_music", "Whether Instagib should play round music.", CookieAccess_Public);

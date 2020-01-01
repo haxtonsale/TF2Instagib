@@ -115,6 +115,13 @@ enum struct MapConfig
 	bool IsMusicDisabled;
 }
 
+enum struct Prefs
+{
+	bool EnabledMusic;
+	int ViewmodelAlpha;
+	bool EnabledBhop;
+}
+
 typedef Round_OnStart =           function void ();
 typedef Round_OnEnd =             function void (TFTeam winner_team, int score, int time_left);
 typedef Round_OnSpawn =           function void (int client, TFTeam team);
@@ -145,6 +152,7 @@ char g_RoundHudTextFormatted[128];
 
 int g_Killcount[TF2_MAXPLAYERS+1];
 int g_MainWeaponEnt[TF2_MAXPLAYERS+1] = {-1, ...};
+Prefs g_ClientPrefs[TF2_MAXPLAYERS+1];
 
 int g_PDLogicEnt;
 int g_GamerulesEnt;
@@ -155,6 +163,10 @@ ConVar g_CvarAirAccel;
 ConVar g_CvarNoRespawnTimes;
 ConVar g_CvarSpecFreezeTime;
 ConVar g_CvarGitHubToken;
+
+Cookie g_PrefMusic;
+Cookie g_PrefViewmodel;
+Cookie g_PrefBhop;
 
 Config g_Config;
 MapConfig g_MapConfig;
