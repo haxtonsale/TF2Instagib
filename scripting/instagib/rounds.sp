@@ -192,31 +192,6 @@ bool InstagibForceRound(char[] name, bool notify = false, int client = 0)
 	return true;
 }
 
-void Rounds_Menu(int client, char[] title, MenuHandler handler, bool display_all = false)
-{
-	Menu menu = new Menu(handler);
-	
-	menu.SetTitle(title);
-	menu.AddItem("exit", "Exit");
-	
-	InstagibRound round;
-	
-	if (display_all) {
-		InstagibRounds.GetArray(0, round);
-		menu.AddItem(round.Name, round.Name);
-	}
-	
-	int len = InstagibRounds.Length;
-	for (int i = 1; i < len; i++) {
-		InstagibRounds.GetArray(i, round);
-		
-		menu.AddItem(round.Name, round.Name);
-	}
-	
-	menu.ExitButton = false;
-	menu.Display(client, 60);
-}
-
 void Rounds_Reload()
 {
 	delete InstagibRounds;
@@ -235,4 +210,15 @@ void Rounds_Reload()
 	LoadMapRoundOverwrites(round);
 	
 	g_CurrentRound = round;
+}
+
+void FillMenuWithRoundNames(Menu menu)
+{
+	int len = InstagibRounds.Length;
+	for (int i = 0; i < len; i++) {
+		InstagibRound round;
+		InstagibRounds.GetArray(i, round);
+		
+		menu.AddItem(round.Name, round.Name);
+	}
 }

@@ -193,6 +193,7 @@ bool g_SteamTools;
 #include "instagib/menus/menu_forceround.sp"
 #include "instagib/menus/menu_settings.sp"
 #include "instagib/menus/menu_main.sp"
+#include "instagib/menus/menu_mapconfig.sp"
 
 #include "instagib/rounds/explosions.sp"
 #include "instagib/rounds/oprailguns.sp"

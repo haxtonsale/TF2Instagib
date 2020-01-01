@@ -58,7 +58,7 @@ public Action Command_Settings(int client, int args)
 public Action Command_ForceRound(int client, int args)
 {
 	if (!args) {
-		Rounds_Menu(client, "Select a Round", ForceRound_Handler);
+		Menu_ForceRound(client, "Select a Round");
 	} else {
 		char argstr[128];
 		GetCmdArgString(argstr, sizeof(argstr));
