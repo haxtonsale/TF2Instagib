@@ -154,6 +154,7 @@ Handle g_RoundTimer;
 ConVar g_CvarAirAccel;
 ConVar g_CvarNoRespawnTimes;
 ConVar g_CvarSpecFreezeTime;
+ConVar g_CvarGitHubToken;
 
 Config g_Config;
 MapConfig g_MapConfig;
@@ -586,6 +587,7 @@ public void OnPluginStart()
 	g_CvarAirAccel = FindConVar("sv_airaccelerate");
 	g_CvarNoRespawnTimes = FindConVar("mp_disable_respawn_times");
 	g_CvarSpecFreezeTime = FindConVar("spec_freeze_time");
+	g_CvarGitHubToken = CreateConVar("instagib_github_auth", "", "Authentication token for GitHub API (https://github.com/settings/tokens)", FCVAR_PROTECTED);
 	
 	LoadConfig();
 	Cookies_Init();

@@ -21,30 +21,40 @@ static char GetMessage(HTTPRequestHandle HTTPRequest)
 #define LATEST_RELEASE_URL "https://api.github.com/repos/haxtonsale/TF2Instagib/releases/latest"
 #define MAP_CONFIGS_URL "https://api.github.com/repos/haxtonsale/TF2Instagib-MapConfigs/contents"
 
+static void InitializeRequest(HTTPRequestHandle request)
+{
+	char token[64];
+	g_CvarGitHubToken.GetString(token, sizeof(token));
+	
+	Steam_SetHTTPRequestHeaderValue(request, "Pragma", "no-cache");
+	Steam_SetHTTPRequestHeaderValue(request, "Cache-Control", "no-cache");
+	
+	if (token[0] != '\0') {
+		Format(token, sizeof(token), "token %s", token);
+		Steam_SetHTTPRequestHeaderValue(request, "Authorization", token);
+	}
+	
+	Steam_SetHTTPRequestNetworkActivityTimeout(request, 60);
+}
+
 void Web_GetLatestInstagibVersion()
 {
 	HTTPRequestHandle request = Steam_CreateHTTPRequest(HTTPMethod_GET, LATEST_RELEASE_URL);
-	Steam_SetHTTPRequestHeaderValue(request, "Pragma", "no-cache");
-	Steam_SetHTTPRequestHeaderValue(request, "Cache-Control", "no-cache");
-	Steam_SetHTTPRequestNetworkActivityTimeout(request, 60);
+	InitializeRequest(request);
 	Steam_SendHTTPRequest(request, Web_GetLatestInstagibVersion_OnComplete);
 }
 
 void Web_GetMapConfigs()
 {
 	HTTPRequestHandle request = Steam_CreateHTTPRequest(HTTPMethod_GET, MAP_CONFIGS_URL);
-	Steam_SetHTTPRequestHeaderValue(request, "Pragma", "no-cache");
-	Steam_SetHTTPRequestHeaderValue(request, "Cache-Control", "no-cache");
-	Steam_SetHTTPRequestNetworkActivityTimeout(request, 60);
+	InitializeRequest(request);
 	Steam_SendHTTPRequest(request, Web_GetMapConfigs_OnComplete);
 }
 
 void Web_DownloadMapConfig(const char[] url)
 {
 	HTTPRequestHandle request = Steam_CreateHTTPRequest(HTTPMethod_GET, url);
-	Steam_SetHTTPRequestHeaderValue(request, "Pragma", "no-cache");
-	Steam_SetHTTPRequestHeaderValue(request, "Cache-Control", "no-cache");
-	Steam_SetHTTPRequestNetworkActivityTimeout(request, 60);
+	InitializeRequest(request);
 	
 	char name[128];
 	int index = StrContains(url, ".cfg");
@@ -179,7 +189,7 @@ public int Web_DownloadMapConfig_OnComplete(HTTPRequestHandle HTTPRequest, bool 
 		
 		Steam_WriteHTTPResponseBody(HTTPRequest, path);
 		
-		if (!g_MapConfig.kv && StrEqual(GetMapName(), name)) {
+		if (!g_MapConfig.SpawnPoints.Length && StrEqual(GetMapName(), name)) {
 			LoadMapConfig(name);
 		}
 	} else {
