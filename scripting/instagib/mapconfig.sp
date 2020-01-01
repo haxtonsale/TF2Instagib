@@ -64,24 +64,27 @@ bool ParseDirForMapConfig(const char[] path, const char[] mapname, char cfgpath[
 	BuildPath(Path_SM, folderpath, sizeof(folderpath), path);
 	DirectoryListing list = OpenDirectory(folderpath);
 	
-	int returnstrlen;
-	char returnstr[PLATFORM_MAX_PATH];
-	char filename[PLATFORM_MAX_PATH];
-	while (list.GetNext(filename, sizeof(filename))) {
-		if (StrContains(filename, ".cfg") != -1) {
-			char filename2[PLATFORM_MAX_PATH];
-			CSubString(filename, filename2, sizeof(filename2), 0, strlen(filename)-4);
-			
-			if (strlen(mapname) > returnstrlen && StrContains(mapname, filename2) > -1) {
-				BuildPath(Path_SM, returnstr, sizeof(returnstr), "%s/%s", path, mapname);
-				returnstrlen = strlen(mapname);
+	if (list) {
+		int returnstrlen;
+		char returnstr[PLATFORM_MAX_PATH];
+		char filename[PLATFORM_MAX_PATH];
+		while (list.GetNext(filename, sizeof(filename))) {
+			if (StrContains(filename, ".cfg") != -1) {
+				char filename2[PLATFORM_MAX_PATH];
+				CSubString(filename, filename2, sizeof(filename2), 0, strlen(filename)-4);
+				
+				int mapnamelen = strlen(mapname);
+				if (mapnamelen > returnstrlen && StrContains(mapname, filename2) > -1) {
+					BuildPath(Path_SM, returnstr, sizeof(returnstr), "%s/%s", path, mapname);
+					returnstrlen = mapnamelen;
+				}
 			}
 		}
-	}
-	
-	if (returnstrlen) {
-		cfgpath = returnstr;
-		return true;
+		
+		if (returnstrlen) {
+			cfgpath = returnstr;
+			return true;
+		}
 	}
 	
 	return false;
