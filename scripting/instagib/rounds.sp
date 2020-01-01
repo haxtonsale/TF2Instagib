@@ -28,6 +28,7 @@ void Rounds_Init()
 	SR_TimeAttack_Init();
 	SR_Lives_Init();
 	SR_FreezeTag_Init();
+	SR_Headshots_Init();
 }
 
 // -------------------------------------------------------------------

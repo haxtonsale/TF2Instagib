@@ -199,6 +199,7 @@ bool g_SteamTools;
 #include "instagib/rounds/timeattack.sp"
 #include "instagib/rounds/limitedlives.sp"
 #include "instagib/rounds/freezetag.sp"
+#include "instagib/rounds/headshots.sp"
 
 // -------------------------------------------------------------------
 public Plugin myinfo =
