@@ -32,10 +32,11 @@ void Rounds_Init()
 }
 
 // -------------------------------------------------------------------
-void NewInstagibRound(InstagibRound buffer, char[] name, char[] desc = "")
+void NewInstagibRound(InstagibRound buffer, char[] name, char[] desc = "", Handle plugin = null)
 {
 	InstagibRound round;
 	
+	round.OwnerPlugin = plugin;
 	round.UberDuration = g_Config.UberDuration;
 	round.RailjumpVelocityXY = g_Config.RailjumpVelXY;
 	round.RailjumpVelocityZ = g_Config.RailjumpVelZ;

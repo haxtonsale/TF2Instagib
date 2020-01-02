@@ -36,7 +36,7 @@ public void Event_OnRoundStart(Event event, const char[] name, bool dont_broadca
 			// Custom description callback (if text needs to be formatted)
 			char desc[128];
 			
-			Call_StartFunction(null, g_CurrentRound.OnDescriptionPrint);
+			Call_StartFunction(g_CurrentRound.OwnerPlugin, g_CurrentRound.OnDescriptionPrint);
 			Call_PushStringEx(desc, sizeof(desc), SM_PARAM_COPYBACK, SM_PARAM_COPYBACK);
 			Call_PushCell(sizeof(desc));
 			Call_Finish();
@@ -102,7 +102,7 @@ public void Event_OnSpawn(Event event, const char[] name, bool dont_broadcast)
 	if (g_IsRoundActive && g_CurrentRound.OnPlayerSpawn != INVALID_FUNCTION) {
 		TFTeam team = view_as<TFTeam>(event.GetInt("team"));
 		
-		Call_StartFunction(null, g_CurrentRound.OnPlayerSpawn);
+		Call_StartFunction(g_CurrentRound.OwnerPlugin, g_CurrentRound.OnPlayerSpawn);
 		Call_PushCell(client);
 		Call_PushCell(team);
 		Call_Finish();
@@ -120,7 +120,7 @@ public void Frame_Inventory(int client)
 		g_MainWeaponEnt[client] = GiveWeapon(client, g_CurrentRound.MainWeapon);
 		
 		if (g_IsRoundActive && g_CurrentRound.OnPostInvApp != INVALID_FUNCTION) {
-			Call_StartFunction(null, g_CurrentRound.OnPostInvApp);
+			Call_StartFunction(g_CurrentRound.OwnerPlugin, g_CurrentRound.OnPostInvApp);
 			Call_PushCell(client);
 			Call_Finish();
 		}
@@ -156,7 +156,7 @@ public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 			data.killstreak_victim = event.GetInt("kill_streak_victim");
 			data.inflictor_entity = event.GetInt("inflictor_entindex");
 			
-			Call_StartFunction(null, g_CurrentRound.OnPlayerDeath);
+			Call_StartFunction(g_CurrentRound.OwnerPlugin, g_CurrentRound.OnPlayerDeath);
 			Call_PushArray(data, sizeof(Round_OnDeath_Data));
 			Call_Finish();
 		}
@@ -184,7 +184,7 @@ public void Event_OnRoundEnd(Event event, const char[] name, bool dont_broadcast
 	}
 	
 	if (g_CurrentRound.OnEnd != INVALID_FUNCTION) {
-		Call_StartFunction(null, g_CurrentRound.OnEnd);
+		Call_StartFunction(g_CurrentRound.OwnerPlugin, g_CurrentRound.OnEnd);
 		Call_PushCell(team);
 		Call_PushCell(score);
 		Call_PushCell(g_RoundTimeLeft);
@@ -221,7 +221,7 @@ public Action Event_OnTeamChange(Event event, const char[] name, bool dont_broad
 	TFTeam team = view_as<TFTeam>(event.GetInt("team"));
 	
 	if (g_IsRoundActive && g_CurrentRound.OnTeamChange != INVALID_FUNCTION) {
-		Call_StartFunction(null, g_CurrentRound.OnTeamChange);
+		Call_StartFunction(g_CurrentRound.OwnerPlugin, g_CurrentRound.OnTeamChange);
 		Call_PushCell(client);
 		Call_PushCell(team);
 		Call_Finish();
@@ -234,7 +234,7 @@ public Action Event_OnClassChange(Event event, const char[] name, bool dont_broa
 	int class = event.GetInt("class");
 	
 	if (g_IsRoundActive && g_CurrentRound.OnClassChange != INVALID_FUNCTION) {
-		Call_StartFunction(null, g_CurrentRound.OnClassChange);
+		Call_StartFunction(g_CurrentRound.OwnerPlugin, g_CurrentRound.OnClassChange);
 		Call_PushCell(client);
 		Call_PushCell(class);
 		Call_Finish();

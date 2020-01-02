@@ -9,11 +9,11 @@
 #include <sourcemod>
 #include <sdktools>
 #include <sdkhooks>
-#include <tf2>
 #include <tf2_stocks>
 #include <tf2items>
 #include <lesscolors>
 #include <clientprefs>
+#include <instagib>
 
 #if defined DEBUG
 #include <profiler>
@@ -30,58 +30,6 @@
 #pragma newdecls required
 
 // -------------------------------------------------------------------
-enum struct InstagibRound
-{
-	char Name[64];
-	char Desc[128];
-	
-	bool IsSpecial;
-	int RoundTime;
-	int MinScore;
-	float MaxScoreMultiplier;
-	int PointsPerKill;
-	bool AnnounceWin;
-	bool AllowKillbind;
-	bool EndWithTimer;       // Whether the round will be forcefully ended when the round time is over
-	int MinPlayers;
-	float RespawnTime;
-	float UberDuration;
-	float RailjumpVelocityXY;
-	float RailjumpVelocityZ;
-	
-	Handle MainWeapon;
-	int MainWeaponClip;
-	bool IsAmmoInfinite;
-	
-	Round_OnStart OnStart;
-	Round_OnEnd OnEnd;
-	Round_OnSpawn OnPlayerSpawn;
-	Round_OnPostInvApp OnPostInvApp;
-	Round_OnDeath OnPlayerDeath;
-	Round_OnTraceAttack OnTraceAttack;
-	Round_OnEntityCreated OnEntCreated;
-	Round_OnDisconnect OnPlayerDisconnect;
-	Round_OnTeamChange OnTeamChange;
-	Round_OnClassChange OnClassChange;
-	Round_OnTakeDamage OnDamageTaken;
-	Round_CustomDescription OnDescriptionPrint;
-}
-
-enum struct Round_OnDeath_Data
-{
-	int victim;
-	int attacker;
-	int assister;
-	int penetrate_count;
-	int customkill;
-	int damagetype;
-	int weaponid;
-	int stun_flags;
-	int killstreak;
-	int killstreak_victim;
-	int inflictor_entity;
-}
-
 enum struct Config
 {
 	char ChatColor[16];
@@ -121,20 +69,6 @@ enum struct Prefs
 	int ViewmodelAlpha;
 	bool EnabledBhop;
 }
-
-typedef Round_OnStart =           function void ();
-typedef Round_OnEnd =             function void (TFTeam winner_team, int score, int time_left);
-typedef Round_OnSpawn =           function void (int client, TFTeam team);
-typedef Round_OnPostInvApp =      function void (int client);
-typedef Round_OnTraceAttack =     function void (int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &ammotype, int hitbox, int hitgroup);
-typedef Round_CustomDescription = function void (char[] description,  int maxlength);
-typedef Round_OnEntityCreated =   function void (int ent, const char[] classname);
-typedef Round_OnDisconnect =      function void (int client);
-typedef Round_OnRoundTimeEnd =    function void ();
-typedef Round_OnDeath =           function void (Round_OnDeath_Data data);
-typedef Round_OnTeamChange =      function void (int client, TFTeam team);
-typedef Round_OnClassChange =     function void (int client, int class);
-typedef Round_OnTakeDamage =      function Action (int victim, int &attacker, int &inflictor, float &damage, int &damagetype);
 
 static bool IsLateLoad;
 static ArrayList CachedSounds;
@@ -379,7 +313,7 @@ void InstagibStart()
 		}
 		
 		if (g_CurrentRound.OnStart != INVALID_FUNCTION) {
-			Call_StartFunction(null, g_CurrentRound.OnStart);
+			Call_StartFunction(g_CurrentRound.OwnerPlugin, g_CurrentRound.OnStart);
 			Call_PushCell(score);
 			Call_Finish();
 		}
@@ -498,7 +432,7 @@ public Action Timer_SecondTick(Handle timer)
 		if (g_CurrentRound.EndWithTimer) {
 			InstagibForceRoundEnd();
 		} else if (g_CurrentRound.OnEnd != INVALID_FUNCTION) {
-			Call_StartFunction(null, g_CurrentRound.OnEnd);
+			Call_StartFunction(g_CurrentRound.OwnerPlugin, g_CurrentRound.OnEnd);
 			Call_PushCell(TFTeam_Unassigned);
 			Call_PushCell(-1);
 			Call_PushCell(g_RoundTimeLeft);
@@ -542,7 +476,7 @@ public Action Hook_TraceAttack(int victim, int &attacker, int &inflictor, float&
 		damagetype |= DMG_BLAST; // Gib on kill
 		
 		if (g_IsRoundActive && g_CurrentRound.OnTraceAttack != INVALID_FUNCTION) {
-			Call_StartFunction(null, g_CurrentRound.OnTraceAttack);
+			Call_StartFunction(g_CurrentRound.OwnerPlugin, g_CurrentRound.OnTraceAttack);
 			Call_PushCell(victim);
 			Call_PushCellRef(attacker);
 			Call_PushCellRef(inflictor);
@@ -565,7 +499,7 @@ public Action Hook_TakeDamage(int victim, int& attacker, int& inflictor, float& 
 	Action action;
 	
 	if (g_IsRoundActive && g_CurrentRound.OnDamageTaken != INVALID_FUNCTION) {
-		Call_StartFunction(null, g_CurrentRound.OnDamageTaken);
+		Call_StartFunction(g_CurrentRound.OwnerPlugin, g_CurrentRound.OnDamageTaken);
 		Call_PushCell(victim);
 		Call_PushCellRef(attacker);
 		Call_PushCellRef(inflictor);
@@ -654,6 +588,7 @@ public void OnMapStart()
 	LoadMapConfig(displayname);
 	RoundLogic_Init();
 	Rounds_Init(); // Only create rounds after all configs are loaded
+	Forward_OnMapConfigLoad();
 	
 	InstagibPrecache();
 	CheckForInstagibEnts();
@@ -683,7 +618,7 @@ public void OnEntityCreated(int ent, const char[] classname)
 	}
 	
 	if (g_IsRoundActive && g_CurrentRound.OnEntCreated != INVALID_FUNCTION) {
-		Call_StartFunction(null, g_CurrentRound.OnEntCreated);
+		Call_StartFunction(g_CurrentRound.OwnerPlugin, g_CurrentRound.OnEntCreated);
 		Call_PushCell(ent);
 		Call_PushString(classname);
 		Call_Finish();
@@ -775,7 +710,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] weaponname
 public void OnClientDisconnect(int client)
 {
 	if (g_IsRoundActive && g_CurrentRound.OnPlayerDisconnect != INVALID_FUNCTION) {
-		Call_StartFunction(null, g_CurrentRound.OnPlayerDisconnect);
+		Call_StartFunction(g_CurrentRound.OwnerPlugin, g_CurrentRound.OnPlayerDisconnect);
 		Call_PushCell(client);
 		Call_Finish();
 	}
