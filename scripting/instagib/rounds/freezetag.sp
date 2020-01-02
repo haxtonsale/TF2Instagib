@@ -112,7 +112,7 @@ void SR_FreezeTag_Effect(int client)
 	
 	TE_SpawnParticle("xms_snowburst", vecOrigin);
 	
-	EmitSoundToAll(sounds[GetRandomInt(0, sizeof(sounds)-1)], .volume = 0.5);
+	EmitSoundToAll(sounds[GetRandomInt(0, sizeof(sounds)-1)], client, .volume = 1.0);
 }
 
 void SR_FreezeTag_Freeze(int client, bool teleport)
