@@ -127,10 +127,7 @@ void SR_FreezeTag_Freeze(int client, bool teleport)
 		
 		SR_FreezeTag_Effect(client);
 		
-		if ((UnfreezeTimer[client] != null || UnfreezeTimer[client] != INVALID_HANDLE)) {
-			delete UnfreezeTimer[client];
-		}
-		
+		delete UnfreezeTimer[client];
 		UnfreezeTimer[client] = CreateTimer(UnfreezeAfter, SR_FreezeTag_AutoUnfreeze, client, TIMER_FLAG_NO_MAPCHANGE);
 	}
 	
