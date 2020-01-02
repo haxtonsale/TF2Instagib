@@ -124,6 +124,7 @@ void SR_FreezeTag_Freeze(int client, bool teleport)
 		
 		SetEntityMoveType(client, MOVETYPE_NONE);
 		SetEntityRenderColor(client, 80, 80, 255, 125);
+		SetEntProp(client, Prop_Send, "m_nSolidType", 0); // Make it so you can go through frozen players
 		
 		SR_FreezeTag_Effect(client);
 		
@@ -142,6 +143,7 @@ void SR_FreezeTag_Unfreeze(int client)
 	if (IsClientFrozen[client]) {
 		if (IsClientInGame(client) && IsClientPlaying(client) && IsPlayerAlive(client)) {
 			SetEntityMoveType(client, MOVETYPE_WALK);
+			SetEntProp(client, Prop_Send, "m_nSolidType", 2);
 			
 			if (IsValidEntity(g_MainWeaponEnt[client])) {
 				SetEntProp(g_MainWeaponEnt[client], Prop_Data, "m_iClip1", g_CurrentRound.MainWeaponClip);
