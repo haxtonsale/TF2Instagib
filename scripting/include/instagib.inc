@@ -66,7 +66,6 @@ typedef Round_OnTraceAttack =     function void (int victim, int &attacker, int 
 typedef Round_CustomDescription = function void (char[] description,  int maxlength);
 typedef Round_OnEntityCreated =   function void (int ent, const char[] classname);
 typedef Round_OnDisconnect =      function void (int client);
-typedef Round_OnRoundTimeEnd =    function void ();
 typedef Round_OnDeath =           function void (Round_OnDeath_Data data);
 typedef Round_OnTeamChange =      function void (int client, TFTeam team);
 typedef Round_OnClassChange =     function void (int client, int class);
