@@ -1,5 +1,5 @@
 // -------------------------------------------------------------------
-#define INSTAGIB_VERSION "1.6.0"
+#define INSTAGIB_VERSION "1.6.1"
 
 #define TF2_MAXPLAYERS 32
 //#define DEBUG
@@ -568,6 +568,8 @@ public void OnPluginStart()
 	}
 	
 	if (g_SteamTools) {
+		Steam_SetGameDescription(GAME_DESCRIPTION);
+		
 		if (g_Config.WebVersionCheck) {
 			Web_GetLatestInstagibVersion();
 		}
@@ -721,7 +723,7 @@ public void OnClientDisconnect(int client)
 
 public void OnPluginEnd()
 {
-	Steam_SetGameDescription(GAME_DESCRIPTION);
+	Steam_SetGameDescription("Team Fortress");
 	
 	GameRules_SetProp("m_nHudType", 0);
 	GameRules_SetProp("m_bPlayingRobotDestructionMode", false);
@@ -738,6 +740,7 @@ public void OnLibraryAdded(const char[] name)
 {
 	if (StrEqual(name, "SteamTools", false)) {
 		g_SteamTools = true;
+		Steam_SetGameDescription(GAME_DESCRIPTION);
 	}
 }
 
