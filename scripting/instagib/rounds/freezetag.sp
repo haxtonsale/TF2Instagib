@@ -128,7 +128,6 @@ void SR_FreezeTag_Freeze(int client, bool teleport)
 		
 		SR_FreezeTag_Effect(client);
 		
-		delete UnfreezeTimer[client];
 		UnfreezeTimer[client] = CreateTimer(UnfreezeAfter, SR_FreezeTag_AutoUnfreeze, client, TIMER_FLAG_NO_MAPCHANGE);
 	}
 	
@@ -138,7 +137,7 @@ void SR_FreezeTag_Freeze(int client, bool teleport)
 
 void SR_FreezeTag_Unfreeze(int client)
 {
-	delete UnfreezeTimer[client];
+	UnfreezeTimer[client] = null;
 	
 	if (IsClientFrozen[client]) {
 		if (IsClientInGame(client) && IsClientPlaying(client) && IsPlayerAlive(client)) {
@@ -247,7 +246,7 @@ void SR_FreezeTag_OnEntCreated(int ent, const char[] classname)
 
 public Action SR_FreezeTag_AutoUnfreeze(Handle timer, int client)
 {
-	if (IsClientInGame(client)) {
+	if (UnfreezeTimer[client] == timer && IsClientInGame(client)) {
 		UnfreezeTimer[client] = null;
 		RequestFrame(SR_FreezeTag_Frame_Unfreeze, client);
 		
@@ -274,8 +273,7 @@ void SR_FreezeTag_OnEnd(TFTeam winner_team, int score, int time_left)
 		}
 		
 		IsClientFrozen[i] = false;
-		
-		delete UnfreezeTimer[i];
+		UnfreezeTimer[i] = null;
 	}
 }
 
