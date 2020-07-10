@@ -175,6 +175,10 @@ void SR_Lives_OnSpawn(int client, TFTeam team)
 	// Turn people with no lives to ghosts.
 	if (g_IsRoundActive && PlayerLives[client] <= 0 && IsClientPlaying(client)) {
 		TF2_AddCondition(client, TFCond_HalloweenGhostMode);
+		
+		// Apparently sometimes ghosts keep their player collisions, so let's take care of that.
+		SetEntProp(client, Prop_Send, "m_nSolidType", SOLID_NONE);
+		SetEntProp(client, Prop_Send, "m_usSolidFlags", FSOLID_NOT_SOLID);
 	}
 }
 
@@ -212,6 +216,14 @@ void SR_Lives_OnDisconnect(int client)
 
 void SR_Lives_OnEnd(TFTeam winner_team, int score, int time_left)
 {
+	for (int i = 1; i <= MaxClients; i++) {
+		if (IsClientInGame(i)) {
+			// Reset the collisions.
+			SetEntProp(i, Prop_Send, "m_nSolidType", SOLID_BBOX);
+			SetEntProp(i, Prop_Send, "m_usSolidFlags", FSOLID_NOT_STANDABLE);
+		}
+	}
+	
 	if (score == -1) { // score = -1 if the round time had ran out and EndWithTimer == false
 		int red_lives;
 		int blue_lives;
