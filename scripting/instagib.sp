@@ -1,7 +1,7 @@
 // -------------------------------------------------------------------
-#define INSTAGIB_VERSION "1.6.1"
+#define INSTAGIB_VERSION "1.6.2"
 
-#define TF2_MAXPLAYERS 32
+#define TF2_MAXPLAYERS 33
 //#define DEBUG
 //#define RUN_TESTS
 #define GAME_DESCRIPTION "Instagib v" ... INSTAGIB_VERSION
