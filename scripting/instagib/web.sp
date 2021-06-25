@@ -185,7 +185,7 @@ public int Web_DownloadMapConfig_OnComplete(HTTPRequestHandle HTTPRequest, bool 
 		data.PopString(name, sizeof(name));
 		delete data;
 		
-		BuildPath(Path_SM, path, sizeof(path), "/configs/instagib_maps/official/%s.cfg", name);
+		BuildPath(Path_SM, path, sizeof(path), "configs/instagib_maps/official/%s.cfg", name);
 		
 		Steam_WriteHTTPResponseBody(HTTPRequest, path);
 		
