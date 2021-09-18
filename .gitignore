@@ -1,0 +1,6 @@
+*.smx
+*.bat
+*.exe
+build/*
+*.code-workspace
+.vscode
