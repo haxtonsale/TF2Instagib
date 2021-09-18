@@ -1,0 +1,36 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      SMVERSION: 1.10
+      MMVERSION: 1.11
+    
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Build
+      run: |
+        wget --input-file=http://sourcemod.net/smdrop/$SMVERSION/sourcemod-latest-linux
+        tar -xzf $(cat sourcemod-latest-linux)
+
+        cp -R configs/ scripting/ addons/sourcemod/
+        cd addons/sourcemod/scripting
+
+        wget "https://raw.githubusercontent.com/asherkin/TF2Items/master/pawn/tf2items.inc" -O include/tf2items.inc
+        wget "https://github.com/KyleSanderson/SteamWorks/blob/master/Pawn/includes/SteamWorks.inc" -O include/steamworks.inc
+
+        chmod +x ./spcomp
+        ./spcomp instagib.sp
+
+        mv instagib.smx ../plugins
+              
+    - name: Upload
+      if: github.event_name == 'push'
+      uses: actions/upload-artifact@v2
+      with:
+        name: TF2Instagib-${{github.run_number}}
+        path: ${{github.workspace}}/build/instagib
