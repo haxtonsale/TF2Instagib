@@ -752,7 +752,9 @@ public void OnClientDisconnect(int client)
 
 public void OnPluginEnd()
 {
-	Steam_SetGameDescription("Team Fortress");
+	if (g_SteamTools) {
+		Steam_SetGameDescription("Team Fortress");
+	}
 	
 	GameRules_SetProp("m_nHudType", 0);
 	GameRules_SetProp("m_bPlayingRobotDestructionMode", false);
