@@ -1,9 +1,8 @@
 // -------------------------------------------------------------------
-#define INSTAGIB_VERSION "1.6.2"
+#define INSTAGIB_VERSION "1.7.0"
 
-#define TF2_MAXPLAYERS 33
+#define TF2_MAXPLAYERS 32
 //#define DEBUG
-//#define RUN_TESTS
 #define GAME_DESCRIPTION "Instagib v" ... INSTAGIB_VERSION
 
 #include <sourcemod>
@@ -17,10 +16,6 @@
 
 #if defined DEBUG
 #include <profiler>
-#endif
-
-#if defined RUN_TESTS
-#include <smtester>
 #endif
 
 #undef REQUIRE_EXTENSIONS
@@ -152,7 +147,6 @@ bool g_SteamTools;
 #include "instagib/mapconfig.sp"
 #include "instagib/music.sp"
 #include "instagib/web.sp"
-#include "instagib/tests.sp"
 
 #include "instagib/menus/menu_forceround.sp"
 #include "instagib/menus/menu_settings.sp"
