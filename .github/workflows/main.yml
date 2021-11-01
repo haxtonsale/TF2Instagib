@@ -6,7 +6,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      SMVERSION: 1.10
+      SMVERSION: 1.11
       MMVERSION: 1.11
     
     steps:
