@@ -263,7 +263,7 @@ void InstagibForceRoundEnd()
 	}
 }
 
-char InstagibHudPlayerInfo(int client)
+char[] InstagibHudPlayerInfo(int client)
 {
 	char str[64];
 	
@@ -422,7 +422,7 @@ void CheckForInstagibEnts()
 	}
 }
 
-char GetMapName()
+char[] GetMapName()
 {
 	char mapname[256];
 	char displayname[256];
@@ -475,6 +475,8 @@ public Action Timer_Respawn(Handle timer, int client)
 	if (IsClientInGame(client) && !IsPlayerAlive(client)) {
 		TF2_RespawnPlayer(client);
 	}
+
+	return Plugin_Continue;
 }
 
 public Action Timer_WelcomeMessage(Handle timer, int client)
@@ -482,6 +484,8 @@ public Action Timer_WelcomeMessage(Handle timer, int client)
 	if (IsClientInGame(client)) {
 		InstagibPrintToChat(true, client, "Welcome to Instagib v" ... INSTAGIB_VERSION ... "! \nType {/instagib} to open the menu.");
 	}
+
+	return Plugin_Continue;
 }
 
 public Action Timer_RemoveUber(Handle timer)
@@ -491,6 +495,8 @@ public Action Timer_RemoveUber(Handle timer)
 			TF2_RemoveCondition(i, TFCond_Ubercharged);
 		}
 	}
+
+	return Plugin_Continue;
 }
 
 public Action Hook_TraceAttack(int victim, int &attacker, int &inflictor, float& damage, int& damagetype, int& ammotype, int hitbox, int hitgroup)
@@ -730,6 +736,8 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] weaponname
 			delete trace;
 		}
 	}
+
+	return Plugin_Continue;
 }
 
 public void OnClientDisconnect(int client)

@@ -114,7 +114,7 @@ public void Event_Inventory(Event event, const char[] name, bool dont_broadcast)
 	RequestFrame(Frame_Inventory, GetClientOfUserId(event.GetInt("userid")));
 }
 
-public void Frame_Inventory(int client)
+public void Frame_Inventory(any client)
 {
 	if (IsClientInGame(client)) {
 		g_MainWeaponEnt[client] = GiveWeapon(client, g_CurrentRound.MainWeapon);
@@ -213,6 +213,8 @@ public Action Event_SetupFinish(Event event, const char[] name, bool dont_broadc
 			}
 		}
 	}
+
+	return Plugin_Continue;
 }
 
 public Action Event_OnTeamChange(Event event, const char[] name, bool dont_broadcast)
@@ -226,6 +228,8 @@ public Action Event_OnTeamChange(Event event, const char[] name, bool dont_broad
 		Call_PushCell(team);
 		Call_Finish();
 	}
+
+	return Plugin_Continue;
 }
 
 public Action Event_OnClassChange(Event event, const char[] name, bool dont_broadcast)
@@ -239,4 +243,6 @@ public Action Event_OnClassChange(Event event, const char[] name, bool dont_broa
 		Call_PushCell(class);
 		Call_Finish();
 	}
+
+	return Plugin_Continue;
 }

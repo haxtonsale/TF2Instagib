@@ -1,5 +1,5 @@
 // -------------------------------------------------------------------
-static char GetMessage(HTTPRequestHandle HTTPRequest)
+static char[] GetMessage(HTTPRequestHandle HTTPRequest)
 {
 	int size = Steam_GetHTTPResponseBodySize(HTTPRequest);
 	char[] response = new char[size];
@@ -139,6 +139,8 @@ public int Web_GetLatestInstagibVersion_OnComplete(HTTPRequestHandle HTTPRequest
 	}
 	
 	Steam_ReleaseHTTPRequest(HTTPRequest);
+
+	return 0;
 }
 
 public int Web_GetMapConfigs_OnComplete(HTTPRequestHandle HTTPRequest, bool requestSuccessful, HTTPStatusCode statusCode, int contextData)
@@ -168,6 +170,8 @@ public int Web_GetMapConfigs_OnComplete(HTTPRequestHandle HTTPRequest, bool requ
 	}
 	
 	Steam_ReleaseHTTPRequest(HTTPRequest);
+
+	return 0;
 }
 
 public int Web_DownloadMapConfig_OnComplete(HTTPRequestHandle HTTPRequest, bool requestSuccessful, HTTPStatusCode statusCode, ArrayStack data)
@@ -197,4 +201,6 @@ public int Web_DownloadMapConfig_OnComplete(HTTPRequestHandle HTTPRequest, bool 
 	}
 	
 	Steam_ReleaseHTTPRequest(HTTPRequest);
+
+	return 0;
 }

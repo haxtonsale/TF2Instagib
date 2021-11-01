@@ -26,4 +26,6 @@ public int ForceRound_Handler(Menu menu, MenuAction action, int client, int opti
 	} else if (action == MenuAction_End) {
 		delete menu;
 	}
+
+	return 0;
 }

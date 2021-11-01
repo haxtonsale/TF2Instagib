@@ -254,6 +254,8 @@ public Action SR_FreezeTag_AutoUnfreeze(Handle timer, int client)
 	}
 	
 	UnfreezeTimer[client] = null;
+
+	return Plugin_Continue;
 }
 
 void SR_FreezeTag_OnDisconnect(int client)
