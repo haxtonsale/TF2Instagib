@@ -4,13 +4,21 @@ on: [push, pull_request]
 
 jobs:
   build:
+    strategy:
+      matrix:
+        sourcemod: [1.10, 1.11]
     runs-on: ubuntu-latest
     env:
-      SMVERSION: 1.11
-      MMVERSION: 1.11
+      SMVERSION: ${{matrix.sourcemod}}
     
     steps:
     - uses: actions/checkout@v2
+
+    - name: Extract branch name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
+
       
     - name: Build
       run: |
@@ -49,5 +57,5 @@ jobs:
       if: github.event_name == 'push'
       uses: actions/upload-artifact@v2
       with:
-        name: TF2Instagib-${{github.head_ref}}-${{github.run_number}}
+        name: TF2Instagib-${{steps.extract_branch.outputs.branch}}-${{github.run_number}}-${SMVERSION}
         path: build/
