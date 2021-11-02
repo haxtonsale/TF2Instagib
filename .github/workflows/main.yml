@@ -22,6 +22,7 @@ jobs:
         wget --input-file=http://sourcemod.net/smdrop/$SMVERSION/sourcemod-latest-linux
         tar -xzf $(cat sourcemod-latest-linux)
 
+        cd ../
         cp -R !(sm) sm/addons/sourcemod/
         cd sm/addons/sourcemod/scripting
 
