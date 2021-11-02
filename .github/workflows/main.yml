@@ -29,6 +29,7 @@ jobs:
         ./spcomp instagib.sp
 
         mv instagib.smx ../../../plugins
+        cd ../../../
         rm -d -R addons
         mkdir build
         mv !(build) build
