@@ -23,8 +23,7 @@ jobs:
         wget "https://raw.githubusercontent.com/asherkin/TF2Items/master/pawn/tf2items.inc" -O include/tf2items.inc
         wget "https://github.com/KyleSanderson/SteamWorks/blob/master/Pawn/includes/SteamWorks.inc" -O include/SteamWorks.inc
 
-        sed -i "s/char sData[]/char[] sData/g" include/SteamWorks.inc
-        sed -i "s/int data[]/int[] data/g" include/SteamWorks.inc
+        sed -i -e "s/char sData\[\]/char\[\] sData/g" "s/int data\[\]/int\[\] data/g" include/SteamWorks.inc
 
         chmod +x ./spcomp
         ./spcomp instagib.sp
