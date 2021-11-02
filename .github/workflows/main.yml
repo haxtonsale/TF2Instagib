@@ -17,6 +17,7 @@ jobs:
         wget --input-file=http://sourcemod.net/smdrop/$SMVERSION/sourcemod-latest-linux
         tar -xzf $(cat sourcemod-latest-linux)
 
+        mkdir build plugins
         cp -R configs/ scripting/ addons/sourcemod/
         cd addons/sourcemod/scripting
 
@@ -30,8 +31,7 @@ jobs:
 
         mv instagib.smx ../../../plugins
         cd ../../../
-        rm -d -R addons
-        mkdir build
+        rm -d -R addons $(cat sourcemod-latest-linux) sourcemod-latest-linux
 
         shopt -s extglob
         mv !(build) build
