@@ -32,6 +32,8 @@ jobs:
         cd ../../../
         rm -d -R addons
         mkdir build
+
+        shopt -s extglob
         mv !(build) build
 
               
