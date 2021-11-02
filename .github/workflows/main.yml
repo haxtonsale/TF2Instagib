@@ -56,5 +56,5 @@ jobs:
       if: github.event_name == 'push'
       uses: actions/upload-artifact@v2
       with:
-        name: TF2Instagib-${{steps.extract_branch.outputs.branch}}-${{github.run_number}}-${SMVERSION}
+        name: TF2Instagib-${{steps.extract_branch.outputs.branch}}-${{github.run_number}}-SM${{matrix.sourcemod}}
         path: build/
