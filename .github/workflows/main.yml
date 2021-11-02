@@ -6,7 +6,7 @@ jobs:
   build:
     strategy:
       matrix:
-        sourcemod: [1.10, 1.11]
+        sourcemod: ["1.10", "1.11"]
     runs-on: ubuntu-latest
     env:
       SMVERSION: ${{matrix.sourcemod}}
@@ -19,7 +19,6 @@ jobs:
       run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
       id: extract_branch
 
-      
     - name: Build
       run: |
         shopt -s extglob
