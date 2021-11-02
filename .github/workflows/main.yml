@@ -14,12 +14,16 @@ jobs:
       
     - name: Build
       run: |
+        shopt -s extglob
+
+        mkdir sm build plugins
+        cd sm
+
         wget --input-file=http://sourcemod.net/smdrop/$SMVERSION/sourcemod-latest-linux
         tar -xzf $(cat sourcemod-latest-linux)
 
-        mkdir build plugins
-        cp -R configs/ scripting/ addons/sourcemod/
-        cd addons/sourcemod/scripting
+        cp -R !(sm) sm/addons/sourcemod/
+        cd sm/addons/sourcemod/scripting
 
         wget "https://raw.githubusercontent.com/asherkin/TF2Items/master/pawn/tf2items.inc" -O include/tf2items.inc
         wget "https://raw.githubusercontent.com/KyleSanderson/SteamWorks/master/Pawn/includes/SteamWorks.inc" -O include/SteamWorks.inc
@@ -29,17 +33,19 @@ jobs:
         chmod +x ./spcomp
         ./spcomp instagib.sp
 
-        mv instagib.smx ../../../plugins
-        cd ../../../
-        rm -d -R addons $(cat sourcemod-latest-linux) sourcemod-latest-linux
+        mv instagib.smx ../../../../plugins
+        cd ../../../../
 
-        shopt -s extglob
+        rm -d -R sm
+
+        cd scripting
+        rm -d -R !(include)
+
         mv !(build) build
-
               
     - name: Upload
       if: github.event_name == 'push'
       uses: actions/upload-artifact@v2
       with:
-        name: TF2Instagib-${{github.run_number}}
+        name: TF2Instagib-${{github.head_ref}}-${{github.run_number}}
         path: build/
