@@ -19,7 +19,7 @@
 #endif
 
 #undef REQUIRE_EXTENSIONS
-#include <steamtools>
+#include <SteamWorks>
 
 #pragma semicolon 1
 #pragma newdecls required
@@ -130,7 +130,7 @@ Config g_Config;
 MapConfig g_MapConfig;
 
 char g_InstagibTag[64];
-bool g_SteamTools;
+bool g_SteamWorks;
 
 // -------------------------------------------------------------------
 #include "instagib/config.sp"
@@ -589,15 +589,15 @@ public void OnPluginStart()
 		}
 		
 		if (LibraryExists("SteamTools")) {
-			g_SteamTools = true;
+			g_SteamWorks = true;
 		}
 		
 		InstagibPrintToChatAll(true, "Late Load! Restarting the round...");
 		Stalemate();
 	}
 	
-	if (g_SteamTools) {
-		Steam_SetGameDescription(GAME_DESCRIPTION);
+	if (g_SteamWorks) {
+		SteamWorks_SetGameDescription(GAME_DESCRIPTION);
 		
 		if (g_Config.WebVersionCheck) {
 			Web_GetLatestInstagibVersion();
@@ -628,8 +628,8 @@ public void OnMapStart()
 	ResetScore();
 	g_IsRoundActive = false;
 	
-	if (g_SteamTools) {
-		Steam_SetGameDescription(GAME_DESCRIPTION);
+	if (g_SteamWorks) {
+		SteamWorks_SetGameDescription(GAME_DESCRIPTION);
 	}
 	
 	#if defined RUN_TESTS
@@ -754,7 +754,7 @@ public void OnClientDisconnect(int client)
 
 public void OnPluginEnd()
 {
-	Steam_SetGameDescription("Team Fortress");
+	SteamWorks_SetGameDescription("Team Fortress");
 	
 	GameRules_SetProp("m_nHudType", 0);
 	GameRules_SetProp("m_bPlayingRobotDestructionMode", false);
@@ -770,16 +770,16 @@ public void OnPluginEnd()
 public void OnLibraryAdded(const char[] name)
 {
 	if (StrEqual(name, "SteamTools", false)) {
-		g_SteamTools = true;
-		Steam_SetGameDescription(GAME_DESCRIPTION);
+		g_SteamWorks = true;
+		SteamWorks_SetGameDescription(GAME_DESCRIPTION);
 	}
 }
 
 public void OnLibraryRemoved(const char[] name)
 {
 	if (StrEqual(name, "SteamTools", false)) {
-		g_SteamTools = false;
-		Steam_SetGameDescription("Team Fortress");
+		g_SteamWorks = false;
+		SteamWorks_SetGameDescription("Team Fortress");
 	}
 }
 

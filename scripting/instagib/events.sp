@@ -63,8 +63,8 @@ public void Event_OnRoundStart(Event event, const char[] name, bool dont_broadca
 		FormatTime(g_RoundTimeLeftFormatted, sizeof(g_RoundTimeLeftFormatted), "%M:%S", g_RoundTimeLeft);
 	}
 	
-	if (g_SteamTools) {
-		Steam_SetGameDescription(GAME_DESCRIPTION);
+	if (g_SteamWorks) {
+		SteamWorks_SetGameDescription(GAME_DESCRIPTION);
 	}
 	
 	g_CanRailjump = false;
