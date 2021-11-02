@@ -28,11 +28,15 @@ jobs:
         chmod +x ./spcomp
         ./spcomp instagib.sp
 
-        mv instagib.smx ../plugins
+        mv instagib.smx ../../../plugins
+        rm -d -R addons
+        mkdir build
+        mv !(build) build
+
               
     - name: Upload
       if: github.event_name == 'push'
       uses: actions/upload-artifact@v2
       with:
         name: TF2Instagib-${{github.run_number}}
-        path: ${{github.workspace}}/build/instagib
+        path: build/
