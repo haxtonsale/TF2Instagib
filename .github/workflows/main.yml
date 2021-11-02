@@ -41,6 +41,7 @@ jobs:
 
         cd scripting
         rm -d -R !(include)
+        cd ../
 
         mv !(build) build
               
