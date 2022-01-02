@@ -140,3 +140,37 @@ public SharedPlugin __pl_instagib =
 	required = 0,
 #endif
 };
+
+#if !defined REQUIRE_PLUGIN
+public __pl_instagib_SetNTVOptional()
+{
+	MarkNativeAsOptional("IG_ForceSpecialRound");
+	
+	MarkNativeAsOptional("IG_InitializeSpecialRound");
+	MarkNativeAsOptional("IG_SubmitSpecialRound");
+	
+	MarkNativeAsOptional("IG_RoundConfig_Num");
+	MarkNativeAsOptional("IG_RoundConfig_Float");
+	MarkNativeAsOptional("IG_RoundConfig_String");
+	
+	MarkNativeAsOptional("IG_GetCurrentRound");
+	
+	MarkNativeAsOptional("IG_GetTeamScore");
+	MarkNativeAsOptional("IG_SetTeamScore");
+	MarkNativeAsOptional("IG_AddToTeamScore");
+	
+	MarkNativeAsOptional("IG_GetMaxScore");
+	MarkNativeAsOptional("IG_SetMaxScore");
+	
+	MarkNativeAsOptional("IG_GetRoundTime");
+	MarkNativeAsOptional("IG_SetRoundTime");
+	
+	MarkNativeAsOptional("IG_GetClientMultikill");
+	
+	MarkNativeAsOptional("IG_LimitedLives_GetLives");
+	MarkNativeAsOptional("IG_LimitedLives_SetLives");
+	
+	MarkNativeAsOptional("IG_FreezeTag_Freeze");
+	MarkNativeAsOptional("IG_FreezeTag_Unfreeze");
+}
+#endif
