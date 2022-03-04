@@ -51,19 +51,30 @@ static void SR_Explosions_Explosion(int client, int victim, bool is_headshot = f
 
 void Explosion(int activator, float damage, float radius, char[] particle, char[] sound, float origin[3])
 {
-	int ent = CreateEntityByName("tf_generic_bomb");
+	int ent = CreateEntityByName("tf_generic_bomb"), entshake = CreateEntityByName("env_shake");
 	
-	if (IsValidEntity(ent))
+	if (IsValidEntity(ent) && IsValidEntity(entshake))
 	{
 		SetEntPropFloat(ent, Prop_Data, "m_flDamage", damage);
 		SetEntPropFloat(ent, Prop_Data, "m_flRadius", radius);
 		SetEntPropString(ent, Prop_Data, "m_strExplodeParticleName", particle);
 		SetEntPropString(ent, Prop_Data, "m_strExplodeSoundName", sound);
 		SetEntProp(ent, Prop_Data, "m_nHealth", activator);
+
+		SetEntPropFloat(entshake, Prop_Data, "m_Amplitude", damage / 64);
+		SetEntPropFloat(entshake, Prop_Data, "m_Frequency", 12.0);
+		SetEntPropFloat(entshake, Prop_Data, "m_Duration", 1.5);
+		SetEntPropFloat(entshake, Prop_Data, "m_Radius", radius * 1.8);
+
 		DispatchSpawn(ent);
 		TeleportEntity(ent, origin, NULL_VECTOR, NULL_VECTOR);
+
+		DispatchSpawn(entshake);
+		TeleportEntity(entshake, origin, NULL_VECTOR, NULL_VECTOR);
+		AcceptEntityInput(entshake, "Enable");
 		
 		RequestFrame(Frame_Explosion, ent);
+		RequestFrame(Frame_Shake, entshake);
 	}
 }
 
@@ -71,6 +82,14 @@ public void Frame_Explosion(int ent)
 {
 	if (IsValidEntity(ent)) {
 		AcceptEntityInput(ent, "Detonate");
+	}
+}
+
+public void Frame_Shake(int ent)
+{
+	if (IsValidEntity(ent)) {
+		AcceptEntityInput(ent, "StartShake");
+		RemoveEdict(ent);
 	}
 }
 
