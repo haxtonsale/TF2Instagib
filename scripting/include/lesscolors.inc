@@ -464,7 +464,7 @@ stock int rgb(int red, int green, int blue)
 	return color;
 }
 
-stock char ColorStr(int color, bool alpha = false)
+stock char[] ColorStr(int color, bool alpha = false)
 {
 	char colorstr[16];
 	
@@ -477,7 +477,7 @@ stock char ColorStr(int color, bool alpha = false)
 	return colorstr;
 }
 
-stock char ColorStr_Random(int r_min = 0, int r_max = 255, 
+stock char[] ColorStr_Random(int r_min = 0, int r_max = 255, 
                         int g_min = 0, int g_max = 255, 
                         int b_min = 0, int b_max = 255, 
                         int a_min = -1, int a_max = -1
