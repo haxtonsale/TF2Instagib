@@ -84,4 +84,5 @@ public int Settings_Handler(Menu menu, MenuAction action, int client, int option
 	} else if (action == MenuAction_End) {
 		delete menu;
 	}
+	return 0;
 }

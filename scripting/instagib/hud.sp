@@ -32,4 +32,5 @@ public Action Timer_DisplayHudText(Handle timer)
 			}
 		}
 	}
+	return Plugin_Continue;
 }

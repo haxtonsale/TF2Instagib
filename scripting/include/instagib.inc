@@ -44,18 +44,18 @@ enum struct InstagibRound
 	int MainWeaponClip;
 	bool IsAmmoInfinite;
 	
-	Round_OnStart OnStart;
-	Round_OnEnd OnEnd;
-	Round_OnSpawn OnPlayerSpawn;
-	Round_OnPostInvApp OnPostInvApp;
-	Round_OnDeath OnPlayerDeath;
-	Round_OnTraceAttack OnTraceAttack;
-	Round_OnEntityCreated OnEntCreated;
-	Round_OnDisconnect OnPlayerDisconnect;
-	Round_OnTeamChange OnTeamChange;
-	Round_OnClassChange OnClassChange;
-	Round_OnTakeDamage OnDamageTaken;
-	Round_CustomDescription OnDescriptionPrint;
+	Function OnStart;
+	Function OnEnd;
+	Function OnPlayerSpawn;
+	Function OnPostInvApp;
+	Function OnPlayerDeath;
+	Function OnTraceAttack;
+	Function OnEntCreated;
+	Function OnPlayerDisconnect;
+	Function OnTeamChange;
+	Function OnClassChange;
+	Function OnDamageTaken;
+	Function OnDescriptionPrint;
 }
 
 typedef Round_OnStart =           function void ();

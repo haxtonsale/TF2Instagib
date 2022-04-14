@@ -59,6 +59,7 @@ public int MenuMain_Handler(Menu menu, MenuAction action, int client, int option
 	} else if (action == MenuAction_End) {
 		delete menu;
 	}
+	return 0;
 }
 
 public int Credits_Handler(Menu menu, MenuAction action, int client, int option)
@@ -66,4 +67,5 @@ public int Credits_Handler(Menu menu, MenuAction action, int client, int option)
 	if (action == MenuAction_Select) {
 		Menu_Main(client);
 	}
+	return 0;
 }

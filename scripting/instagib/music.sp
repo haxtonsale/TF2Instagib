@@ -132,4 +132,5 @@ public Action Timer_CycleMusic(Handle timer)
 		StopMusic();
 		PlayRandomMusic();
 	}
+	return Plugin_Continue;
 }

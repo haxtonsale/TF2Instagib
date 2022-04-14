@@ -94,6 +94,7 @@ public Action Command_ReloadConfig(int client, int args)
 public Action Command_EditMode(int client, int args)
 {
 	ToggleEditMode(client);
+	return Plugin_Handled;
 }
 
 public Action Command_SetRoundTime(int client, int args)
@@ -107,6 +108,7 @@ public Action Command_SetRoundTime(int client, int args)
 			g_RoundTimeLeft = time;
 		}
 	}
+	return Plugin_Handled;
 }
 
 // Return the cheat flag to the mp_forcewin command after it's been called by the server :)
@@ -116,4 +118,5 @@ public Action ForceWinListener(int client, const char[] command, int argc)
 		int flags = GetCommandFlags("mp_forcewin");
 		SetCommandFlags("mp_forcewin", flags | FCVAR_CHEAT);
 	}
+	return Plugin_Continue;
 }
