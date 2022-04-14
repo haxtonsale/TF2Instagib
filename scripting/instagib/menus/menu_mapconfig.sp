@@ -136,4 +136,5 @@ public int Panel_EditMode_Handler(Menu menu, MenuAction action, int client, int 
 			Panel_EditMode(client);
 		}
 	}
+	return 0;
 }

@@ -118,6 +118,7 @@ public int Native_ForceSpecial(Handle plugin, int numParams)
 public int Native_CurrentRound(Handle plugin, int numParams)
 {
 	SetNativeArray(1, g_CurrentRound, sizeof(InstagibRound));
+	return 0;
 }
 
 public int Native_GetTeamScore(Handle plugin, int numParams)
@@ -169,6 +170,7 @@ public int Native_SetMaxScore(Handle plugin, int numParams)
 	int value = GetNativeCell(1);
 	
 	SetMaxScore(value);
+	return 0;
 }
 
 public int Native_GetRoundTime(Handle plugin, int numParams)
@@ -183,6 +185,7 @@ public int Native_SetRoundTime(Handle plugin, int numParams)
 	if (amount > 0) {
 		g_RoundTimeLeft = amount;
 	}
+	return 0;
 }
 
 public int Native_GetMultikill(Handle plugin, int numParams)
@@ -203,6 +206,7 @@ public int Native_SetLives(Handle plugin, int numParams)
 	int client = GetNativeCell(1);
 	int amount = GetNativeCell(2);
 	SR_Lives_SetLives(client, amount);
+	return 0;
 }
 
 public int Native_Freeze(Handle plugin, int numParams)
@@ -210,6 +214,7 @@ public int Native_Freeze(Handle plugin, int numParams)
 	int client = GetNativeCell(1);
 	SR_FreezeTag_Freeze(client, false);
 	Forward_Frozen(client, 0);
+	return 0;
 }
 
 public int Native_Unfreeze(Handle plugin, int numParams)
@@ -217,6 +222,7 @@ public int Native_Unfreeze(Handle plugin, int numParams)
 	int client = GetNativeCell(1);
 	SR_FreezeTag_Unfreeze(client);
 	Forward_Unfrozen(client, 0);
+	return 0;
 }
 
 public int Native_InitRound(Handle plugin, int numParams)
@@ -231,6 +237,7 @@ public int Native_InitRound(Handle plugin, int numParams)
 	NewInstagibRound(buffer, name, desc, plugin);
 	
 	SetNativeArray(1, buffer, sizeof(buffer));
+	return 0;
 }
 
 public int Native_SubmitRound(Handle plugin, int numParams)
@@ -239,6 +246,7 @@ public int Native_SubmitRound(Handle plugin, int numParams)
 	GetNativeArray(1, round, sizeof(round));
 	
 	SubmitInstagibRound(round);
+	return 0;
 }
 
 public int Native_ConfigNum(Handle plugin, int numParams)
@@ -278,4 +286,5 @@ public int Native_ConfigString(Handle plugin, int numParams)
 	SpecialRoundConfig_String(round, key, buffer, sizeof(buffer), defvalue);
 	
 	SetNativeString(3, buffer, GetNativeCell(4));
+	return 0;
 }
