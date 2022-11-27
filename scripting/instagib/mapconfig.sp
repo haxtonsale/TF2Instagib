@@ -196,16 +196,9 @@ void SetupSpawnPoints()
 		return;
 	}
 	
-	int max = GetMaxEntities();
-	for (int i = 1; i <= max; i++) {
-		if (IsValidEntity(i)) {
-			char classname[255];
-			GetEntityClassname(i, classname, sizeof(classname));
-			
-			if (StrEqual(classname, "info_player_teamspawn")) {
-				AcceptEntityInput(i, "Kill");
-			}
-		}
+	int spawnpoint = INVALID_ENT_REFERENCE;
+	while ((spawnpoint = FindEntityByClassname(spawnpoint, "info_player_teamspawn")) != INVALID_ENT_REFERENCE) {
+		RemoveEntity(spawnpoint);
 	}
 	
 	for (int i = 0; i < len; i++) {
@@ -234,38 +227,31 @@ void SetupSpawnPoints()
 
 void CreateSpawnPointEnts()
 {
-	int max = GetMaxEntities();
-	for (int i = 1; i <= max; i++) {
-		if (IsValidEntity(i)) {
-			char classname[255];
-			GetEntityClassname(i, classname, sizeof(classname));
-			
-			if (StrEqual(classname, "info_player_teamspawn")) {
-				char name[128];
-				GetEntPropString(i, Prop_Data, "m_iName", name, sizeof(name));
+	int spawnpoint = INVALID_ENT_REFERENCE;
+	while ((spawnpoint = FindEntityByClassname(spawnpoint, "info_player_teamspawn")) != INVALID_ENT_REFERENCE) {
+		char name[128];
+		GetEntPropString(spawnpoint, Prop_Data, "m_iName", name, sizeof(name));
+		
+		if (StrContains(name, "INSTAGIB_SPAWNPOINT") == 0) {
+			int ent  = CreateEntityByName("prop_dynamic_override");
+			if (ent) {
+				float pos[3];
+				float ang[3];
 				
-				if (StrContains(name, "INSTAGIB_SPAWNPOINT") == 0) {
-					int ent  = CreateEntityByName("prop_dynamic_override");
-					if (ent) {
-						float pos[3];
-						float ang[3];
-						
-						GetEntPropVector(i, Prop_Data, "m_vecOrigin", pos);
-						GetEntPropVector(i, Prop_Data, "m_angAbsRotation", ang);
-						
-						FormatEx(name, sizeof(name), "INSTAGIB_SPAWNPOINT:%i", i);
-						SetEntPropString(ent, Prop_Data, "m_iName", name);
-						
-						SetEntityModel(ent, "models/items/ammopack_large.mdl");
-						SetEntityRenderMode(ent, RENDER_TRANSCOLOR);
-						SetEntityRenderColor(ent, GetEntProp(i, Prop_Data, "m_iTeamNum") == 2 ? 255 : 0, 0, GetEntProp(i, Prop_Data, "m_iTeamNum") == 2 ? 0 : 255);
-						
-						SetEntProp(ent, Prop_Data, "m_nSolidType", 0x0004 | 0x0008);
-						
-						DispatchSpawn(ent);
-						TeleportEntity(ent, pos, ang, NULL_VECTOR);
-					}
-				}
+				GetEntPropVector(spawnpoint, Prop_Data, "m_vecOrigin", pos);
+				GetEntPropVector(spawnpoint, Prop_Data, "m_angAbsRotation", ang);
+				
+				FormatEx(name, sizeof(name), "INSTAGIB_SPAWNPOINT:%i", spawnpoint);
+				SetEntPropString(ent, Prop_Data, "m_iName", name);
+				
+				SetEntityModel(ent, "models/items/ammopack_large.mdl");
+				SetEntityRenderMode(ent, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(ent, GetEntProp(spawnpoint, Prop_Data, "m_iTeamNum") == 2 ? 255 : 0, 0, GetEntProp(spawnpoint, Prop_Data, "m_iTeamNum") == 2 ? 0 : 255);
+				
+				SetEntProp(ent, Prop_Data, "m_nSolidType", 0x0004 | 0x0008);
+				
+				DispatchSpawn(ent);
+				TeleportEntity(ent, pos, ang, NULL_VECTOR);
 			}
 		}
 	}

@@ -4,23 +4,17 @@ void Panel_EditMode(int client)
 	int red_spawns;
 	int blue_spawns;
 	
-	int max = GetMaxEntities();
-	for (int i = 1; i <= max; i++) {
-		if (IsValidEntity(i)) {
-			char classname[255];
-			GetEntityClassname(i, classname, sizeof(classname));
-			
-			if (StrEqual(classname, "info_player_teamspawn")) {
-				char name[128];
-				GetEntPropString(i, Prop_Data, "m_iName", name, sizeof(name));
-				
-				if (StrContains(name, "INSTAGIB_SPAWNPOINT") == 0) {
-					if (GetEntProp(i, Prop_Data, "m_iTeamNum") == 2) {
-						++red_spawns;
-					} else {
-						++blue_spawns;
-					}
-				}
+	
+	int spawnpoint = INVALID_ENT_REFERENCE;
+	while ((spawnpoint = FindEntityByClassname(spawnpoint, "info_player_teamspawn")) != INVALID_ENT_REFERENCE) {
+		char name[128];
+		GetEntPropString(spawnpoint, Prop_Data, "m_iName", name, sizeof(name));
+		
+		if (StrContains(name, "INSTAGIB_SPAWNPOINT") == 0) {
+			if (GetEntProp(spawnpoint, Prop_Data, "m_iTeamNum") == 2) {
+				++red_spawns;
+			} else {
+				++blue_spawns;
 			}
 		}
 	}
