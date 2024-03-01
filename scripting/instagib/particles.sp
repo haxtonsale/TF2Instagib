@@ -37,6 +37,33 @@ void TE_SpawnParticle(char[] particle_name, float vecOrigin[3], float vecStart[3
 	TE_WriteFloat("m_vecStart[2]", vecStart[2]);
 	
 	TE_WriteVector("m_vecAngles", vecAngles); // doesn't do shit?
+
+	TE_WriteNum("m_bControlPoint1", 0);
+	
+	TE_WriteFloat("m_ControlPoint1.m_vecOffset[0]", vecStart[0]);
+	TE_WriteFloat("m_ControlPoint1.m_vecOffset[1]", vecStart[1]);
+	TE_WriteFloat("m_ControlPoint1.m_vecOffset[2]", vecStart[2]);
+	
+	TE_SendToAll();
+}
+
+void TE_SpawnTracerParticle(char[] particle_name, float vecOrigin[3], float m_vecOffset[3]) 
+{
+	int strindx = FindParticle(particle_name);
+	
+	TE_Start("TFParticleEffect");
+	TE_WriteNum("m_iParticleSystemIndex", strindx);
+	
+	TE_WriteFloat("m_vecOrigin[0]", vecOrigin[0]);
+	TE_WriteFloat("m_vecOrigin[1]", vecOrigin[1]);
+	TE_WriteFloat("m_vecOrigin[2]", vecOrigin[2]);
+	
+	TE_WriteNum("m_iAttachType", 2);
+	TE_WriteNum("m_bControlPoint1", 5);
+	
+	TE_WriteFloat("m_ControlPoint1.m_vecOffset[0]", m_vecOffset[0]);
+	TE_WriteFloat("m_ControlPoint1.m_vecOffset[1]", m_vecOffset[1]);
+	TE_WriteFloat("m_ControlPoint1.m_vecOffset[2]", m_vecOffset[2]);
 	
 	TE_SendToAll();
 }

@@ -195,7 +195,6 @@ void CreateDefaultRailgun()
 	TF2Items_SetAttribute(g_Weapon_Railgun, 3, 5, 2.9);     // Slower firing speed
 	TF2Items_SetAttribute(g_Weapon_Railgun, 4, 106, 0.1);   // +90% more accurate
 	TF2Items_SetAttribute(g_Weapon_Railgun, 5, 51, 1.0);    // Crits on headshot
-	TF2Items_SetAttribute(g_Weapon_Railgun, 6, 305, -1.0);  // Fires tracer rounds
 	TF2Items_SetAttribute(g_Weapon_Railgun, 7, 851, 1.9);   // i am speed
 	if (g_Config.EnabledKillstreaks) {
 		TF2Items_SetAttribute(g_Weapon_Railgun, 8, 2025, 1.0);  // killstreak
@@ -694,23 +693,24 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] weaponname
 		if (!g_IsRoundActive || g_CurrentRound.IsAmmoInfinite && IsValidEntity(weapon)) {
 			SetEntProp(weapon, Prop_Data, "m_iClip1", g_CurrentRound.MainWeaponClip+1);
 		}
+
+		float vecStart[3];
+		float vecDir[3];
+		float vecEnd[3];
+
+		GetClientEyePosition(client, vecStart);
+		GetClientEyeAngles(client, vecDir);
+
+		Handle trace = TR_TraceRayFilterEx(vecStart, vecDir, MASK_SHOT | CONTENTS_GRATE, RayType_Infinite, Trace_Railjump, client);
+		TR_GetEndPosition(vecEnd, trace);
 		
 		// Railjump
 		if (g_CanRailjump && (g_CurrentRound.RailjumpVelocityXY > 0.0 || g_CurrentRound.RailjumpVelocityZ > 0.0)) {
-			float vecStart[3];
-			float vecDir[3];
-			float vecEnd[3];
 			float vecSub[3];
 			float vecLen;
 			
 			// Maximum length of a ray that would trigger a railjump
 			static const float maxLen = 175.0;
-			
-			GetClientEyePosition(client, vecStart);
-			GetClientEyeAngles(client, vecDir);
-			
-			Handle trace = TR_TraceRayFilterEx(vecStart, vecDir, MASK_SHOT | CONTENTS_GRATE, RayType_Infinite, Trace_Railjump, client);
-			TR_GetEndPosition(vecEnd, trace);
 			
 			SubtractVectors(vecStart, vecEnd, vecSub);
 			vecLen = GetVectorLength(vecSub);
@@ -735,9 +735,13 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] weaponname
 				
 				Forward_OnRailjump(client, vecVel);
 			}
-			
-			delete trace;
 		}
+
+		delete trace;
+
+		char particle[64];
+		FormatEx(particle, sizeof(particle), "dxhr_sniper_rail_%s", TF2_GetClientTeam(client) == TFTeam_Red ? "red" : "blue");
+		TE_SpawnTracerParticle(particle, vecStart, vecEnd);
 	}
 	return Plugin_Continue;
 }
