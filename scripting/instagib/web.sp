@@ -1,10 +1,11 @@
 // -------------------------------------------------------------------
-static char[] GetMessage(HTTPRequestHandle HTTPRequest)
+static char[] GetMessage(Handle HTTPRequest)
 {
-	int size = Steam_GetHTTPResponseBodySize(HTTPRequest);
+	int size;
+	SteamWorks_GetHTTPResponseBodySize(HTTPRequest, size);
 	char[] response = new char[size];
 	
-	Steam_GetHTTPResponseBodyData(HTTPRequest, response, size);
+	SteamWorks_GetHTTPResponseBodyData(HTTPRequest, response, size);
 	
 	int index = ReplaceStringEx(response, size, "\"message\":", "");
 	
@@ -21,39 +22,41 @@ static char[] GetMessage(HTTPRequestHandle HTTPRequest)
 #define LATEST_RELEASE_URL "https://api.github.com/repos/haxtonsale/TF2Instagib/releases/latest"
 #define MAP_CONFIGS_URL "https://api.github.com/repos/haxtonsale/TF2Instagib-MapConfigs/contents"
 
-static void InitializeRequest(HTTPRequestHandle request)
+static void InitializeRequest(Handle request)
 {
 	char token[64];
 	g_CvarGitHubToken.GetString(token, sizeof(token));
 	
-	Steam_SetHTTPRequestHeaderValue(request, "Pragma", "no-cache");
-	Steam_SetHTTPRequestHeaderValue(request, "Cache-Control", "no-cache");
+	SteamWorks_SetHTTPRequestHeaderValue(request, "Pragma", "no-cache");
+	SteamWorks_SetHTTPRequestHeaderValue(request, "Cache-Control", "no-cache");
 	
 	if (token[0] != '\0') {
 		Format(token, sizeof(token), "token %s", token);
-		Steam_SetHTTPRequestHeaderValue(request, "Authorization", token);
+		SteamWorks_SetHTTPRequestHeaderValue(request, "Authorization", token);
 	}
 	
-	Steam_SetHTTPRequestNetworkActivityTimeout(request, 60);
+	SteamWorks_SetHTTPRequestNetworkActivityTimeout(request, 60);
 }
 
 void Web_GetLatestInstagibVersion()
 {
-	HTTPRequestHandle request = Steam_CreateHTTPRequest(HTTPMethod_GET, LATEST_RELEASE_URL);
+	Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, LATEST_RELEASE_URL);
 	InitializeRequest(request);
-	Steam_SendHTTPRequest(request, Web_GetLatestInstagibVersion_OnComplete);
+	SteamWorks_SetHTTPCallbacks(request, Web_GetLatestInstagibVersion_OnComplete);
+	SteamWorks_SendHTTPRequest(request);
 }
 
 void Web_GetMapConfigs()
 {
-	HTTPRequestHandle request = Steam_CreateHTTPRequest(HTTPMethod_GET, MAP_CONFIGS_URL);
+	Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, MAP_CONFIGS_URL);
 	InitializeRequest(request);
-	Steam_SendHTTPRequest(request, Web_GetMapConfigs_OnComplete);
+	SteamWorks_SetHTTPCallbacks(request, Web_GetMapConfigs_OnComplete);
+	SteamWorks_SendHTTPRequest(request);
 }
 
 void Web_DownloadMapConfig(const char[] url)
 {
-	HTTPRequestHandle request = Steam_CreateHTTPRequest(HTTPMethod_GET, url);
+	Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, url);
 	InitializeRequest(request);
 	
 	char name[128];
@@ -68,16 +71,19 @@ void Web_DownloadMapConfig(const char[] url)
 	ArrayStack map_name = new ArrayStack(128);
 	map_name.PushString(name);
 	
-	Steam_SendHTTPRequest(request, Web_DownloadMapConfig_OnComplete, map_name);
+	SteamWorks_SetHTTPCallbacks(request, Web_DownloadMapConfig_OnComplete);
+	SteamWorks_SetHTTPRequestContextValue(request, map_name);
+	SteamWorks_SendHTTPRequest(request);
 }
 
-public int Web_GetLatestInstagibVersion_OnComplete(HTTPRequestHandle HTTPRequest, bool requestSuccessful, HTTPStatusCode statusCode, int contextData)
+public int Web_GetLatestInstagibVersion_OnComplete(Handle HTTPRequest, bool failure, bool requestSuccessful, EHTTPStatusCode statusCode, int contextData)
 {
-	if (requestSuccessful && statusCode == HTTPStatusCode_OK) {
-		int size = Steam_GetHTTPResponseBodySize(HTTPRequest);
+	if (requestSuccessful && statusCode == k_EHTTPStatusCode200OK) {
+		int size;
+		SteamWorks_GetHTTPResponseBodySize(HTTPRequest, size);
 		char[] response = new char[size];
 		
-		Steam_GetHTTPResponseBodyData(HTTPRequest, response, size);
+		SteamWorks_GetHTTPResponseBodyData(HTTPRequest, response, size);
 		
 		int index = ReplaceStringEx(response, size, "\"tag_name\":", "");
 		if (index != -1) {
@@ -138,17 +144,17 @@ public int Web_GetLatestInstagibVersion_OnComplete(HTTPRequestHandle HTTPRequest
 		LogError("Failed to get latest Instagib version! (%i)\n%s", statusCode, GetMessage(HTTPRequest));
 	}
 	
-	Steam_ReleaseHTTPRequest(HTTPRequest);
 	return 0;
 }
 
-public int Web_GetMapConfigs_OnComplete(HTTPRequestHandle HTTPRequest, bool requestSuccessful, HTTPStatusCode statusCode, int contextData)
+public int Web_GetMapConfigs_OnComplete(Handle HTTPRequest, bool failure, bool requestSuccessful, EHTTPStatusCode statusCode, int contextData)
 {
-	if (requestSuccessful && statusCode == HTTPStatusCode_OK) {
-		int size = Steam_GetHTTPResponseBodySize(HTTPRequest);
+	if (requestSuccessful && statusCode == k_EHTTPStatusCode200OK) {
+		int size;
+		SteamWorks_GetHTTPResponseBodySize(HTTPRequest, size);
 		char[] response = new char[size];
 		
-		Steam_GetHTTPResponseBodyData(HTTPRequest, response, size);
+		SteamWorks_GetHTTPResponseBodyData(HTTPRequest, response, size);
 		
 		int index = ReplaceStringEx(response, size, "\"download_url\":", "");
 		while (index != -1) {
@@ -168,11 +174,10 @@ public int Web_GetMapConfigs_OnComplete(HTTPRequestHandle HTTPRequest, bool requ
 		LogError("Failed to get map configs! (%i)\n%s", statusCode, GetMessage(HTTPRequest));
 	}
 	
-	Steam_ReleaseHTTPRequest(HTTPRequest);
 	return 0;
 }
 
-public int Web_DownloadMapConfig_OnComplete(HTTPRequestHandle HTTPRequest, bool requestSuccessful, HTTPStatusCode statusCode, ArrayStack data)
+public int Web_DownloadMapConfig_OnComplete(Handle HTTPRequest, bool failure, bool requestSuccessful, EHTTPStatusCode statusCode, ArrayStack data)
 {
 	CreateMapConfigFolder();
 	
@@ -182,14 +187,14 @@ public int Web_DownloadMapConfig_OnComplete(HTTPRequestHandle HTTPRequest, bool 
 		CreateDirectory(path, FPERM_U_READ | FPERM_U_WRITE | FPERM_U_EXEC | FPERM_G_READ | FPERM_G_EXEC | FPERM_O_READ | FPERM_G_EXEC);
 	}
 	
-	if (requestSuccessful && statusCode == HTTPStatusCode_OK) {
+	if (requestSuccessful && statusCode == k_EHTTPStatusCode200OK) {
 		char name[128];
 		data.PopString(name, sizeof(name));
 		delete data;
 		
 		BuildPath(Path_SM, path, sizeof(path), "configs/instagib_maps/official/%s.cfg", name);
 		
-		Steam_WriteHTTPResponseBody(HTTPRequest, path);
+		SteamWorks_WriteHTTPResponseBodyToFile(HTTPRequest, path);
 		
 		if (!g_MapConfig.SpawnPoints.Length && StrEqual(GetMapName(), name)) {
 			LoadMapConfig(name);
@@ -197,7 +202,6 @@ public int Web_DownloadMapConfig_OnComplete(HTTPRequestHandle HTTPRequest, bool 
 	} else {
 		LogError("Failed to download the map config! (%i)\n%s", statusCode, GetMessage(HTTPRequest));
 	}
-	
-	Steam_ReleaseHTTPRequest(HTTPRequest);
+
 	return 0;
 }

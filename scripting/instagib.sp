@@ -24,7 +24,7 @@
 #endif
 
 #undef REQUIRE_EXTENSIONS
-#include <steamtools>
+#include <steamworks>
 
 #pragma semicolon 1
 #pragma newdecls required
@@ -135,7 +135,7 @@ Config g_Config;
 MapConfig g_MapConfig;
 
 char g_InstagibTag[64];
-bool g_SteamTools;
+bool g_SteamWorks;
 
 // -------------------------------------------------------------------
 #include "instagib/config.sp"
@@ -560,7 +560,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	IsLateLoad = late;
 	Natives_Init();
 	RegPluginLibrary("instagib");
-	MarkNativeAsOptional("Steam_SetGameDescription");
+	MarkNativeAsOptional("SteamWorks_SetGameDescription");
 	
 	return APLRes_Success;
 }
@@ -591,16 +591,16 @@ public void OnPluginStart()
 			}
 		}
 		
-		if (LibraryExists("SteamTools")) {
-			g_SteamTools = true;
+		if (LibraryExists("SteamWorks")) {
+			g_SteamWorks = true;
 		}
 		
 		InstagibPrintToChatAll(true, "Late Load! Restarting the round...");
 		Stalemate();
 	}
 	
-	if (g_SteamTools) {
-		Steam_SetGameDescription(GAME_DESCRIPTION);
+	if (g_SteamWorks) {
+		SteamWorks_SetGameDescription(GAME_DESCRIPTION);
 		
 		if (g_Config.WebVersionCheck) {
 			Web_GetLatestInstagibVersion();
@@ -631,8 +631,8 @@ public void OnMapStart()
 	ResetScore();
 	g_IsRoundActive = false;
 	
-	if (g_SteamTools) {
-		Steam_SetGameDescription(GAME_DESCRIPTION);
+	if (g_SteamWorks) {
+		SteamWorks_SetGameDescription(GAME_DESCRIPTION);
 	}
 	
 	#if defined RUN_TESTS
@@ -756,8 +756,8 @@ public void OnClientDisconnect(int client)
 
 public void OnPluginEnd()
 {
-	if (g_SteamTools) {
-		Steam_SetGameDescription("Team Fortress");
+	if (g_SteamWorks) {
+		SteamWorks_SetGameDescription("Team Fortress");
 	}
 	
 	GameRules_SetProp("m_nHudType", 0);
@@ -773,17 +773,17 @@ public void OnPluginEnd()
 
 public void OnLibraryAdded(const char[] name)
 {
-	if (StrEqual(name, "SteamTools", false)) {
-		g_SteamTools = true;
-		Steam_SetGameDescription(GAME_DESCRIPTION);
+	if (StrEqual(name, "SteamWorks", false)) {
+		g_SteamWorks = true;
+		SteamWorks_SetGameDescription(GAME_DESCRIPTION);
 	}
 }
 
 public void OnLibraryRemoved(const char[] name)
 {
-	if (StrEqual(name, "SteamTools", false)) {
-		g_SteamTools = false;
-		Steam_SetGameDescription("Team Fortress");
+	if (StrEqual(name, "SteamWorks", false)) {
+		g_SteamWorks = false;
+		SteamWorks_SetGameDescription("Team Fortress");
 	}
 }
 
