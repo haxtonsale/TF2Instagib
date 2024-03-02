@@ -29,6 +29,7 @@ void Rounds_Init()
 	SR_Lives_Init();
 	SR_FreezeTag_Init();
 	SR_Headshots_Init();
+	SR_Ricochet_Init();
 }
 
 // -------------------------------------------------------------------

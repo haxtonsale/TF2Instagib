@@ -690,7 +690,7 @@ public void TF2_OnWaitingForPlayersEnd()
 
 public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] weaponname, bool &result)
 {
-	if (StrEqual(weaponname, "tf_weapon_revolver")) {
+	if (StrEqual(weaponname, "tf_weapon_revolver") || StrEqual(weaponname, "tf_weapon_shotgun_building_rescue")) {
 		if (!g_IsRoundActive || g_CurrentRound.IsAmmoInfinite && IsValidEntity(weapon)) {
 			SetEntProp(weapon, Prop_Data, "m_iClip1", g_CurrentRound.MainWeaponClip+1);
 		}
