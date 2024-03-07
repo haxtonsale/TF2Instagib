@@ -11,7 +11,7 @@ Linux |
 * [TF2Items](https://builds.limetech.io/?project=tf2items)
 
 ## Optional Extensions
-* [SteamTools](https://builds.limetech.io/?p=steamtools)
+* [SteamWorks](https://users.alliedmods.net/~kyles/builds/SteamWorks/)
 
 ## Creating custom Special Rounds
 Quick rundown with a code example:
