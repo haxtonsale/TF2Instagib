@@ -27,7 +27,6 @@ static Handle SR_Headshots_Railgun()
 	TF2Items_SetAttribute(hndl, 2, 2, 10.0);    // +900% damage bonus
 	TF2Items_SetAttribute(hndl, 3, 106, 0.0);   // +100% more accurate
 	TF2Items_SetAttribute(hndl, 4, 51, 1.0);    // Crits on headshot
-	TF2Items_SetAttribute(hndl, 5, 305, -1.0);  // Fires tracer rounds
 	TF2Items_SetAttribute(hndl, 6, 851, 2.0);   // i am speed
 	if (g_Config.EnabledKillstreaks) {
 		TF2Items_SetAttribute(hndl, 7, 2025, 1.0);  // killstreak
