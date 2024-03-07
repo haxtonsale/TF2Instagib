@@ -39,6 +39,7 @@ enum struct InstagibRound
 	float UberDuration;
 	float RailjumpVelocityXY;
 	float RailjumpVelocityZ;
+	bool AllowTraces;
 	
 	Handle MainWeapon;
 	int MainWeaponClip;

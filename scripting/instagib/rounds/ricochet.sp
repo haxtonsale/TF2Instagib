@@ -21,6 +21,9 @@ void SR_Ricochet_Init()
 
 	// How many times should projectile bounce off from walls?
 	MaxBounces = SpecialRoundConfig_Num(round.Name, "Bounces", 8);
+
+	// Don't spawn trace particles
+	round.AllowTraces = false;
 	
 	// Add the round to the list of Special Rounds. It can't be edited or removed after this.
 	SubmitInstagibRound(round);

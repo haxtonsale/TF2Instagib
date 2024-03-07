@@ -740,9 +740,12 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] weaponname
 
 		delete trace;
 
-		char particle[64];
-		FormatEx(particle, sizeof(particle), "dxhr_sniper_rail_%s", TF2_GetClientTeam(client) == TFTeam_Red ? "red" : "blue");
-		TE_SpawnTracerParticle(particle, vecStart, vecEnd);
+		if (g_CurrentRound.AllowTraces)
+		{
+			char particle[64];
+			FormatEx(particle, sizeof(particle), "dxhr_sniper_rail_%s", TF2_GetClientTeam(client) == TFTeam_Red ? "red" : "blue");
+			TE_SpawnTracerParticle(particle, vecStart, vecEnd);
+		}
 	}
 	return Plugin_Continue;
 }
