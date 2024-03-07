@@ -165,6 +165,7 @@ bool g_SteamWorks;
 #include "instagib/rounds/limitedlives.sp"
 #include "instagib/rounds/freezetag.sp"
 #include "instagib/rounds/headshots.sp"
+#include "instagib/rounds/ricochet.sp"
 
 // -------------------------------------------------------------------
 public Plugin myinfo =
