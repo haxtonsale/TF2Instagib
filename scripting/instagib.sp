@@ -24,7 +24,7 @@
 #endif
 
 #undef REQUIRE_EXTENSIONS
-#include <steamworks>
+#include <SteamWorks>
 
 #pragma semicolon 1
 #pragma newdecls required
