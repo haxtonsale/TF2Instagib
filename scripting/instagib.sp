@@ -797,23 +797,13 @@ public void OnLibraryRemoved(const char[] name)
 
 public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, Handle &hItem)
 {
-	static char shouldblock[][] = {
-		"tf_weapon_rocketlauncher",
-		"tf_weapon_rocketlauncher_directhit",
-		"tf_weapon_particle_cannon",
-		"tf_weapon_rocketlauncher_airstrike",
-		"tf_weapon_shotgun_soldier",
-		"tf_weapon_shotgun",
-		"tf_weapon_buff_item",
-		"tf_weapon_raygun",
-		"tf_weapon_parachute",
-		"tf_weapon_shovel",
-		"saxxy",
-		"tf_weapon_katana"
+	static char shouldallow[][] = {
+		"tf_weapon_revolver",
+		"tf_weapon_shotgun_building_rescue"
 	};
 	
-	for (int i = 0; i < sizeof(shouldblock); i++) {
-		if (StrEqual(classname, shouldblock[i])) {
+	for (int i = 0; i < sizeof(shouldallow); i++) {
+		if (!StrEqual(classname, shouldallow[i])) {
 			return Plugin_Handled;
 		}
 	}
@@ -824,3 +814,4 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, 
 		return Plugin_Continue;
 	}
 }
+
