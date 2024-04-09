@@ -89,10 +89,10 @@ public void Event_OnSpawn(Event event, const char[] name, bool dont_broadcast)
 	// No outlines on spawn
 	TF2_RemoveCondition(client, TFCond_SpawnOutline);
 	
-	// Force player class to be Soldier
-	if (!(class == TFClass_Soldier || class == TFClass_Unknown)) {
-		SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", TFClass_Soldier);
-		SetEntProp(client, Prop_Send, "m_iClass", TFClass_Soldier);
+	// Force player class
+	if (!(class == g_CurrentRound.Class || class == TFClass_Unknown)) {
+		SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", g_CurrentRound.Class);
+		SetEntProp(client, Prop_Send, "m_iClass", g_CurrentRound.Class);
 		TF2_RespawnPlayer(client);
 		return;
 	}
