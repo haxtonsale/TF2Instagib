@@ -186,7 +186,7 @@ bool InstagibForceRound(char[] name, bool notify = false, int client = 0)
 		return false;
 	}
 	
-	if (notify && round.IsSpecial) {
+	if (notify && (!name[0] || round.IsSpecial)) {
 		if (!client) {
 			InstagibPrintToChatAll(true, "Special Round {%s} was forced!", name[0] ? name : "Random");
 		} else {
