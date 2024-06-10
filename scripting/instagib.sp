@@ -119,6 +119,7 @@ Prefs g_ClientPrefs[TF2_MAXPLAYERS+1];
 
 int g_PDLogicEnt;
 int g_GamerulesEnt;
+int g_LaserModel;
 
 Handle g_Weapon_Railgun;
 Handle g_RoundTimer;
@@ -322,6 +323,8 @@ void InstagibPrecache()
 	PrecacheModel("models/props_halloween/ghost_no_hat.mdl");
 	PrecacheModel("models/props_halloween/ghost_no_hat_red.mdl");
 	PrecacheModel("models/items/ammopack_large.mdl"); // For map config editor
+	
+	g_LaserModel = PrecacheModel("materials/sprites/laserbeam.vmt");
 }
 
 int InstagibGetTeamScore(TFTeam team)
@@ -740,11 +743,22 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] weaponname
 
 		delete trace;
 
-		if (g_CurrentRound.AllowTraces)
-		{
-			char particle[64];
-			FormatEx(particle, sizeof(particle), "dxhr_sniper_rail_%s", TF2_GetClientTeam(client) == TFTeam_Red ? "red" : "blue");
-			TE_SpawnTracerParticle(particle, vecStart, vecEnd);
+		if (g_CurrentRound.AllowTraces) {
+			vecStart[2] -= 10.0;
+
+			int color[4] = {0, 0, 0, 255};
+			if (TF2_GetClientTeam(client) == TFTeam_Red) {
+				color[0] = 255;
+			} else {
+				color[2] = 255;
+			}
+
+			for (int i = 0; i < 4; i++) {
+				TE_SetupBeamPoints(vecStart, vecEnd, g_LaserModel, 0, 0, 0, 0.5, 0.1, 2.0, 0, 0.1, color, 3);
+				TE_SendToAll(i * 0.25);
+
+				color[3] /= 2;
+			}
 		}
 	}
 	return Plugin_Continue;

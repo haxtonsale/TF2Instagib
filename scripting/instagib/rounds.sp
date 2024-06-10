@@ -120,14 +120,18 @@ void GetDefaultRound(InstagibRound buffer)
 			InstagibRounds.GetArray(1, buffer);
 		}
 	} else {
-		buffer = NextRound;
 		ForcedNextRound = false;
+		if (NextRound.Name[0]) {
+			buffer = NextRound;
+		} else {
+			GetRandomSpecialRound(buffer);
+		}
 	}
 }
 
 void GetRandomSpecialRound(InstagibRound buffer)
 {
-	if (!ForcedNextRound) {
+	if (!ForcedNextRound || !NextRound.Name[0]) {
 		static int last_round;
 		
 		int len = InstagibRounds.Length;
@@ -179,15 +183,15 @@ bool InstagibForceRound(char[] name, bool notify = false, int client = 0)
 {
 	InstagibRound round;
 	
-	if (!GetRound(name, round)) {
+	if (name[0] && !GetRound(name, round)) {
 		return false;
 	}
 	
-	if (notify && round.IsSpecial) {
+	if (notify && (!name[0] || round.IsSpecial)) {
 		if (!client) {
-			InstagibPrintToChatAll(true, "Special Round {%s} was forced!", name);
+			InstagibPrintToChatAll(true, "Special Round {%s} was forced!", name[0] ? name : "Random");
 		} else {
-			InstagibPrintToChatAll(true, "%N has forced the {%s} Special Round!", client, name);
+			InstagibPrintToChatAll(true, "%N has forced the {%s} Special Round!", client, name[0] ? name : "Random");
 		}
 	}
 	
@@ -218,6 +222,8 @@ void Rounds_Reload()
 
 void FillMenuWithRoundNames(Menu menu)
 {
+	menu.AddItem(NULL_STRING, "Random");
+
 	int len = InstagibRounds.Length;
 	for (int i = 0; i < len; i++) {
 		InstagibRound round;
