@@ -49,9 +49,9 @@ void GetClientCookies(int client)
 	
 	if (bhop[0] == '\0') {
 		g_PrefBhop.Set(client, "1");
-		g_ClientPrefs[client].EnabledBhop = true;
+		g_ClientPrefs[client].AutoBhop = true;
 	} else {
-		g_ClientPrefs[client].EnabledBhop = view_as<bool>(StringToInt(bhop));
+		g_ClientPrefs[client].AutoBhop = view_as<bool>(StringToInt(bhop));
 	}
 }
 

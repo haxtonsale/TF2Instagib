@@ -78,7 +78,8 @@ enum struct Config
 	float MultikillInterval;
 	float RailjumpVelXY;
 	float RailjumpVelZ;
-	bool EnabledBhop;
+	bool AutoBhop;
+	bool ManualBhop;
 	float BhopMaxSpeed;
 	
 	bool WebVersionCheck;
@@ -96,7 +97,7 @@ enum struct Prefs
 {
 	bool EnabledMusic;
 	int ViewmodelAlpha;
-	bool EnabledBhop;
+	bool AutoBhop;
 }
 
 static bool IsLateLoad;
