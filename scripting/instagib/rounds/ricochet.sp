@@ -25,6 +25,9 @@ void SR_Ricochet_Init()
 	// Don't spawn trace particles
 	round.AllowTraces = false;
 	
+	// Force Engineer
+	round.Class = TFClass_Engineer;
+
 	// Add the round to the list of Special Rounds. It can't be edited or removed after this.
 	SubmitInstagibRound(round);
 }

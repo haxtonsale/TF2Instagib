@@ -40,6 +40,7 @@ enum struct InstagibRound
 	float RailjumpVelocityXY;
 	float RailjumpVelocityZ;
 	bool AllowTraces;
+	TFClassType Class;
 	
 	Handle MainWeapon;
 	int MainWeaponClip;
