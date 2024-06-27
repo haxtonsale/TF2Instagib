@@ -49,7 +49,10 @@ public void Event_OnRoundStart(Event event, const char[] name, bool dont_broadca
 	for (int i = 1; i <= MaxClients; i++) {
 		if (IsClientInGame(i) && IsClientPlaying(i) && IsPlayerAlive(i)) {
 			InvulnClient(i, TFCondDuration_Infinite);
-			TF2_RemoveAllWeapons(i);
+			if (TF2_GetPlayerClass(i) != g_CurrentRound.Class) {
+				TF2_SetPlayerClass(i, g_CurrentRound.Class);
+				TF2_RegeneratePlayer(i);
+			}
 			g_MainWeaponEnt[i] = GiveWeapon(i, g_CurrentRound.MainWeapon);
 		}
 	}
