@@ -178,7 +178,6 @@ void SR_Lives_OnSpawn(int client, TFTeam team)
 		
 		// Apparently sometimes ghosts keep their player collisions, so let's take care of that.
 		SetEntProp(client, Prop_Send, "m_nSolidType", SOLID_NONE);
-		SetEntProp(client, Prop_Send, "m_usSolidFlags", FSOLID_NOT_SOLID);
 	}
 }
 
@@ -220,7 +219,6 @@ void SR_Lives_OnEnd(TFTeam winner_team, int score, int time_left)
 		if (IsClientInGame(i)) {
 			// Reset the collisions.
 			SetEntProp(i, Prop_Send, "m_nSolidType", SOLID_BBOX);
-			SetEntProp(i, Prop_Send, "m_usSolidFlags", FSOLID_NOT_STANDABLE);
 		}
 	}
 	
