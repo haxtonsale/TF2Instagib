@@ -797,7 +797,8 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, 
 {
 	static char shouldblock[][] = {
 		"tf_weapon_",	// Any Weapons
-		"tf_wearable_"	// Wearable Weapons
+		"tf_wearable_",	// Wearable Weapons
+		"saxxy",		// All-Class Melee Weapons
 	};
 	
 	for (int i = 0; i < sizeof(shouldblock); i++) {
