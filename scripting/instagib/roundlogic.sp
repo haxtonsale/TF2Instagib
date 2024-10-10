@@ -160,3 +160,10 @@ void Stalemate()
 {
 	ForceWin(TFTeam_Unassigned);
 }
+
+void ScrambleTeams()
+{
+	ServerCommand("mp_scrambleteams 2");
+	ServerExecute();
+	g_CvarRestartGame.SetInt(0);
+}

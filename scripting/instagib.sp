@@ -90,6 +90,7 @@ bool g_IsWaitingForPlayers;
 bool g_IsRoundActive;
 bool g_CanRailjump;
 bool g_MapHasRoundSetup;
+bool g_WinnerAnnounced;
 
 InstagibRound g_CurrentRound;
 int g_MaxScore;
@@ -227,6 +228,11 @@ void AnnounceWin(TFTeam team = TFTeam_Unassigned, char[] point = "kills", int po
 {
 	char str[128];
 	
+	if (g_CurrentRound.FreeForAll) {
+		InstagibPrintToChatAll(true, "%s has won the round with %i kills!", point, points);
+		return;
+	}
+
 	if (team >= TFTeam_Red) {
 		str = (team == TFTeam_Red) ? "\x07FF4040RED Team\x01" : "\x0799CCFFBLU Team\x01";
 	} else {
@@ -621,6 +627,7 @@ public void OnMapStart()
 	StopMusic();
 	ResetScore();
 	g_IsRoundActive = false;
+	g_WinnerAnnounced = false;
 	
 	if (g_SteamWorks) {
 		SteamWorks_SetGameDescription(GAME_DESCRIPTION);
@@ -819,9 +826,7 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, 
 	}
 }
 
-void ScrambleTeams()
+void FFASetWinner(int client)
 {
-	ServerCommand("mp_scrambleteams 2");
-	ServerExecute();
-	g_CvarRestartGame.SetInt(0);
+
 }

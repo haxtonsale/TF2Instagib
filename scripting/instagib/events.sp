@@ -27,6 +27,8 @@ public void Event_OnRoundStart(Event event, const char[] name, bool dont_broadca
 	
 	g_RoundTimeLeftFormatted = "";
 
+	g_WinnerAnnounced = false;
+
 	if (g_CurrentRound.IsSpecial) {
 		InstagibPrintToChatAll(true, "Special Round: {%s}!", g_CurrentRound.Name);
 		
@@ -149,6 +151,8 @@ public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	int attacker = GetClientOfUserId(event.GetInt("attacker"));
+
+	char username[32];
 	
 	if (!g_Config.InstantRespawn && g_IsRoundActive) {
 		CreateTimer(g_CurrentRound.RespawnTime, Timer_Respawn, client);
@@ -187,6 +191,23 @@ public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 				TFTeam team = TF2_GetClientTeam(attacker);
 				AddScore(team, g_CurrentRound.PointsPerKill);
 			}
+
+			#if defined DEBUG
+				PrintToServer("Kills %.i for player %.i", g_Killcount[attacker], attacker);
+			#endif
+
+			if (g_CurrentRound.FreeForAll) {
+				if (g_Killcount[attacker] >= g_MaxScore && !g_WinnerAnnounced) {
+					#if defined DEBUG
+						PrintToServer("Player %.i is winner %.i", attacker, g_Killcount[attacker]);
+					#endif
+					g_WinnerAnnounced = true;
+					GetClientName(attacker, username, 32);
+					ScrambleTeams();
+					ForceWin(g_CurrentRound.FreeForAllTeam);
+					AnnounceWin(g_CurrentRound.FreeForAllTeam, username, g_Killcount[attacker])
+				}
+			}
 		}
 	}
 }
@@ -214,7 +235,7 @@ public void Event_OnRoundEnd(Event event, const char[] name, bool dont_broadcast
 
 	if (g_CurrentRound.FreeForAll) {
 		ScrambleTeams();
-	}
+	} 
 
 	g_IsRoundActive = false;
 }
