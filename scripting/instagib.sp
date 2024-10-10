@@ -112,6 +112,7 @@ ConVar g_CvarNoRespawnTimes;
 ConVar g_CvarSpecFreezeTime;
 ConVar g_CvarGitHubToken;
 ConVar g_CvarFriendlyFire;
+ConVar g_CvarRestartGame;
 
 Cookie g_PrefMusic;
 Cookie g_PrefViewmodel;
@@ -560,6 +561,7 @@ public void OnPluginStart()
 	g_CvarSpecFreezeTime = FindConVar("spec_freeze_time");
 	g_CvarGitHubToken = CreateConVar("instagib_github_auth", "", "Authentication token for GitHub API (https://github.com/settings/tokens)", FCVAR_PROTECTED);
 	g_CvarFriendlyFire = FindConVar("mp_friendlyfire");
+	g_CvarRestartGame = FindConVar("mp_restartgame");
 
 	LoadConfig();
 	Cookies_Init();
@@ -817,3 +819,9 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, 
 	}
 }
 
+void ScrambleTeams()
+{
+	ServerCommand("mp_scrambleteams 2");
+	ServerExecute();
+	g_CvarRestartGame.SetInt(0);
+}

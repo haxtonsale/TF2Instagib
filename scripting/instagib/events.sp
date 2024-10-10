@@ -26,7 +26,7 @@ public void Event_OnRoundStart(Event event, const char[] name, bool dont_broadca
 	delete g_RoundTimer;
 	
 	g_RoundTimeLeftFormatted = "";
-	
+
 	if (g_CurrentRound.IsSpecial) {
 		InstagibPrintToChatAll(true, "Special Round: {%s}!", g_CurrentRound.Name);
 		
@@ -211,6 +211,11 @@ public void Event_OnRoundEnd(Event event, const char[] name, bool dont_broadcast
 	
 	StopMusic();
 	ResetScore();
+
+	if (g_CurrentRound.FreeForAll) {
+		ScrambleTeams();
+	}
+
 	g_IsRoundActive = false;
 }
 
