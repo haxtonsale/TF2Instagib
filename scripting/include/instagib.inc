@@ -40,7 +40,9 @@ enum struct InstagibRound
 	float RailjumpVelocityXY;
 	float RailjumpVelocityZ;
 	bool AllowTraces;
-	TFClassType Class;
+
+	TFClassType Class[10];
+	int ClassCount;
 	
 	Handle MainWeapon;
 	int MainWeaponClip;
@@ -58,6 +60,48 @@ enum struct InstagibRound
 	Function OnClassChange;
 	Function OnDamageTaken;
 	Function OnDescriptionPrint;
+
+	// Method to add a class
+    void AddClass(TFClassType classType)
+    {
+        if (this.ClassCount < sizeof(this.Class))
+        {
+            this.Class[this.ClassCount] = classType;
+            this.ClassCount++;
+        }
+    }
+
+    // Method to check if a class is included
+    bool HasClass(TFClassType classType)
+    {
+		// Only allow Soldier if there's no classes added to the array
+		if (this.ClassCount == 0 && classType == TFClass_Soldier)
+			return true;
+
+		if (this.ClassCount != 0)
+		{	
+			for (int i = 0; i < this.ClassCount; i++)
+			{
+				if (this.Class[i] == classType)
+				{
+					return true;
+				}
+			}
+		}
+        return false;
+    }
+
+	// Method to select a random class from the array
+    TFClassType GetRandomClass()
+    {
+        if (this.ClassCount == 0)
+        {
+            return TFClass_Soldier;  // Return Soldier if no classes are set
+        }
+        
+        int randomIndex = GetRandomInt(0, this.ClassCount - 1);
+        return this.Class[randomIndex];
+    }
 }
 
 typedef Round_OnStart =           function void ();

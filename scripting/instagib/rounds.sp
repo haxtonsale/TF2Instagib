@@ -53,7 +53,6 @@ void NewInstagibRound(InstagibRound buffer, char[] name, char[] desc = "", Handl
 	round.AllowKillbind = true;
 	round.EndWithTimer = true;
 	round.AllowTraces = true;
-	round.Class = TFClass_Soldier;
 	
 	round.OnStart = INVALID_FUNCTION;
 	round.OnEnd = INVALID_FUNCTION;

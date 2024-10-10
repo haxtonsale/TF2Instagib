@@ -26,7 +26,8 @@ void SR_Ricochet_Init()
 	round.AllowTraces = false;
 	
 	// Force Engineer
-	round.Class = TFClass_Engineer;
+	// round.Class = TFClass_Engineer;
+	round.AddClass(TFClass_Engineer)
 
 	// Add the round to the list of Special Rounds. It can't be edited or removed after this.
 	SubmitInstagibRound(round);

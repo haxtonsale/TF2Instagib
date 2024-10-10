@@ -49,8 +49,8 @@ public void Event_OnRoundStart(Event event, const char[] name, bool dont_broadca
 	for (int i = 1; i <= MaxClients; i++) {
 		if (IsClientInGame(i) && IsClientPlaying(i) && IsPlayerAlive(i)) {
 			InvulnClient(i, TFCondDuration_Infinite);
-			if (TF2_GetPlayerClass(i) != g_CurrentRound.Class) {
-				TF2_SetPlayerClass(i, g_CurrentRound.Class);
+			if (!g_CurrentRound.HasClass(TF2_GetPlayerClass(i))) {
+				TF2_SetPlayerClass(i, g_CurrentRound.GetRandomClass());
 				TF2_RegeneratePlayer(i);
 			}
 			g_MainWeaponEnt[i] = GiveWeapon(i, g_CurrentRound.MainWeapon);
@@ -93,9 +93,11 @@ public void Event_OnSpawn(Event event, const char[] name, bool dont_broadcast)
 	TF2_RemoveCondition(client, TFCond_SpawnOutline);
 	
 	// Force player class
-	if (!(class == g_CurrentRound.Class || class == TFClass_Unknown)) {
-		SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", g_CurrentRound.Class);
-		SetEntProp(client, Prop_Send, "m_iClass", g_CurrentRound.Class);
+	if (!g_CurrentRound.HasClass(class)) {
+		TFClassType randomclass = g_CurrentRound.GetRandomClass();
+
+		SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", randomclass);
+		SetEntProp(client, Prop_Send, "m_iClass", randomclass);
 		TF2_RespawnPlayer(client);
 		return;
 	}
