@@ -41,6 +41,10 @@ void Rounds_Init()
 	SR_FreezeTag_Init();
 	SR_Headshots_Init();
 	SR_Ricochet_Init();
+	
+	SR_Explosions_FFA_Init();
+	SR_OPRailguns_FFA_Init();
+	SR_Ricochet_FFA_Init();
 }
 
 // -------------------------------------------------------------------

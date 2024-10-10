@@ -30,6 +30,33 @@ void SR_Explosions_Init()
 	SubmitInstagibRound(sr);
 }
 
+void SR_Explosions_FFA_Init()
+{
+	InstagibRound sr;
+	NewInstagibRound(sr, "Directed by Michael Bay (FFA)", "Players explode on death!");
+	sr.MinPlayers = 8;
+	sr.FreeForAll = true;
+	sr.PointsPerKill = 0;
+	sr.AnnounceWin = false;
+	sr.MinScore = 6;
+	sr.MaxScoreMultiplier = 1.0;
+
+	sr.OnPlayerDeath = SR_Explosions_OnDeath;
+	sr.OnDamageTaken = SR_Explosions_OnTakeDamage;
+	
+	SpecialRoundConfig_String(sr.Name, "ExplosionParticle", DefParticle, sizeof(DefParticle), "ExplosionCore_MidAir");
+	SpecialRoundConfig_String(sr.Name, "ExplosionParticleHeadshot", HeadshotParticle, sizeof(HeadshotParticle), "ExplosionCore_MidAir");
+	SpecialRoundConfig_String(sr.Name, "ExplosionSound", DefSound, sizeof(DefSound), "items/pumpkin_explode1.wav");
+	SpecialRoundConfig_String(sr.Name, "ExplosionSoundHeadshot", HeadshotSound, sizeof(HeadshotSound), "items/pumpkin_explode1.wav");
+	ExplRadius = SpecialRoundConfig_Float(sr.Name, "ExplosionRadius", 250.0);
+	HeadshotExplRadius = SpecialRoundConfig_Float(sr.Name, "ExplosionRadiusHeadshot", 450.0);
+	
+	InstagibPrecacheSound(DefSound);
+	InstagibPrecacheSound(HeadshotSound);
+	
+	SubmitInstagibRound(sr);
+}
+
 // -------------------------------------------------------------------
 static void SR_Explosions_Explosion(int client, int victim, bool is_headshot = false)
 {

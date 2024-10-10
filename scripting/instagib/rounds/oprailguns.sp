@@ -10,6 +10,24 @@ void SR_OPRailguns_Init()
 	SubmitInstagibRound(sr);
 }
 
+void SR_OPRailguns_FFA_Init()
+{
+	InstagibRound sr;
+	NewInstagibRound(sr, "OP Railguns (FFA)", "Railguns are now much more powerful!");
+	sr.RailjumpVelocityXY = 7.0;
+	sr.RailjumpVelocityZ = 4.0;
+	sr.UberDuration = 0.2;
+	sr.MainWeapon = SR_OPRailguns_CreateOPRailgun();
+
+	sr.FreeForAll = true;
+	sr.PointsPerKill = 0;
+	sr.AnnounceWin = false;
+	sr.MinScore = 6;
+	sr.MaxScoreMultiplier = 1.0;
+
+	SubmitInstagibRound(sr);
+}
+
 // -------------------------------------------------------------------
 static Handle SR_OPRailguns_CreateOPRailgun()
 {
