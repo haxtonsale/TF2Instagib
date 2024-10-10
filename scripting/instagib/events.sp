@@ -238,10 +238,6 @@ public void Event_OnRoundEnd(Event event, const char[] name, bool dont_broadcast
 	StopMusic();
 	ResetScore();
 
-	if (g_CurrentRound.FreeForAll) {
-		ScrambleTeams();
-	} 
-
 	g_IsRoundActive = false;
 }
 

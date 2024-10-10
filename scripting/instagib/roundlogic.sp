@@ -165,5 +165,5 @@ void ScrambleTeams()
 {
 	ServerCommand("mp_scrambleteams 2");
 	ServerExecute();
-	g_CvarRestartGame.SetInt(0);
+	SetConVarInt(g_CvarRestartGame, 0);
 }
