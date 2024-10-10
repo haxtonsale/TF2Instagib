@@ -15,18 +15,20 @@ void Events_Init()
 // -------------------------------------------------------------------
 public void Event_OnRoundStart(Event event, const char[] name, bool dont_broadcast)
 {
-	RefreshRequiredEnts();
-	
-	delete g_RoundTimer;
-	
-	g_RoundTimeLeftFormatted = "";
-	
 	if (!g_IsWaitingForPlayers && GetRandomFloat() <= g_Config.SpecialRoundChance) {
 		GetRandomSpecialRound(g_CurrentRound);
 	} else {
 		GetDefaultRound(g_CurrentRound);
 	}
+
+	RefreshRequiredEnts();
 	
+	delete g_RoundTimer;
+	
+	g_RoundTimeLeftFormatted = "";
+
+	g_WinnerAnnounced = false;
+
 	if (g_CurrentRound.IsSpecial) {
 		InstagibPrintToChatAll(true, "Special Round: {%s}!", g_CurrentRound.Name);
 		
@@ -49,11 +51,15 @@ public void Event_OnRoundStart(Event event, const char[] name, bool dont_broadca
 	for (int i = 1; i <= MaxClients; i++) {
 		if (IsClientInGame(i) && IsClientPlaying(i) && IsPlayerAlive(i)) {
 			InvulnClient(i, TFCondDuration_Infinite);
-			if (TF2_GetPlayerClass(i) != g_CurrentRound.Class) {
-				TF2_SetPlayerClass(i, g_CurrentRound.Class);
+			if (!g_CurrentRound.HasClass(TF2_GetPlayerClass(i))) {
+				TF2_SetPlayerClass(i, g_CurrentRound.GetRandomClass());
 				TF2_RegeneratePlayer(i);
 			}
 			g_MainWeaponEnt[i] = GiveWeapon(i, g_CurrentRound.MainWeapon);
+			
+			if (g_CurrentRound.FreeForAll) {
+				TF2_ChangeClientTeam(i, g_CurrentRound.FreeForAllTeam)
+			}
 		}
 	}
 	
@@ -66,6 +72,24 @@ public void Event_OnRoundStart(Event event, const char[] name, bool dont_broadca
 		FormatTime(g_RoundTimeLeftFormatted, sizeof(g_RoundTimeLeftFormatted), "%M:%S", g_RoundTimeLeft);
 	}
 	
+	if (g_CurrentRound.FreeForAll) {
+		g_CvarFriendlyFire.SetInt(1)
+		g_CvarAutoTeamBalance.SetBool(false);
+		g_CvarScrambleTeamsAuto.SetBool(false);
+		g_CvarTeamsUnbalanceLimit.SetInt(0);
+		if (g_CurrentRound.FreeForAllTeam == TFTeam_Blue) {
+			g_CvarHumansMustJoinTeam.SetString("blue");
+		} else {
+			g_CvarHumansMustJoinTeam.SetString("red");
+		}
+	} else {
+		g_CvarFriendlyFire.SetInt(0)
+		g_CvarAutoTeamBalance.SetBool(true);
+		g_CvarScrambleTeamsAuto.SetBool(true);
+		g_CvarTeamsUnbalanceLimit.SetInt(1);
+		g_CvarHumansMustJoinTeam.SetString("any");
+	}
+
 	if (g_SteamWorks) {
 		SteamWorks_SetGameDescription(GAME_DESCRIPTION);
 	}
@@ -93,15 +117,20 @@ public void Event_OnSpawn(Event event, const char[] name, bool dont_broadcast)
 	TF2_RemoveCondition(client, TFCond_SpawnOutline);
 	
 	// Force player class
-	if (!(class == g_CurrentRound.Class || class == TFClass_Unknown)) {
-		SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", g_CurrentRound.Class);
-		SetEntProp(client, Prop_Send, "m_iClass", g_CurrentRound.Class);
+	if (!g_CurrentRound.HasClass(class)) {
+		TFClassType randomclass = g_CurrentRound.GetRandomClass();
+
+		SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", randomclass);
+		SetEntProp(client, Prop_Send, "m_iClass", randomclass);
 		TF2_RespawnPlayer(client);
-		return;
+		
+		if (g_CurrentRound.FreeForAll) {
+			TF2_ChangeClientTeam(client, g_CurrentRound.FreeForAllTeam);
+		}
 	}
 	
 	InvulnClient(client, g_CurrentRound.UberDuration);
-	
+
 	if (g_IsRoundActive && g_CurrentRound.OnPlayerSpawn != INVALID_FUNCTION) {
 		TFTeam team = view_as<TFTeam>(event.GetInt("team"));
 		
@@ -134,6 +163,8 @@ public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	int attacker = GetClientOfUserId(event.GetInt("attacker"));
+
+	char username[32];
 	
 	if (!g_Config.InstantRespawn && g_IsRoundActive) {
 		CreateTimer(g_CurrentRound.RespawnTime, Timer_Respawn, client);
@@ -172,6 +203,28 @@ public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 				TFTeam team = TF2_GetClientTeam(attacker);
 				AddScore(team, g_CurrentRound.PointsPerKill);
 			}
+
+			#if defined DEBUG
+				PrintToServer("Kills %.i for player %.i", g_Killcount[attacker], attacker);
+			#endif
+
+			if (g_CurrentRound.FreeForAll) {
+				if (g_Killcount[attacker] > g_MaximumKillcount) {
+					g_MaximumKillcount = g_Killcount[attacker];
+					SetScore(g_CurrentRound.FreeForAllTeam, g_MaximumKillcount);
+				}
+
+				if (g_Killcount[attacker] >= g_MaxScore && !g_WinnerAnnounced) {
+					#if defined DEBUG
+						PrintToServer("Player %.i is winner %.i", attacker, g_Killcount[attacker]);
+					#endif
+					g_WinnerAnnounced = true;
+					GetClientName(attacker, username, 32);
+					ScrambleTeams();
+					ForceWin(g_CurrentRound.FreeForAllTeam);
+					AnnounceWin(g_CurrentRound.FreeForAllTeam, username, g_Killcount[attacker])
+				}
+			}
 		}
 	}
 }
@@ -196,6 +249,7 @@ public void Event_OnRoundEnd(Event event, const char[] name, bool dont_broadcast
 	
 	StopMusic();
 	ResetScore();
+
 	g_IsRoundActive = false;
 }
 

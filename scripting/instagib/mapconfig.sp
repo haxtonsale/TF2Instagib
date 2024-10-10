@@ -204,7 +204,12 @@ void SetupSpawnPoints()
 	for (int i = 0; i < len; i++) {
 		SpawnPoint spawn;
 		g_MapConfig.SpawnPoints.GetArray(i, spawn);
-		
+		TFTeam team = spawn.team;
+
+		if (g_CurrentRound.FreeForAll) {
+			team = g_CurrentRound.FreeForAllTeam;
+		}
+
 		int ent  = CreateEntityByName("info_player_teamspawn");
 		if (ent) {
 			float pos[3];
@@ -214,12 +219,16 @@ void SetupSpawnPoints()
 			pos[2] = spawn.pos[2];
 			ang[1] = spawn.rotation;
 			
-			SetVariantInt(view_as<int>(spawn.team));
+			SetVariantInt(view_as<int>(team));
+
 			AcceptEntityInput(ent, "SetTeam");
 			DispatchKeyValue(ent, "targetname", "INSTAGIB_SPAWNPOINT");
 			DispatchSpawn(ent);
 			TeleportEntity(ent, pos, ang, NULL_VECTOR);
 		}
+		#if defined DEBUG
+			PrintToServer("Created Spawn Point for %.i (%.1f %.1f %.1f) [%.1f]", team, spawn.pos[0], spawn.pos[1], spawn.pos[2], spawn.rotation);
+		#endif
 	}
 	
 	RequestFrame(Frame_RespawnAll);

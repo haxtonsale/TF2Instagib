@@ -90,6 +90,7 @@ bool g_IsWaitingForPlayers;
 bool g_IsRoundActive;
 bool g_CanRailjump;
 bool g_MapHasRoundSetup;
+bool g_WinnerAnnounced;
 
 InstagibRound g_CurrentRound;
 int g_MaxScore;
@@ -100,6 +101,7 @@ char g_RoundHudTextFormatted[128];
 int g_Killcount[TF2_MAXPLAYERS+1];
 int g_MainWeaponEnt[TF2_MAXPLAYERS+1] = {-1, ...};
 Prefs g_ClientPrefs[TF2_MAXPLAYERS+1];
+int g_MaximumKillcount;
 
 int g_PDLogicEnt;
 int g_GamerulesEnt;
@@ -111,6 +113,12 @@ ConVar g_CvarAirAccel;
 ConVar g_CvarNoRespawnTimes;
 ConVar g_CvarSpecFreezeTime;
 ConVar g_CvarGitHubToken;
+ConVar g_CvarFriendlyFire;
+ConVar g_CvarRestartGame;
+ConVar g_CvarAutoTeamBalance;
+ConVar g_CvarScrambleTeamsAuto;
+ConVar g_CvarTeamsUnbalanceLimit;
+ConVar g_CvarHumansMustJoinTeam;
 
 Cookie g_PrefMusic;
 Cookie g_PrefViewmodel;
@@ -225,6 +233,11 @@ void AnnounceWin(TFTeam team = TFTeam_Unassigned, char[] point = "kills", int po
 {
 	char str[128];
 	
+	if (g_CurrentRound.FreeForAll) {
+		InstagibPrintToChatAll(true, "%s has won the round with %i kills!", point, points);
+		return;
+	}
+
 	if (team >= TFTeam_Red) {
 		str = (team == TFTeam_Red) ? "\x07FF4040RED Team\x01" : "\x0799CCFFBLU Team\x01";
 	} else {
@@ -558,7 +571,13 @@ public void OnPluginStart()
 	g_CvarNoRespawnTimes = FindConVar("mp_disable_respawn_times");
 	g_CvarSpecFreezeTime = FindConVar("spec_freeze_time");
 	g_CvarGitHubToken = CreateConVar("instagib_github_auth", "", "Authentication token for GitHub API (https://github.com/settings/tokens)", FCVAR_PROTECTED);
-	
+	g_CvarFriendlyFire = FindConVar("mp_friendlyfire");
+	g_CvarRestartGame = FindConVar("mp_restartgame");
+	g_CvarAutoTeamBalance = FindConVar("mp_autoteambalance");
+	g_CvarScrambleTeamsAuto = FindConVar("mp_scrambleteams_auto");
+	g_CvarTeamsUnbalanceLimit = FindConVar("mp_teams_unbalance_limit");
+	g_CvarHumansMustJoinTeam = FindConVar("mp_humans_must_join_team");
+
 	LoadConfig();
 	Cookies_Init();
 	Commands_Init();
@@ -617,6 +636,7 @@ public void OnMapStart()
 	StopMusic();
 	ResetScore();
 	g_IsRoundActive = false;
+	g_WinnerAnnounced = false;
 	
 	if (g_SteamWorks) {
 		SteamWorks_SetGameDescription(GAME_DESCRIPTION);
@@ -772,6 +792,12 @@ public void OnPluginEnd()
 	g_CvarAirAccel.RestoreDefault();
 	g_CvarNoRespawnTimes.RestoreDefault();
 	g_CvarSpecFreezeTime.RestoreDefault();
+	g_CvarFriendlyFire.RestoreDefault();
+	g_CvarRestartGame.RestoreDefault();
+	g_CvarAutoTeamBalance.RestoreDefault();
+	g_CvarScrambleTeamsAuto.RestoreDefault();
+	g_CvarTeamsUnbalanceLimit.RestoreDefault();
+	g_CvarHumansMustJoinTeam.RestoreDefault();
 	
 	InstagibPrintToChatAll(true, "The plugin has been unloaded! Restarting the round...");
 	Stalemate();
@@ -814,3 +840,7 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, 
 	}
 }
 
+void FFASetWinner(int client)
+{
+
+}

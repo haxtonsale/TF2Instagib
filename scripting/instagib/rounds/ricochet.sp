@@ -26,7 +26,43 @@ void SR_Ricochet_Init()
 	round.AllowTraces = false;
 	
 	// Force Engineer
-	round.Class = TFClass_Engineer;
+	// round.Class = TFClass_Engineer;
+	round.AddClass(TFClass_Engineer)
+
+	// Add the round to the list of Special Rounds. It can't be edited or removed after this.
+	SubmitInstagibRound(round);
+}
+
+void SR_Ricochet_FFA_Init()
+{
+	InstagibRound round;
+	
+	// Fills the round array with default and config values
+	IG_InitializeSpecialRound(round, "Ricochet (FFA)", "Railguns now shoot ricocheting projectiles!");
+
+	// Replace revolver to syringegun
+	round.MainWeapon = CustomRoundRicochet_MainWeapon();
+
+	round.OnEntCreated = CustomRoundRicochet_OnEntCreated;
+	
+	SpecialRoundConfig_String(round.Name, "ProjectileBounceSound", ProjectileBounceSound, sizeof(ProjectileBounceSound), "weapons/crossbow/bolt_fly4.wav");
+	InstagibPrecacheSound(ProjectileBounceSound);
+
+	// How many times should projectile bounce off from walls?
+	MaxBounces = SpecialRoundConfig_Num(round.Name, "Bounces", 8);
+
+	// Don't spawn trace particles
+	round.AllowTraces = false;
+	
+	// Force Engineer
+	// round.Class = TFClass_Engineer;
+	round.AddClass(TFClass_Engineer)
+	
+	round.FreeForAll = true;
+	round.PointsPerKill = 0;
+	round.AnnounceWin = false;
+	round.MinScore = 6;
+	round.MaxScoreMultiplier = 1.0;
 
 	// Add the round to the list of Special Rounds. It can't be edited or removed after this.
 	SubmitInstagibRound(round);

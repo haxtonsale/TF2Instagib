@@ -20,8 +20,19 @@ void Rounds_Init()
 	NewInstagibRound(tdm, "Team Deathmatch");
 	tdm.IsSpecial = false;
 	SubmitInstagibRound(tdm);
+
+	InstagibRound ffa;
+	NewInstagibRound(ffa, "Free For All");
+	ffa.IsSpecial = false;
+	ffa.FreeForAll = true;
+	ffa.PointsPerKill = 0;
+	ffa.AnnounceWin = false;
+	ffa.MinScore = 6;
+	ffa.MaxScoreMultiplier = 1.0;
+
+	SubmitInstagibRound(ffa);
 	
-	g_CurrentRound = tdm;
+	g_CurrentRound = ffa;
 	
 	SR_Explosions_Init();
 	SR_OPRailguns_Init();
@@ -30,6 +41,10 @@ void Rounds_Init()
 	SR_FreezeTag_Init();
 	SR_Headshots_Init();
 	SR_Ricochet_Init();
+	
+	SR_Explosions_FFA_Init();
+	SR_OPRailguns_FFA_Init();
+	SR_Ricochet_FFA_Init();
 }
 
 // -------------------------------------------------------------------
@@ -53,7 +68,8 @@ void NewInstagibRound(InstagibRound buffer, char[] name, char[] desc = "", Handl
 	round.AllowKillbind = true;
 	round.EndWithTimer = true;
 	round.AllowTraces = true;
-	round.Class = TFClass_Soldier;
+	round.FreeForAll = false;
+	round.FreeForAllTeam = TFTeam_Blue;
 	
 	round.OnStart = INVALID_FUNCTION;
 	round.OnEnd = INVALID_FUNCTION;
@@ -117,7 +133,11 @@ void GetDefaultRound(InstagibRound buffer)
 		if (g_IsWaitingForPlayers) {
 			InstagibRounds.GetArray(0, buffer);
 		} else {
-			InstagibRounds.GetArray(1, buffer);
+			if (!g_MapConfig.SpawnPoints.Length) {
+				InstagibRounds.GetArray(1, buffer);
+			} else {
+				InstagibRounds.GetArray(GetRandomInt(1, 2), buffer);
+			}
 		}
 	} else {
 		ForcedNextRound = false;
@@ -144,7 +164,8 @@ void GetRandomSpecialRound(InstagibRound buffer)
 			InstagibRounds.GetArray(i, round);
 			
 			bool enough_players = (playercount >= round.MinPlayers);
-			if (last_round != i && round.IsSpecial && enough_players) {
+			bool map_has_custom_spawns = !(round.FreeForAll && !g_MapConfig.SpawnPoints.Length)
+			if (last_round != i && round.IsSpecial && enough_players && map_has_custom_spawns) {
 				suitable_rounds[count] = i;
 				++count;
 			}

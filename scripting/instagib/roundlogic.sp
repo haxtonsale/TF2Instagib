@@ -11,7 +11,7 @@ void ResetScore()
 	for (int i = 1; i <= MaxClients; i++) {
 		g_Killcount[i] = 0;
 	}
-	
+	g_MaximumKillcount = 0;
 	SetScore(TFTeam_Red, 0);
 	SetScore(TFTeam_Blue, 0);
 }
@@ -159,4 +159,11 @@ void ForceWin(TFTeam team)
 void Stalemate()
 {
 	ForceWin(TFTeam_Unassigned);
+}
+
+void ScrambleTeams()
+{
+	ServerCommand("mp_scrambleteams 2");
+	ServerExecute();
+	SetConVarInt(g_CvarRestartGame, 0);
 }
