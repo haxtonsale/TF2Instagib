@@ -11,7 +11,7 @@ void ResetScore()
 	for (int i = 1; i <= MaxClients; i++) {
 		g_Killcount[i] = 0;
 	}
-	
+	g_MaximumKillcount = 0;
 	SetScore(TFTeam_Red, 0);
 	SetScore(TFTeam_Blue, 0);
 }
