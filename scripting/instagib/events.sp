@@ -197,6 +197,11 @@ public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 			#endif
 
 			if (g_CurrentRound.FreeForAll) {
+				if (g_Killcount[attacker] > g_MaximumKillcount) {
+					g_MaximumKillcount = g_Killcount[attacker];
+					SetScore(g_CurrentRound.FreeForAllTeam, g_MaximumKillcount);
+				}
+
 				if (g_Killcount[attacker] >= g_MaxScore && !g_WinnerAnnounced) {
 					#if defined DEBUG
 						PrintToServer("Player %.i is winner %.i", attacker, g_Killcount[attacker]);

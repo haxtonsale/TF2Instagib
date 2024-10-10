@@ -101,6 +101,7 @@ char g_RoundHudTextFormatted[128];
 int g_Killcount[TF2_MAXPLAYERS+1];
 int g_MainWeaponEnt[TF2_MAXPLAYERS+1] = {-1, ...};
 Prefs g_ClientPrefs[TF2_MAXPLAYERS+1];
+int g_MaximumKillcount;
 
 int g_PDLogicEnt;
 int g_GamerulesEnt;
