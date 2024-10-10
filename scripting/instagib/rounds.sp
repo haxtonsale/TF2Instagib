@@ -133,7 +133,11 @@ void GetDefaultRound(InstagibRound buffer)
 		if (g_IsWaitingForPlayers) {
 			InstagibRounds.GetArray(0, buffer);
 		} else {
-			InstagibRounds.GetArray(1, buffer);
+			if (!g_MapConfig.SpawnPoints.Length) {
+				InstagibRounds.GetArray(1, buffer);
+			} else {
+				InstagibRounds.GetArray(GetRandomInt(1, 2), buffer);
+			}
 		}
 	} else {
 		ForcedNextRound = false;
@@ -160,7 +164,8 @@ void GetRandomSpecialRound(InstagibRound buffer)
 			InstagibRounds.GetArray(i, round);
 			
 			bool enough_players = (playercount >= round.MinPlayers);
-			if (last_round != i && round.IsSpecial && enough_players) {
+			bool map_has_custom_spawns = !(round.FreeForAll && !g_MapConfig.SpawnPoints.Length)
+			if (last_round != i && round.IsSpecial && enough_players && map_has_custom_spawns) {
 				suitable_rounds[count] = i;
 				++count;
 			}
