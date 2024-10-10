@@ -3,6 +3,7 @@ void Commands_Init()
 {
 	RegConsoleCmd("kill", Command_BlockSuicide);
 	RegConsoleCmd("explode", Command_BlockSuicide);
+	RegConsoleCmd("autoteam", Command_BlockAutoTeam);
 	RegConsoleCmd("instagib", Command_Settings);
 	
 	RegAdminCmd("forceround", Command_ForceRound, ADMFLAG_CHEATS);
@@ -19,6 +20,11 @@ void Commands_Init()
 public Action Command_BlockSuicide(int client, int args)
 {
 	return (!g_CurrentRound.AllowKillbind) ? Plugin_Handled : Plugin_Continue;
+}
+
+public Action Command_BlockAutoTeam(int client, int args)
+{
+	return (g_CurrentRound.FreeForAll) ? Plugin_Handled : Plugin_Continue;
 }
 
 public Action Command_Settings(int client, int args)
