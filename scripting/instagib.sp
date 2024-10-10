@@ -2,7 +2,7 @@
 #define INSTAGIB_VERSION "1.6.2"
 
 #define TF2_MAXPLAYERS 100
-//#define DEBUG
+#define DEBUG
 //#define RUN_TESTS
 #define GAME_DESCRIPTION "Instagib v" ... INSTAGIB_VERSION
 
@@ -111,6 +111,7 @@ ConVar g_CvarAirAccel;
 ConVar g_CvarNoRespawnTimes;
 ConVar g_CvarSpecFreezeTime;
 ConVar g_CvarGitHubToken;
+ConVar g_CvarFriendlyFire;
 
 Cookie g_PrefMusic;
 Cookie g_PrefViewmodel;
@@ -558,7 +559,8 @@ public void OnPluginStart()
 	g_CvarNoRespawnTimes = FindConVar("mp_disable_respawn_times");
 	g_CvarSpecFreezeTime = FindConVar("spec_freeze_time");
 	g_CvarGitHubToken = CreateConVar("instagib_github_auth", "", "Authentication token for GitHub API (https://github.com/settings/tokens)", FCVAR_PROTECTED);
-	
+	g_CvarFriendlyFire = FindConVar("mp_friendlyfire");
+
 	LoadConfig();
 	Cookies_Init();
 	Commands_Init();
@@ -772,6 +774,7 @@ public void OnPluginEnd()
 	g_CvarAirAccel.RestoreDefault();
 	g_CvarNoRespawnTimes.RestoreDefault();
 	g_CvarSpecFreezeTime.RestoreDefault();
+	g_CvarFriendlyFire.RestoreDefault();
 	
 	InstagibPrintToChatAll(true, "The plugin has been unloaded! Restarting the round...");
 	Stalemate();

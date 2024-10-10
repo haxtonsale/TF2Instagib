@@ -20,8 +20,16 @@ void Rounds_Init()
 	NewInstagibRound(tdm, "Team Deathmatch");
 	tdm.IsSpecial = false;
 	SubmitInstagibRound(tdm);
+
+	InstagibRound ffa;
+	NewInstagibRound(ffa, "Free For All");
+	ffa.IsSpecial = false;
+	ffa.FreeForAll = true;
+	ffa.PointsPerKill = 0;
+
+	SubmitInstagibRound(ffa);
 	
-	g_CurrentRound = tdm;
+	g_CurrentRound = ffa;
 	
 	SR_Explosions_Init();
 	SR_OPRailguns_Init();
@@ -53,6 +61,8 @@ void NewInstagibRound(InstagibRound buffer, char[] name, char[] desc = "", Handl
 	round.AllowKillbind = true;
 	round.EndWithTimer = true;
 	round.AllowTraces = true;
+	round.FreeForAll = false;
+	round.FreeForAllTeam = TFTeam_Blue;
 	
 	round.OnStart = INVALID_FUNCTION;
 	round.OnEnd = INVALID_FUNCTION;

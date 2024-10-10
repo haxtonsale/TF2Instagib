@@ -43,6 +43,9 @@ enum struct InstagibRound
 
 	TFClassType Class[10];
 	int ClassCount;
+
+	bool FreeForAll;
+	TFTeam FreeForAllTeam;
 	
 	Handle MainWeapon;
 	int MainWeaponClip;

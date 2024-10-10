@@ -15,17 +15,17 @@ void Events_Init()
 // -------------------------------------------------------------------
 public void Event_OnRoundStart(Event event, const char[] name, bool dont_broadcast)
 {
-	RefreshRequiredEnts();
-	
-	delete g_RoundTimer;
-	
-	g_RoundTimeLeftFormatted = "";
-	
 	if (!g_IsWaitingForPlayers && GetRandomFloat() <= g_Config.SpecialRoundChance) {
 		GetRandomSpecialRound(g_CurrentRound);
 	} else {
 		GetDefaultRound(g_CurrentRound);
 	}
+
+	RefreshRequiredEnts();
+	
+	delete g_RoundTimer;
+	
+	g_RoundTimeLeftFormatted = "";
 	
 	if (g_CurrentRound.IsSpecial) {
 		InstagibPrintToChatAll(true, "Special Round: {%s}!", g_CurrentRound.Name);
@@ -54,6 +54,10 @@ public void Event_OnRoundStart(Event event, const char[] name, bool dont_broadca
 				TF2_RegeneratePlayer(i);
 			}
 			g_MainWeaponEnt[i] = GiveWeapon(i, g_CurrentRound.MainWeapon);
+			
+			if (g_CurrentRound.FreeForAll) {
+				TF2_ChangeClientTeam(i, g_CurrentRound.FreeForAllTeam)
+			}
 		}
 	}
 	
@@ -66,6 +70,12 @@ public void Event_OnRoundStart(Event event, const char[] name, bool dont_broadca
 		FormatTime(g_RoundTimeLeftFormatted, sizeof(g_RoundTimeLeftFormatted), "%M:%S", g_RoundTimeLeft);
 	}
 	
+	if (g_CurrentRound.FreeForAll) {
+		g_CvarFriendlyFire.SetInt(1)
+	} else {
+		g_CvarFriendlyFire.SetInt(0)
+	}
+
 	if (g_SteamWorks) {
 		SteamWorks_SetGameDescription(GAME_DESCRIPTION);
 	}
@@ -99,11 +109,14 @@ public void Event_OnSpawn(Event event, const char[] name, bool dont_broadcast)
 		SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", randomclass);
 		SetEntProp(client, Prop_Send, "m_iClass", randomclass);
 		TF2_RespawnPlayer(client);
-		return;
+		
+		if (g_CurrentRound.FreeForAll) {
+			TF2_ChangeClientTeam(client, g_CurrentRound.FreeForAllTeam);
+		}
 	}
 	
 	InvulnClient(client, g_CurrentRound.UberDuration);
-	
+
 	if (g_IsRoundActive && g_CurrentRound.OnPlayerSpawn != INVALID_FUNCTION) {
 		TFTeam team = view_as<TFTeam>(event.GetInt("team"));
 		
