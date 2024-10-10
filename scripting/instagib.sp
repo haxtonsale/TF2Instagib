@@ -839,8 +839,3 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, 
 		return Plugin_Continue;
 	}
 }
-
-void FFASetWinner(int client)
-{
-
-}
