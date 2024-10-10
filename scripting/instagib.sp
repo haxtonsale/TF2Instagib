@@ -115,6 +115,10 @@ ConVar g_CvarSpecFreezeTime;
 ConVar g_CvarGitHubToken;
 ConVar g_CvarFriendlyFire;
 ConVar g_CvarRestartGame;
+ConVar g_CvarAutoTeamBalance;
+ConVar g_CvarScrambleTeamsAuto;
+ConVar g_CvarTeamsUnbalanceLimit;
+ConVar g_CvarHumansMustJoinTeam;
 
 Cookie g_PrefMusic;
 Cookie g_PrefViewmodel;
@@ -569,6 +573,10 @@ public void OnPluginStart()
 	g_CvarGitHubToken = CreateConVar("instagib_github_auth", "", "Authentication token for GitHub API (https://github.com/settings/tokens)", FCVAR_PROTECTED);
 	g_CvarFriendlyFire = FindConVar("mp_friendlyfire");
 	g_CvarRestartGame = FindConVar("mp_restartgame");
+	g_CvarAutoTeamBalance = FindConVar("mp_autoteambalance");
+	g_CvarScrambleTeamsAuto = FindConVar("mp_scrambleteams_auto");
+	g_CvarTeamsUnbalanceLimit = FindConVar("mp_teams_unbalance_limit");
+	g_CvarHumansMustJoinTeam = FindConVar("mp_humans_must_join_team");
 
 	LoadConfig();
 	Cookies_Init();
@@ -785,6 +793,11 @@ public void OnPluginEnd()
 	g_CvarNoRespawnTimes.RestoreDefault();
 	g_CvarSpecFreezeTime.RestoreDefault();
 	g_CvarFriendlyFire.RestoreDefault();
+	g_CvarRestartGame.RestoreDefault();
+	g_CvarAutoTeamBalance.RestoreDefault();
+	g_CvarScrambleTeamsAuto.RestoreDefault();
+	g_CvarTeamsUnbalanceLimit.RestoreDefault();
+	g_CvarHumansMustJoinTeam.RestoreDefault();
 	
 	InstagibPrintToChatAll(true, "The plugin has been unloaded! Restarting the round...");
 	Stalemate();

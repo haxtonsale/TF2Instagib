@@ -74,8 +74,20 @@ public void Event_OnRoundStart(Event event, const char[] name, bool dont_broadca
 	
 	if (g_CurrentRound.FreeForAll) {
 		g_CvarFriendlyFire.SetInt(1)
+		g_CvarAutoTeamBalance.SetBool(false);
+		g_CvarScrambleTeamsAuto.SetBool(false);
+		g_CvarTeamsUnbalanceLimit.SetInt(0);
+		if (g_CurrentRound.FreeForAllTeam == TFTeam_Blue) {
+			g_CvarHumansMustJoinTeam.SetString("blue");
+		} else {
+			g_CvarHumansMustJoinTeam.SetString("red");
+		}
 	} else {
 		g_CvarFriendlyFire.SetInt(0)
+		g_CvarAutoTeamBalance.SetBool(true);
+		g_CvarScrambleTeamsAuto.SetBool(true);
+		g_CvarTeamsUnbalanceLimit.SetInt(1);
+		g_CvarHumansMustJoinTeam.SetString("any");
 	}
 
 	if (g_SteamWorks) {
