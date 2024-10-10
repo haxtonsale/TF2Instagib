@@ -9,6 +9,7 @@ Linux |
 
 ## Required Extensions
 * [TF2Items](https://builds.limetech.io/?project=tf2items)
+* [Fixed Friendly Fire](https://github.com/Mikusch/friendlyfire) - To fix arrows damage in Ricochet (FFA) special round
 
 ## Optional Extensions
 * [SteamWorks](https://users.alliedmods.net/~kyles/builds/SteamWorks/)
