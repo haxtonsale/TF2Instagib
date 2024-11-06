@@ -130,6 +130,10 @@ MapConfig g_MapConfig;
 char g_InstagibTag[64];
 bool g_SteamWorks;
 
+int g_OriginalFlags[32];
+ConVar g_Convars[32];
+int g_ConvarCount = 0; 
+
 // -------------------------------------------------------------------
 #include "instagib/config.sp"
 #include "instagib/cookies.sp"
@@ -578,6 +582,18 @@ public void OnPluginStart()
 	g_CvarTeamsUnbalanceLimit = FindConVar("mp_teams_unbalance_limit");
 	g_CvarHumansMustJoinTeam = FindConVar("mp_humans_must_join_team");
 
+	AddConvarToSilent("sv_airaccelerate");
+	AddConvarToSilent("mp_disable_respawn_times");
+	AddConvarToSilent("spec_freeze_time");
+	AddConvarToSilent("mp_friendlyfire");
+	AddConvarToSilent("mp_restartgame");
+	AddConvarToSilent("mp_autoteambalance");
+	AddConvarToSilent("mp_scrambleteams_auto");
+	AddConvarToSilent("mp_teams_unbalance_limit");
+	AddConvarToSilent("mp_humans_must_join_team");
+	AddConvarToSilent("tf_spawn_glows_duration");
+	AddConvarToSilent("sv_tags");
+
 	LoadConfig();
 	Cookies_Init();
 	Commands_Init();
@@ -801,6 +817,8 @@ public void OnPluginEnd()
 	
 	InstagibPrintToChatAll(true, "The plugin has been unloaded! Restarting the round...");
 	Stalemate();
+
+	RestoreConvarsFlags();
 }
 
 public void OnLibraryAdded(const char[] name)
@@ -837,5 +855,23 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, 
 		return Plugin_Handled;
 	} else {
 		return Plugin_Continue;
+	}
+}
+
+void AddConvarToSilent(const char[] name) {
+    ConVar cvar = FindConVar(name);
+    if(cvar != null) {
+        g_OriginalFlags[g_ConvarCount] = cvar.Flags;
+        g_Convars[g_ConvarCount] = cvar;
+        
+        cvar.Flags &= ~FCVAR_NOTIFY;
+        
+        g_ConvarCount++;
+    }
+}
+
+void RestoreConvarsFlags() {
+	for(int i = 0; i < g_ConvarCount; i++) {
+		g_Convars[i].Flags = g_OriginalFlags[i];
 	}
 }
