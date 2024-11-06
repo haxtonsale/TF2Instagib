@@ -77,6 +77,7 @@ public void Event_OnRoundStart(Event event, const char[] name, bool dont_broadca
 		g_CvarAutoTeamBalance.SetBool(false);
 		g_CvarScrambleTeamsAuto.SetBool(false);
 		g_CvarTeamsUnbalanceLimit.SetInt(0);
+		g_CvarAvoidTeammates.SetInt(0);
 		if (g_CurrentRound.FreeForAllTeam == TFTeam_Blue) {
 			g_CvarHumansMustJoinTeam.SetString("blue");
 		} else {
@@ -88,6 +89,7 @@ public void Event_OnRoundStart(Event event, const char[] name, bool dont_broadca
 		g_CvarScrambleTeamsAuto.SetBool(true);
 		g_CvarTeamsUnbalanceLimit.SetInt(1);
 		g_CvarHumansMustJoinTeam.SetString("any");
+		g_CvarAvoidTeammates.SetInt(1);
 	}
 
 	if (g_SteamWorks) {

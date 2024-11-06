@@ -119,6 +119,7 @@ ConVar g_CvarAutoTeamBalance;
 ConVar g_CvarScrambleTeamsAuto;
 ConVar g_CvarTeamsUnbalanceLimit;
 ConVar g_CvarHumansMustJoinTeam;
+ConVar g_CvarAvoidTeammates;
 
 Cookie g_PrefMusic;
 Cookie g_PrefViewmodel;
@@ -581,6 +582,7 @@ public void OnPluginStart()
 	g_CvarScrambleTeamsAuto = FindConVar("mp_scrambleteams_auto");
 	g_CvarTeamsUnbalanceLimit = FindConVar("mp_teams_unbalance_limit");
 	g_CvarHumansMustJoinTeam = FindConVar("mp_humans_must_join_team");
+	g_CvarAvoidTeammates = FindConVar("tf_avoidteammates");
 
 	AddConvarToSilent("sv_airaccelerate");
 	AddConvarToSilent("mp_disable_respawn_times");
@@ -593,6 +595,7 @@ public void OnPluginStart()
 	AddConvarToSilent("mp_humans_must_join_team");
 	AddConvarToSilent("tf_spawn_glows_duration");
 	AddConvarToSilent("sv_tags");
+	AddConvarToSilent("tf_avoidteammates");
 
 	LoadConfig();
 	Cookies_Init();
@@ -814,6 +817,7 @@ public void OnPluginEnd()
 	g_CvarScrambleTeamsAuto.RestoreDefault();
 	g_CvarTeamsUnbalanceLimit.RestoreDefault();
 	g_CvarHumansMustJoinTeam.RestoreDefault();
+	g_CvarAvoidTeammates.RestoreDefault();
 	
 	InstagibPrintToChatAll(true, "The plugin has been unloaded! Restarting the round...");
 	Stalemate();
