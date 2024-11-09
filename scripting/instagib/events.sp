@@ -124,7 +124,7 @@ public void Event_OnSpawn(Event event, const char[] name, bool dont_broadcast)
 	}
 	
 	// Force player team
-	if (g_CurrentRound.FreeForAll) {
+	if (g_CurrentRound.FreeForAll && g_IsRoundActive) {
 		TF2_ChangeClientTeam(client, g_CurrentRound.FreeForAllTeam);
 	}
 

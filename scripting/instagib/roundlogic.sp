@@ -163,7 +163,7 @@ void Stalemate()
 
 void ScrambleTeams()
 {
-	ServerCommand("mp_scrambleteams 2");
+	ServerCommand("mp_scrambleteams");
 	ServerExecute();
-	SetConVarInt(g_CvarRestartGame, 0);
+	ServerCommand("mp_restartgame 0")
 }
