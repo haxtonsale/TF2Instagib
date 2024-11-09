@@ -198,7 +198,7 @@ public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 			g_Killcount[attacker]++;
 			AddToClientMultikill(attacker);
 			
-			if (g_CurrentRound.PointsPerKill) {
+			if (!g_CurrentRound.FreeForAll && g_CurrentRound.PointsPerKill) {
 				TFTeam team = TF2_GetClientTeam(attacker);
 				AddScore(team, g_CurrentRound.PointsPerKill);
 			}
@@ -236,6 +236,12 @@ public void Event_OnRoundEnd(Event event, const char[] name, bool dont_broadcast
 	
 	if (g_CurrentRound.AnnounceWin && team != TFTeam_Unassigned) {
 		AnnounceWin(team, _, score);
+	}
+	
+	g_CvarHumansMustJoinTeam.SetString("any");
+
+	if (g_CurrentRound.FreeForAll) {
+		ScrambleTeams();
 	}
 	
 	if (g_CurrentRound.OnEnd != INVALID_FUNCTION) {
