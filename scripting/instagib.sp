@@ -879,3 +879,13 @@ void RestoreConvarsFlags() {
 		g_Convars[i].Flags = g_OriginalFlags[i];
 	}
 }
+
+public Action Timer_ForceClass(Handle timer, any client) {
+    if (client > 0 && client <= MaxClients && IsClientInGame(client)) {
+		TFClassType randomclass = g_CurrentRound.GetRandomClass();
+        TF2_SetPlayerClass(client, randomclass);
+        TF2_RegeneratePlayer(client);
+    }
+    
+    return Plugin_Stop;
+}

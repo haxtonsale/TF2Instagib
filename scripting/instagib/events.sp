@@ -120,11 +120,7 @@ public void Event_OnSpawn(Event event, const char[] name, bool dont_broadcast)
 	
 	// Force player class
 	if (!g_CurrentRound.HasClass(class)) {
-		TFClassType randomclass = g_CurrentRound.GetRandomClass();
-
-		SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", randomclass);
-		SetEntProp(client, Prop_Send, "m_iClass", randomclass);
-		TF2_RespawnPlayer(client);
+		CreateTimer(0.02, Timer_ForceClass, client);
 		
 		if (g_CurrentRound.FreeForAll) {
 			TF2_ChangeClientTeam(client, g_CurrentRound.FreeForAllTeam);
