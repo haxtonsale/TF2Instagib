@@ -77,6 +77,7 @@ public void Event_OnRoundStart(Event event, const char[] name, bool dont_broadca
 		g_CvarAutoTeamBalance.SetBool(false);
 		g_CvarScrambleTeamsAuto.SetBool(false);
 		g_CvarTeamsUnbalanceLimit.SetInt(0);
+		g_CvarAvoidTeammates.SetInt(0);
 		if (g_CurrentRound.FreeForAllTeam == TFTeam_Blue) {
 			g_CvarHumansMustJoinTeam.SetString("blue");
 		} else {
@@ -88,6 +89,7 @@ public void Event_OnRoundStart(Event event, const char[] name, bool dont_broadca
 		g_CvarScrambleTeamsAuto.SetBool(true);
 		g_CvarTeamsUnbalanceLimit.SetInt(1);
 		g_CvarHumansMustJoinTeam.SetString("any");
+		g_CvarAvoidTeammates.SetInt(1);
 	}
 
 	if (g_SteamWorks) {
@@ -118,17 +120,14 @@ public void Event_OnSpawn(Event event, const char[] name, bool dont_broadcast)
 	
 	// Force player class
 	if (!g_CurrentRound.HasClass(class)) {
-		TFClassType randomclass = g_CurrentRound.GetRandomClass();
-
-		SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", randomclass);
-		SetEntProp(client, Prop_Send, "m_iClass", randomclass);
-		TF2_RespawnPlayer(client);
-		
-		if (g_CurrentRound.FreeForAll) {
-			TF2_ChangeClientTeam(client, g_CurrentRound.FreeForAllTeam);
-		}
+		CreateTimer(0.02, Timer_ForceClass, client);
 	}
-	
+
+	// Force player team
+	if (g_CurrentRound.FreeForAll && g_IsRoundActive) {
+		TF2_ChangeClientTeam(client, g_CurrentRound.FreeForAllTeam);
+	}
+
 	InvulnClient(client, g_CurrentRound.UberDuration);
 
 	if (g_IsRoundActive && g_CurrentRound.OnPlayerSpawn != INVALID_FUNCTION) {
@@ -198,8 +197,8 @@ public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 		if (attacker > 0 && attacker <= MaxClients && client != attacker) {
 			g_Killcount[attacker]++;
 			AddToClientMultikill(attacker);
-			
-			if (g_CurrentRound.PointsPerKill) {
+
+			if (!g_CurrentRound.FreeForAll && g_CurrentRound.PointsPerKill) {
 				TFTeam team = TF2_GetClientTeam(attacker);
 				AddScore(team, g_CurrentRound.PointsPerKill);
 			}
@@ -220,7 +219,6 @@ public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 					#endif
 					g_WinnerAnnounced = true;
 					GetClientName(attacker, username, 32);
-					ScrambleTeams();
 					ForceWin(g_CurrentRound.FreeForAllTeam);
 					AnnounceWin(g_CurrentRound.FreeForAllTeam, username, g_Killcount[attacker])
 				}
@@ -237,6 +235,12 @@ public void Event_OnRoundEnd(Event event, const char[] name, bool dont_broadcast
 	
 	if (g_CurrentRound.AnnounceWin && team != TFTeam_Unassigned) {
 		AnnounceWin(team, _, score);
+	}
+	
+	g_CvarHumansMustJoinTeam.SetString("any");
+
+	if (g_CurrentRound.FreeForAll) {
+		ScrambleTeams();
 	}
 	
 	if (g_CurrentRound.OnEnd != INVALID_FUNCTION) {

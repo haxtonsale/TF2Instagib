@@ -1,5 +1,5 @@
 // -------------------------------------------------------------------
-#define INSTAGIB_VERSION "1.6.2"
+#define INSTAGIB_VERSION "1.7.0"
 
 #define TF2_MAXPLAYERS 100
 //#define DEBUG
@@ -119,6 +119,7 @@ ConVar g_CvarAutoTeamBalance;
 ConVar g_CvarScrambleTeamsAuto;
 ConVar g_CvarTeamsUnbalanceLimit;
 ConVar g_CvarHumansMustJoinTeam;
+ConVar g_CvarAvoidTeammates;
 
 Cookie g_PrefMusic;
 Cookie g_PrefViewmodel;
@@ -129,6 +130,10 @@ MapConfig g_MapConfig;
 
 char g_InstagibTag[64];
 bool g_SteamWorks;
+
+int g_OriginalFlags[32];
+ConVar g_Convars[32];
+int g_ConvarCount = 0; 
 
 // -------------------------------------------------------------------
 #include "instagib/config.sp"
@@ -577,6 +582,20 @@ public void OnPluginStart()
 	g_CvarScrambleTeamsAuto = FindConVar("mp_scrambleteams_auto");
 	g_CvarTeamsUnbalanceLimit = FindConVar("mp_teams_unbalance_limit");
 	g_CvarHumansMustJoinTeam = FindConVar("mp_humans_must_join_team");
+	g_CvarAvoidTeammates = FindConVar("tf_avoidteammates");
+
+	AddConvarToSilent("sv_airaccelerate");
+	AddConvarToSilent("mp_disable_respawn_times");
+	AddConvarToSilent("spec_freeze_time");
+	AddConvarToSilent("mp_friendlyfire");
+	AddConvarToSilent("mp_restartgame");
+	AddConvarToSilent("mp_autoteambalance");
+	AddConvarToSilent("mp_scrambleteams_auto");
+	AddConvarToSilent("mp_teams_unbalance_limit");
+	AddConvarToSilent("mp_humans_must_join_team");
+	AddConvarToSilent("tf_spawn_glows_duration");
+	AddConvarToSilent("sv_tags");
+	AddConvarToSilent("tf_avoidteammates");
 
 	LoadConfig();
 	Cookies_Init();
@@ -798,9 +817,12 @@ public void OnPluginEnd()
 	g_CvarScrambleTeamsAuto.RestoreDefault();
 	g_CvarTeamsUnbalanceLimit.RestoreDefault();
 	g_CvarHumansMustJoinTeam.RestoreDefault();
+	g_CvarAvoidTeammates.RestoreDefault();
 	
 	InstagibPrintToChatAll(true, "The plugin has been unloaded! Restarting the round...");
 	Stalemate();
+
+	RestoreConvarsFlags();
 }
 
 public void OnLibraryAdded(const char[] name)
@@ -838,4 +860,32 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, 
 	} else {
 		return Plugin_Continue;
 	}
+}
+
+void AddConvarToSilent(const char[] name) {
+    ConVar cvar = FindConVar(name);
+    if(cvar != null) {
+        g_OriginalFlags[g_ConvarCount] = cvar.Flags;
+        g_Convars[g_ConvarCount] = cvar;
+        
+        cvar.Flags &= ~FCVAR_NOTIFY;
+        
+        g_ConvarCount++;
+    }
+}
+
+void RestoreConvarsFlags() {
+	for(int i = 0; i < g_ConvarCount; i++) {
+		g_Convars[i].Flags = g_OriginalFlags[i];
+	}
+}
+
+public Action Timer_ForceClass(Handle timer, any client) {
+    if (client > 0 && client <= MaxClients && IsClientInGame(client)) {
+		TFClassType randomclass = g_CurrentRound.GetRandomClass();
+        TF2_SetPlayerClass(client, randomclass);
+        TF2_RegeneratePlayer(client);
+    }
+    
+    return Plugin_Stop;
 }
