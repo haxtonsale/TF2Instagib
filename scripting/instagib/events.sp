@@ -121,12 +121,13 @@ public void Event_OnSpawn(Event event, const char[] name, bool dont_broadcast)
 	// Force player class
 	if (!g_CurrentRound.HasClass(class)) {
 		CreateTimer(0.02, Timer_ForceClass, client);
-		
-		if (g_CurrentRound.FreeForAll) {
-			TF2_ChangeClientTeam(client, g_CurrentRound.FreeForAllTeam);
-		}
 	}
 	
+	// Force player team
+	if (g_CurrentRound.FreeForAll) {
+		TF2_ChangeClientTeam(client, g_CurrentRound.FreeForAllTeam);
+	}
+
 	InvulnClient(client, g_CurrentRound.UberDuration);
 
 	if (g_IsRoundActive && g_CurrentRound.OnPlayerSpawn != INVALID_FUNCTION) {
