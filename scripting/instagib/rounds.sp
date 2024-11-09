@@ -27,7 +27,7 @@ void Rounds_Init()
 	ffa.FreeForAll = true;
 	ffa.PointsPerKill = 0;
 	ffa.AnnounceWin = false;
-	ffa.MinScore = 6;
+	ffa.MinScore = 12;
 	ffa.MaxScoreMultiplier = 1.0;
 
 	SubmitInstagibRound(ffa);
