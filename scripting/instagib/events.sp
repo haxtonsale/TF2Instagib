@@ -122,7 +122,7 @@ public void Event_OnSpawn(Event event, const char[] name, bool dont_broadcast)
 	if (!g_CurrentRound.HasClass(class)) {
 		CreateTimer(0.02, Timer_ForceClass, client);
 	}
-	
+
 	// Force player team
 	if (g_CurrentRound.FreeForAll && g_IsRoundActive) {
 		TF2_ChangeClientTeam(client, g_CurrentRound.FreeForAllTeam);
@@ -197,7 +197,7 @@ public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 		if (attacker > 0 && attacker <= MaxClients && client != attacker) {
 			g_Killcount[attacker]++;
 			AddToClientMultikill(attacker);
-			
+
 			if (!g_CurrentRound.FreeForAll && g_CurrentRound.PointsPerKill) {
 				TFTeam team = TF2_GetClientTeam(attacker);
 				AddScore(team, g_CurrentRound.PointsPerKill);
@@ -219,7 +219,6 @@ public void Event_OnDeath(Event event, const char[] name, bool dont_broadcast)
 					#endif
 					g_WinnerAnnounced = true;
 					GetClientName(attacker, username, 32);
-					ScrambleTeams();
 					ForceWin(g_CurrentRound.FreeForAllTeam);
 					AnnounceWin(g_CurrentRound.FreeForAllTeam, username, g_Killcount[attacker])
 				}
