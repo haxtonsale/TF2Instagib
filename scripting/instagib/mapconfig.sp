@@ -204,13 +204,10 @@ void SetupSpawnPoints()
 	for (int i = 0; i < len; i++) {
 		SpawnPoint spawn;
 		g_MapConfig.SpawnPoints.GetArray(i, spawn);
-		TFTeam team = spawn.team;
+		
+		TFTeam team = g_CurrentRound.FreeForAll ? g_CurrentRound.FreeForAllTeam : spawn.team;
 
-		if (g_CurrentRound.FreeForAll) {
-			team = g_CurrentRound.FreeForAllTeam;
-		}
-
-		int ent  = CreateEntityByName("info_player_teamspawn");
+		int ent = CreateEntityByName("info_player_teamspawn");
 		if (ent) {
 			float pos[3];
 			float ang[3];
@@ -226,8 +223,37 @@ void SetupSpawnPoints()
 			DispatchSpawn(ent);
 			TeleportEntity(ent, pos, ang, NULL_VECTOR);
 		}
+		
 		#if defined DEBUG
 			PrintToServer("Created Spawn Point for %.i (%.1f %.1f %.1f) [%.1f]", team, spawn.pos[0], spawn.pos[1], spawn.pos[2], spawn.rotation);
+		#endif
+	}
+	
+	if (g_CurrentRound.FreeForAll) {
+		SpawnPoint spawn;
+		g_MapConfig.SpawnPoints.GetArray(0, spawn);
+
+		TFTeam opposite_team = (g_CurrentRound.FreeForAllTeam == TFTeam_Red) ? TFTeam_Blue : TFTeam_Red;
+	
+		int ent = CreateEntityByName("info_player_teamspawn");
+		if (ent) {
+			float pos[3];
+			float ang[3];
+			pos[0] = spawn.pos[0];
+			pos[1] = spawn.pos[1];
+			pos[2] = spawn.pos[2];
+			ang[1] = spawn.rotation;
+
+			SetVariantInt(view_as<int>(opposite_team));
+
+			AcceptEntityInput(ent, "SetTeam");
+			DispatchKeyValue(ent, "targetname", "INSTAGIB_SPAWNPOINT");
+			DispatchSpawn(ent);
+			TeleportEntity(ent, pos, ang, NULL_VECTOR);
+		}
+		
+		#if defined DEBUG
+			PrintToServer("Created Spawn Point for %.i (%.1f %.1f %.1f) [%.1f]", opposite_team, spawn.pos[0], spawn.pos[1], spawn.pos[2], spawn.rotation);
 		#endif
 	}
 	
